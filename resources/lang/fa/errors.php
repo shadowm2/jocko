@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'Unauthorized' => 'عدم دسترسی',
+    'You need to sign in to access this page' => 'برای دسترسی به این صفحه باید به حساب خود وارد شوید.',
+    'Access Denied' => 'شما دسترسی لازم به این صفحه را ندارید',
+    'Please log in to access this page' => 'برای دسترسی به این صفحه وارد حساب کاربری خود شوید',
+    '421' => 'خطای ۴۲۱',
+    'Go Home' => 'بازگشت به صفحه اصلی',
+    'Go Back' => 'بازگشت به صفحه قبل',
+    'Sign In' => 'ورود به حساب',
+    "You don't have permission to access this page" => 'برای ورود به این دسترسی کافی ندارید.',
+    'Home' => 'خانه',
+    'Page Not Found' => 'صفحه یافت نشد',
+    "The page you're looking for doesn't exist or may have been moved" => 'صفحه‌ای که دنیالش هستید وجود ندارد یا تغییر کرده است.',
+    'Page Expired' => 'صفحه منقضی شده است',
+    'Your session expired. Refresh the page and try again' => 'نشست شما منقضی شده است. صفحه را رفرش کرده و دوباره امتحان کنید.',
+    'Refresh' => 'بارگذاری مجدد',
+    'Too Many Requests' => 'تعداد درخواست بیش از حد مجاز',
+    'You have made too many requests in a short period. Please wait a moment and try again' => 'تعداد درخواست های شما در بازه زمانی کوتاه بیش از حد مجاز بوده است. کمی صبر کنید و دوباره امتحان کنید',
+    'Something Went Wrong' => 'مشکلی پیش آمده است !',
+    'An unexpected error occurred. Please try again later' => 'متاسفانه یک خطای پیشبینی نشده بوجود آمده است. لطفا دوباره تلاش کنید.',
+    'Service Unavailable' => 'سرویس در دسترس نیست',
+    'The service is temporarily unavailable. Please try again in a few minutes' => 'این سرویس موقتا از دسترس خارج شده است. لطفا چند دقیقه دیگر دوباره تلاش کنید.',
+    'Error' => 'خطا',
+];
