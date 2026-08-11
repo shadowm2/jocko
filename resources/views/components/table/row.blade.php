@@ -1,0 +1,5 @@
+<flux:table.row>
+
+    {{ $slot }}
+
+</flux:table.row>

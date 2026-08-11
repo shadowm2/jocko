@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'Dashboard' => 'داشبورد',
+    'Platform' => 'سکو',
+    'Settings' => 'تنظیمات',
+    'Log Out' => 'خروج',
+    'Manage your profile and account settings' => 'پروفایل و تنظیمات حساب خود را مدیریت کنید',
+    'Profile' => 'پروفایل',
+    'Update your name and email address' => 'نام و ایمیل خود را بروز کنید',
+    'Delete account' => 'حذف حساب',
+    'Delete your account and all of its resources' => 'حذف حساب و تمام اطلاعات آن',
+    'Your email address is unverified' => 'ایمیل شما تایید نشده است.',
+    'Click here to re-send the verification email' => 'برای ارسال دوباره ایمیل تایید اینجا کلیک کنید.',
+    'Are you sure you want to delete your account?' => 'آیا از حذف حساب خود مطمئن هستید؟',
+    'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account' => 'با حذف حساب، تمام اطلاعات شخصی و اطلاعاتی که در سیستم وارد کردید حذف خواهد شد. برای تایید حذف حساب، رمز عبور را وارد کنید.',
+    'Appearance settings' => 'تنظیمات ظاهری',
+    'Appearance' => 'ظاهر',
+    'Update the appearance settings for your account' => 'تنظیمات ظاهری را برای حساب خود بروز کنید',
+    'Light' => 'روشن',
+    'Dark' => 'تیره',
+    'System' => 'سیستم',
+    'Security' => 'امنیت',
+    'Confirm password' => 'تایید رمز عبور',
+    'This is a secure area of the application. Please confirm your password before continuing' => 'این بخش از نرم افزار پشت در های امنیتی قرار دارد. برای ورود به این بخش باید رمز عبور را وارد کنید.',
+    'Security settings' => 'تنظیمات امنیتی',
+    'Cars' => 'خودرو ها',
+];

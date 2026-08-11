@@ -1,0 +1,7 @@
+{
+    "User": true,
+    "Auth": true,
+    "Dashboard": true,
+    "Car": true,
+    "Order": true
+}
