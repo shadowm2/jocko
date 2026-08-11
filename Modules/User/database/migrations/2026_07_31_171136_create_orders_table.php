@@ -16,6 +16,7 @@ return new class extends Migration
             $table->slug();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('user_car_id')->constrained('user_car');
+            $table->text('description')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

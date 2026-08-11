@@ -1,9 +1,12 @@
+@php
+    $order ??= null;
+@endphp
 <form
     class="space-y-8"
     wire:submit.prevent="save"
 >
     <flux:heading size="lg">
-        {{ __("order::strings.:user User's Order", ['user' => $order->user->fullName()]) }}
+        {{ __("order::strings.:user User's Order", ['user' => $order?->user->fullName() ?? '']) }}
     </flux:heading>
     <flux:card class="space-y-6">
         <flux:field>
@@ -46,6 +49,17 @@
             </flux:select>
 
             <flux:error name="form.user_car_id" />
+        </flux:field>
+
+        <flux:field>
+            <flux:label>
+                {{ __('order::attributes.Description') }}
+            </flux:label>
+            <flux:textarea
+                wire:model="form.description"
+                :placeholder="__('order::strings.Enter order description')"
+            />
+            <flux:error name="form.mobile" />
         </flux:field>
     </flux:card>
 

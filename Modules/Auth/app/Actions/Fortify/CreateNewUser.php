@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Modules\Auth\Concerns\PasswordValidationRules;
 use Modules\Auth\Concerns\ProfileValidationRules;
+use Modules\User\Enums\UserType;
 use Modules\User\Models\User;
 
 class CreateNewUser implements CreatesNewUsers
@@ -24,6 +25,7 @@ class CreateNewUser implements CreatesNewUsers
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
         ])->validate();
+        $input['type'] ??= UserType::Admin;
 
         $slug = Utils::generateUniqueSlug($input['first_name'].' '.$input['last_name'], User::class);
 

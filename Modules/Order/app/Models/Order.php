@@ -15,8 +15,9 @@ use Modules\User\Models\User;
  *
  * @property int $user_id
  * @property int $user_car_id
+ * @property string $description
  */
-#[Fillable(['slug', 'user_id', 'user_car_id'])]
+#[Fillable(['slug', 'user_id', 'user_car_id', 'description'])]
 class Order extends BaseModel
 {
     /**

@@ -26184,6 +26184,10 @@ namespace Modules\Dashboard\app\Livewire {
 namespace Modules\Order\app\Livewire {
     /**
      */
+    class OrderCreate extends \Livewire\Component {
+            }
+    /**
+     */
     class OrderEdit extends \Livewire\Component {
             }
     /**
