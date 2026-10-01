@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Livewire\Form;
 use Modules\Inventory\Models\Purchase;
 use Modules\Inventory\Services\PurchaseService;
+use Modules\Inventory\Services\WarehouseItemService;
 use Morilog\Jalali\Jalalian;
 
 class PurchaseForm extends Form
@@ -53,8 +54,6 @@ class PurchaseForm extends Form
 
     public function getRules(): array
     {
-        dd($this->all());
-
         return [
             'warehouse' => 'required|string|exists:Modules\Inventory\Models\Warehouse,slug',
             'supplier' => 'required|string|exists:Modules\Inventory\Models\Supplier,slug',
@@ -68,6 +67,12 @@ class PurchaseForm extends Form
             'expected_at' => ['required', 'string', new JalaliDate],
             'received_at' => ['required', 'string', new JalaliDate],
             'notes' => 'nullable|string',
+            'items' => ['nullable', 'array'],
+            'items.*' => [
+                'string',
+                'distinct',
+                Rule::exists('warehouse_items', 'slug'),
+            ],
         ];
     }
 
@@ -76,7 +81,12 @@ class PurchaseForm extends Form
      */
     public function save(): void
     {
-        $data = $this->validate();
+        try {
+
+            $data = $this->validate();
+        } catch (Exception $exception) {
+            dd($exception);
+        }
         // TODO: $data is kinda valid here. only p2e dates before going on
         $purchaseService = resolve(PurchaseService::class);
         $data['ordered_at'] = Jalalian::fromFormat('Y/m/d', Utils::eDigits($data['ordered_at']))->toCarbon();
@@ -106,6 +116,32 @@ class PurchaseForm extends Form
         $this->received_at = Utils::pDigits($purchase->received_at_jalali?->format('Y/m/d') ?? '');
         $this->received_at_gregorian = $purchase->received_at?->format('Y/m/d') ?? '';
         $this->notes = $purchase->notes;
+        $this->items = $this->resolveWarehouseItemSlugs($purchase);
+    }
+
+    /**
+     * The picker binds warehouse item slugs, while a purchase stores plain
+     * item ids, so map the stored lines back to their warehouse item.
+     *
+     * @return array<int, string>
+     */
+    protected function resolveWarehouseItemSlugs(Purchase $purchase): array
+    {
+        $itemIds = $purchase->items()
+            ->pluck('item_id')
+            ->all();
+
+        if (empty($itemIds)) {
+            return [];
+        }
+
+        return resolve(WarehouseItemService::class)
+            ->getWarehouseItems([
+                'warehouse_id' => $purchase->warehouse_id,
+                'whereIn' => ['item_id', $itemIds],
+            ], paginate: false)
+            ->pluck('slug')
+            ->all();
     }
 
     public function validationAttributes(): array
@@ -117,6 +153,7 @@ class PurchaseForm extends Form
             'ordered_at' => __('inventory::attributes.Purchase Ordered At'),
             'expected_at' => __('inventory::attributes.Purchase Expected At'),
             'received_at' => __('inventory::attributes.Purchase Received At'),
+            'items' => __('inventory::attributes.Warehouse Item'),
         ];
     }
 }

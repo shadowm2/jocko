@@ -2,6 +2,7 @@
 
 namespace Modules\Inventory\Database\Factories;
 
+use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Inventory\Models\Warehouse;
 
@@ -17,8 +18,11 @@ class WarehouseFactory extends Factory
      */
     public function definition(): array
     {
+        $name = $this->faker->unique()->company();
+
         return [
-            'name' => $this->faker->company(),
+            'slug' => Utils::generateUniqueSlug($name, Warehouse::class),
+            'name' => $name,
             'description' => $this->faker->text(),
             'is_active' => $this->faker->boolean(80),
         ];

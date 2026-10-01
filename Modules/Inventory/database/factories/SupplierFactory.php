@@ -2,8 +2,10 @@
 
 namespace Modules\Inventory\Database\Factories;
 
+use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Inventory\Models\Supplier;
+use Modules\User\Models\User;
 
 /**
  * @extends Factory<Supplier>
@@ -60,6 +62,9 @@ class SupplierFactory extends Factory
         );
 
         return [
+            'slug' => Utils::generateUniqueSlug($this->faker->unique()->company(), Supplier::class),
+            // Suppliers are owned by an existing user; users are seeded separately.
+            'user_id' => User::query()->inRandomOrder()->value('id'),
             'phone' => $formatted,
             'address' => $this->faker->address(),
             'postal_code' => $this->faker->postcode(),

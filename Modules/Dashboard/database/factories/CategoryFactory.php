@@ -2,6 +2,7 @@
 
 namespace Modules\Dashboard\Database\Factories;
 
+use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Dashboard\Models\Category;
 
@@ -17,6 +18,18 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        return [];
+        $name = $this->faker->unique()->words(2, true);
+
+        return [
+            'name' => $name,
+            'slug' => Utils::generateUniqueSlug($name, Category::class),
+            'parent_id' => null,
+            'type' => $this->faker->randomElement(['item', 'brand']),
+            'icon' => null,
+            'description' => $this->faker->optional()->sentence(),
+            'sort_order' => 0,
+            'depth' => 0,
+            'is_active' => true,
+        ];
     }
 }

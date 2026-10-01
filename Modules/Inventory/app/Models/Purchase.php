@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Inventory\Database\Factories\PurchaseFactory;
 use Modules\Inventory\Enums\PurchaseStatus;
 use Morilog\Jalali\Jalalian;
@@ -44,6 +45,14 @@ class Purchase extends BaseModel
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
+    }
+
+    /**
+     * @return HasMany<PurchaseItem, $this>
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(PurchaseItem::class);
     }
 
     public function orderedAtJalali(): Attribute

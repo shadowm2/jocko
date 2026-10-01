@@ -4,8 +4,11 @@ namespace Modules\Inventory\Services;
 
 use App\Helpers\Utils;
 use App\Services\BaseService;
+use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Modules\Inventory\Enums\PurchaseStatus;
 use Modules\Inventory\Models\Purchase;
 use Modules\Inventory\Repositories\PurchaseRepository;
@@ -42,7 +45,78 @@ class PurchaseService extends BaseService
         $data['slug'] ??= Utils::generateUniqueSlug($slug, Purchase::class);
         $data['status'] = PurchaseStatus::getDefault();
 
-        return parent::create($data);
+        $items = $data['items'] ?? [];
+        unset($data['items']);
+
+        $purchase = DB::transaction(function () use ($data, $items) {
+            $purchase = parent::create($data);
+            $this->syncItems($purchase, $items);
+
+            return $purchase;
+        });
+
+        return $purchase->refresh();
+    }
+
+    public function update(int|Model $model, array $data): bool
+    {
+        if ($model instanceof Model === false) {
+            $model = $this->find($model);
+        }
+
+        $items = $data['items'] ?? null;
+        unset($data['items']);
+
+        return DB::transaction(function () use ($model, $data, $items) {
+            $updated = parent::update($model, $data);
+
+            if (is_array($items)) {
+                $this->syncItems($model, $items);
+            }
+
+            return $updated;
+        });
+    }
+
+    /**
+     * Replace a purchase's line items with the given set.
+     *
+     * Accepts warehouse item slugs (what the picker binds) and resolves
+     * each to its underlying item. Existing lines are soft deleted so the
+     * previous quantities stay recoverable.
+     *
+     * @param  array<int, string>  $slugs
+     */
+    protected function syncItems(Purchase $purchase, array $slugs): void
+    {
+        $purchase->items()->delete();
+
+        $slugs = array_values(array_unique(array_filter($slugs)));
+
+        if (empty($slugs)) {
+            return;
+        }
+
+        $warehouseItems = resolve(WarehouseItemService::class)
+            ->getWarehouseItems(['whereIn' => ['slug', $slugs]], paginate: false)
+            ->keyBy('slug');
+
+        foreach ($slugs as $slug) {
+            $warehouseItem = $warehouseItems->get($slug);
+
+            if (! $warehouseItem) {
+                throw new Exception("Warehouse item [{$slug}] not found.");
+            }
+
+            $purchase->items()->create([
+                'item_id' => $warehouseItem->item_id,
+                'quantity' => 1,
+                'unit_price' => 0,
+                'discount' => 0,
+                'tax' => 0,
+                'total' => 0,
+            ]);
+        }
     }
 
     protected function interpretData(array $data): array
