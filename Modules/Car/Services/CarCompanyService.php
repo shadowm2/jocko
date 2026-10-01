@@ -4,6 +4,7 @@ namespace Modules\Car\Services;
 
 use App\Helpers\Utils;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Modules\Car\Models\CarCompany;
@@ -26,6 +27,7 @@ class CarCompanyService extends BaseService
     public function getCompanies(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
         $query = $this->repository
+            ->orderBy('name')
             ->withRelations();
 
         return $paginate ? $query->paginate() : $query->all();
@@ -35,6 +37,23 @@ class CarCompanyService extends BaseService
     {
         $data['slug'] ??= Utils::generateUniqueSlug($data['name'], CarCompany::class);
 
-        return parent::create($data);
+        $company = parent::create($data);
+        $this->handleMedia($company, $data);
+
+        return $company;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function update(Model|int $model, array $data): bool
+    {
+        if ($model instanceof CarCompany === false) {
+            $model = self::find($model);
+        }
+        $data = $this->interpretData($data);
+        $this->handleMedia($model, $data, imagesRelation: 'logo');
+
+        return $this->repository->update($model, $data);
     }
 }

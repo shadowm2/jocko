@@ -11,6 +11,10 @@ class DashboardDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            CountrySeeder::class,
+            ProvinceSeeder::class,
+            CitySeeder::class,
+        ]);
     }
 }

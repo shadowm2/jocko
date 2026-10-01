@@ -4,10 +4,13 @@ namespace Modules\Car\Livewire;
 
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Modules\Car\Services\ColorService;
 
 class ColorList extends Component
 {
+    use WithPagination;
+
     public function render(ColorService $colorService): View
     {
         $columns = [

@@ -52,8 +52,12 @@ class Utils
             .str_pad((string) fake()->numberBetween(0, 9999999), 7, '0', STR_PAD_LEFT);
     }
 
-    public static function pDigits(string $value): string
+    public static function pDigits(?string $value): ?string
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         return strtr($value, [
             '0' => '۰',
             '1' => '۱',
@@ -112,5 +116,16 @@ class Utils
     {
         return preg_replace('/-\d+/', '', $slug);
 
+    }
+
+    public static function formatQuantity(float|int|string|null $value, int $decimals = 3): string
+    {
+        if (is_null($value)) {
+            return '-';
+        }
+
+        return number_format((float) $value, $decimals, '.', '')
+                |> (fn ($x) => rtrim($x, '0'))
+                |> (fn ($x) => rtrim($x, '.'));
     }
 }

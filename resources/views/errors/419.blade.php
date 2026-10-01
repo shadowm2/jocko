@@ -1,7 +1,3 @@
-@php
-    Log::error($exception);
-@endphp
-
 @component('layouts.error')
     <flux:heading size="xl">
         {{ __('errors.Page Expired') }}

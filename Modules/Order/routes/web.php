@@ -9,7 +9,7 @@ Route::middleware(['auth', 'verified'])
     ->prefix('orders')
     ->name('orders.')
     ->group(function () {
-        Route::livewire('/list', OrdersList::class)->name('list');
-        Route::livewire('/create', OrderCreate::class)->name('create');
+        Route::livewire('/list', OrdersList::class)->name('index');
+        Route::livewire('/new', OrderCreate::class)->name('create');
         Route::livewire('/{order}/edit', OrderEdit::class)->name('edit');
     });

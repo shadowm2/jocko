@@ -12,7 +12,7 @@
     <x-table.cell>
         <flux:button
             :tooltip="__('user::strings.User :name Cars', ['name' => $row->fullName()])"
-            href="{{ route('users.cars.list', ['user' => $row]) }}"
+            href="{{ route('users.cars.index', ['user' => $row]) }}"
             variant="ghost"
             icon="car"
         />

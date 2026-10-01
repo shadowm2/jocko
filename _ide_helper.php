@@ -26131,7 +26131,7 @@ namespace Illuminate\View {
 namespace Modules\Car\Livewire {
     /**
      */
-    class CarAdd extends \Livewire\Component {
+    class CarCreate extends \Livewire\Component {
             }
     /**
      */
@@ -26143,7 +26143,7 @@ namespace Modules\Car\Livewire {
             }
     /**
      */
-    class ColorAdd extends \Livewire\Component {
+    class ColorCreate extends \Livewire\Component {
             }
     /**
      */
@@ -26155,7 +26155,7 @@ namespace Modules\Car\Livewire {
             }
     /**
      */
-    class CompanyAdd extends \Livewire\Component {
+    class CompanyCreate extends \Livewire\Component {
             }
     /**
      */
@@ -26171,6 +26171,45 @@ namespace App\Livewire {
     /**
      */
     class BaseComponent extends \Livewire\Component {
+            }
+    }
+
+namespace Modules\Dashboard\Livewire {
+    /**
+     */
+    class CityCreate extends \Livewire\Component {
+            }
+    /**
+     */
+    class CityEdit extends \Livewire\Component {
+            }
+    /**
+     */
+    class CityList extends \Livewire\Component {
+            }
+    /**
+     */
+    class CountryCreate extends \Livewire\Component {
+            }
+    /**
+     */
+    class CountryEdit extends \Livewire\Component {
+            }
+    /**
+     */
+    class CountryList extends \Livewire\Component {
+            }
+    /**
+     */
+    class ProvinceCreate extends \Livewire\Component {
+            }
+    /**
+     */
+    class ProvinceEdit extends \Livewire\Component {
+            }
+    /**
+     */
+    class ProvinceList extends \Livewire\Component {
             }
     }
 
@@ -26199,11 +26238,11 @@ namespace Modules\Order\app\Livewire {
 namespace Modules\User\Livewire {
     /**
      */
-    class UserAdd extends \Livewire\Component {
+    class UserCarsList extends \Livewire\Component {
             }
     /**
      */
-    class UserCarsList extends \Livewire\Component {
+    class UserCreate extends \Livewire\Component {
             }
     /**
      */

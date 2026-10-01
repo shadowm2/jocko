@@ -56,7 +56,7 @@ return [
     'encoding' => 'The :attribute field must be encoded in :encoding.',
     'ends_with' => 'The :attribute field must end with one of the following: :values.',
     'enum' => 'The selected :attribute is invalid.',
-    'exists' => 'The selected :attribute is invalid.',
+    'exists' => ':attribute  انتخاب شده وجود ندارد',
     'extensions' => 'The :attribute field must have one of the following extensions: :values.',
     'file' => 'The :attribute field must be a file.',
     'filled' => 'The :attribute field must have a value.',
@@ -74,7 +74,7 @@ return [
     ],
     'hex_color' => 'The :attribute field must be a valid hexadecimal color.',
     'image' => 'The :attribute field must be an image.',
-    'in' => 'The selected :attribute is invalid.',
+    'in' => ':attribute انتخاب شده معتبر نیست.',
     'in_array' => 'The :attribute field must exist in :other.',
     'in_array_keys' => 'The :attribute field must contain at least one of the following keys: :values.',
     'integer' => 'The :attribute field must be an integer.',
@@ -119,7 +119,7 @@ return [
     'missing_with' => 'The :attribute field must be missing when :values is present.',
     'missing_with_all' => 'The :attribute field must be missing when :values are present.',
     'multiple_of' => 'The :attribute field must be a multiple of :value.',
-    'not_in' => 'The selected :attribute is invalid.',
+    'not_in' => ':attribute انتخاب شده معتبر نیست.',
     'not_regex' => 'The :attribute field format is invalid.',
     'numeric' => 'The :attribute field must be a number.',
     'password' => [
@@ -141,7 +141,7 @@ return [
     'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
     'prohibits' => 'The :attribute field prohibits :other from being present.',
     'regex' => 'The :attribute field format is invalid.',
-    'required' => 'The :attribute field is required.',
+    'required' => ':attribute اجباری است',
     'required_array_keys' => 'The :attribute field must contain entries for: :values.',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_if_accepted' => 'The :attribute field is required when :other is accepted.',
@@ -161,7 +161,7 @@ return [
     'starts_with' => 'The :attribute field must start with one of the following: :values.',
     'string' => 'The :attribute field must be a string.',
     'timezone' => 'The :attribute field must be a valid timezone.',
-    'unique' => 'The :attribute has already been taken.',
+    'unique' => ':attribute قبلا استفاده شده است',
     'uploaded' => 'The :attribute failed to upload.',
     'uppercase' => 'The :attribute field must be uppercase.',
     'url' => 'The :attribute field must be a valid URL.',
@@ -196,6 +196,7 @@ return [
     |
     */
 
-    'attributes' => [],
-
+    'attributes' => [
+        'mobile' => 'شماره موبایل',
+    ],
 ];

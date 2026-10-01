@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'Car' => 'خودرو',
     'Cars' => 'خودرو ها',
     'Car Name' => 'نام خودرو',
     'Car Company' => 'شرکت سازنده',

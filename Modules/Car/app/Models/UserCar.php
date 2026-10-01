@@ -17,6 +17,11 @@ use Morilog\Jalali\Jalalian;
  * @extends BaseModel<UserCar>
  *
  * @property CarbonImmutable|null $manufactured_at
+ * @property int $id
+ * @property int $car_id
+ * @property int $user_id
+ * @property string $description
+ * @property int $color_id
  */
 #[Fillable('description', 'manufactured_at', 'car_id')]
 class UserCar extends BaseModel

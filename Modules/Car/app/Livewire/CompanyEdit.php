@@ -5,12 +5,17 @@ namespace Modules\Car\Livewire;
 use App\Livewire\BaseComponent;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
+use Livewire\WithFileUploads;
 use Modules\Car\Livewire\Forms\CompanyForm;
 use Modules\Car\Models\CarCompany;
 use Modules\Car\Services\CarCompanyService;
+use Modules\Dashboard\Traits\RemoveFile;
 
 class CompanyEdit extends BaseComponent
 {
+    use RemoveFile;
+    use WithFileUploads;
+
     public CompanyForm $form;
 
     public CarCompany $company;

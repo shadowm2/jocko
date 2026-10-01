@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'Order' => 'سفارش',
     'Orders' => 'سفارش ها',
     'Orders List' => 'لیست سفارش ها',
     'Save Order' => 'ذخیره سفارش',

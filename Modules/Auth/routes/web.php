@@ -12,4 +12,5 @@ Route::get('/force-429', function () {
         60, // Retry after seconds
         'Too Many Requests - Test mode' // Custom message
     );
+
 });

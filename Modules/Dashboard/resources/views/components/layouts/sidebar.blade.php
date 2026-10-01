@@ -1,3 +1,6 @@
+@php
+    $activeWarehouse = resolve(\Modules\Inventory\Services\WarehouseService::class)->getActiveWarehouse();
+@endphp
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
@@ -15,13 +18,57 @@
         collapsible="mobile"
         class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900"
     >
-        <flux:sidebar.header>
+        <flux:sidebar.header class="relative">
             <x-app-logo
                 :sidebar="true"
                 href="{{ route('dashboard') }}"
                 wire:navigate
             />
             <flux:sidebar.collapse class="lg:hidden" />
+            <flux:button
+                variant="ghost"
+                class="relative size-10 overflow-hidden"
+                @click="
+                document.documentElement.classList.add('theme-transition');
+                $flux.appearance = $flux.appearance === 'light' ? 'dark':'light';
+                setTimeout(() => {
+                    document.documentElement.classList.remove('theme-transition')
+                }, 300);
+                "
+            >
+                <flux:icon.computer-desktop
+                    x-show="$flux.appearance === 'system'"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 scale-50 -rotate-120"
+                    x-transition:enter-end="opacity-100 scale-100 rotate-0"
+                    x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="opacity-100 scale-100 rotate-0"
+                    x-transition:leave-end="opacity-0 scale-50 rotate-120"
+                    class="absolute size-5"
+                />
+
+                <flux:icon.moon
+                    x-show="$flux.appearance === 'dark'"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 scale-50 -rotate-120"
+                    x-transition:enter-end="opacity-100 scale-100 rotate-0"
+                    x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="opacity-100 scale-100 rotate-0"
+                    x-transition:leave-end="opacity-0 scale-50 rotate-120"
+                    class="absolute size-5"
+                />
+
+                <flux:icon.sun
+                    x-show="$flux.appearance === 'light'"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 scale-50 rotate-120"
+                    x-transition:enter-end="opacity-100 scale-100 rotate-0"
+                    x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="opacity-100 scale-100 rotate-0"
+                    x-transition:leave-end="opacity-0 scale-50 -rotate-120"
+                    class="absolute size-5"
+                />
+            </flux:button>
         </flux:sidebar.header>
 
         <flux:sidebar.nav
@@ -42,118 +89,370 @@
                 </flux:sidebar.item>
                 <flux:sidebar.group
                     expandable
-                    :heading="__('car::strings.Cars')"
+                    icon="circle-stack"
+                    :heading="__('dashboard::strings.Inventory')"
                     class="grid"
-                    :expanded="request()->routeIs('cars.*')"
+                    :expanded="request()->routeIs(['brands.*', 'items.*', 'suppliers.*', 'units.*','purchases.*', 'warehouses.*'])"
                 >
-                    <flux:sidebar.item
-                        icon="car"
-                        :href="route('cars.index')"
-                        :current="request()->routeIs('cars.index')"
-                        wire:navigate
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('inventory::strings.Brands')"
+                        class="grid"
+                        icon="shopping-bag"
+                        :expanded="request()->routeIs(['brands.*', 'items.*', 'suppliers.*', 'units.*'])"
                     >
-                        {{ __('car::strings.Cars List') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item
-                        icon="car"
-                        icon:trailing="plus"
-                        :href="route('cars.add')"
-                        :current="request()->routeIs('cars.add')"
-                        wire:navigate
+                        <flux:sidebar.item
+                            :href="route('brands.index')"
+                            :current="request()->routeIs('brands.index')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Brands') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('brands.create')"
+                            :current="request()->routeIs('brands.create')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Brand Add') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        icon="cube"
+                        :heading="__('inventory::strings.Items')"
+                        class="grid"
+                        :expanded="request()->routeIs('items.*')"
                     >
-                        {{ __('car::strings.Add Car') }}
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
+                        <flux:sidebar.item
+                            :href="route('items.index')"
+                            :current="request()->routeIs('items.index')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Items List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('items.create')"
+                            :current="request()->routeIs('items.create')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Item Create') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        icon="truck"
+                        :heading="__('inventory::strings.Suppliers')"
+                        class="grid"
+                        :expanded="request()->routeIs('suppliers.*')"
+                    >
+                        <flux:sidebar.item
+                            :href="route('suppliers.index')"
+                            :current="request()->routeIs('suppliers.index')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Suppliers List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('suppliers.create')"
+                            :current="request()->routeIs('suppliers.create')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Supplier Add') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('inventory::strings.Units')"
+                        class="grid"
+                        icon="ruler"
+                        :expanded="request()->routeIs('units.*')"
+                    >
+                        <flux:sidebar.item
+                            :href="route('units.groups.index')"
+                            :current="request()->routeIs('units.groups.index')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Unit Groups List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('units.groups.create')"
+                            :current="request()->routeIs('units.groups.create')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Unit Group Add') }}
+                        </flux:sidebar.item>
 
-                <flux:sidebar.group
-                    expandable
-                    :heading="__('car::strings.Colors')"
-                    class="grid"
-                    :expanded="request()->routeIs('colors.*')"
-                >
-                    <flux:sidebar.item
-                        icon="swatch"
-                        :href="route('colors.index')"
-                        :current="request()->routeIs('colors.index')"
-                        wire:navigate
+                        <flux:sidebar.item
+                            :href="route('units.index')"
+                            :current="request()->routeIs('units.index')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Units List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('units.create')"
+                            :current="request()->routeIs('units.create')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Unit Add') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('inventory::strings.Purchases')"
+                        class="grid"
+                        icon="shopping-cart"
+                        :expanded="request()->routeIs('purchases.*')"
                     >
-                        {{ __('car::strings.Colors List') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item
-                        icon="swatch"
-                        icon:trailing="plus"
-                        :href="route('colors.add')"
-                        :current="request()->routeIs('colors.add')"
-                        wire:navigate
+                        <flux:sidebar.item
+                            :href="route('purchases.index')"
+                            :current="request()->routeIs('purchases.index')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Purchases List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('purchases.create')"
+                            :current="request()->routeIs('purchases.create')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Purchase Add') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('inventory::strings.Warehouses')"
+                        class="grid"
+                        icon="shelving-unit"
+                        :expanded="request()->routeIs('warehouses.*')"
                     >
-                        {{ __('car::strings.Add Color') }}
-                    </flux:sidebar.item>
+                        <flux:sidebar.item
+                            :href="route('warehouses.index')"
+                            :current="request()->routeIs('warehouses.index')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Warehouses List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('warehouses.create')"
+                            :current="request()->routeIs('warehouses.create')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Warehouse Add') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            :href="route('warehouses.items.index')"
+                            :current="request()->routeIs('warehouses.items.index')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Warehouse Items List') }}
+                        </flux:sidebar.item>
+                        @if ($activeWarehouse)
+                            <flux:sidebar.item
+                                :href="route('warehouses.items.create', ['warehouse' => $activeWarehouse->slug])"
+                                :current="request()->routeIs('warehouses.items.create')"
+                                wire:navigate
+                            >
+                                {{ __('inventory::strings.Warehouse Items Create') }}
+                            </flux:sidebar.item>
+                        @endif
+                    </flux:sidebar.group>
                 </flux:sidebar.group>
-
                 <flux:sidebar.group
                     expandable
-                    :heading="__('user::strings.Users')"
+                    icon="cog"
+                    :heading="__('car::strings.Car')"
                     class="grid"
-                    :expanded="request()->routeIs('users.*')"
+                    :expanded="request()->routeIs(['cars.*', 'companies.*', 'colors.*'])"
                 >
-                    <flux:sidebar.item
-                        icon="user"
-                        :href="route('users.list')"
-                        :current="request()->routeIs('users.list')"
-                        wire:navigate
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('car::strings.Cars')"
+                        class="grid"
+                        icon="car"
+                        :expanded="request()->routeIs('cars.*')"
                     >
-                        {{ __('user::strings.Users List') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item
-                        icon="user"
-                        :href="route('users.add')"
-                        icon:trailing="plus"
-                        :current="request()->routeIs('users.add')"
-                        wire:navigate
+                        <flux:sidebar.item
+                            :href="route('cars.index')"
+                            :current="request()->routeIs('cars.index')"
+                            wire:navigate
+                        >
+                            {{ __('car::strings.Cars List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('cars.create')"
+                            :current="request()->routeIs('cars.create')"
+                            wire:navigate
+                        >
+                            {{ __('car::strings.Add Car') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('car::strings.Car Companies')"
+                        class="grid"
+                        icon="building-office"
+                        :expanded="request()->routeIs('companies.*')"
                     >
-                        {{ __('user::strings.Add User') }}
-                    </flux:sidebar.item>
+                        <flux:sidebar.item
+                            :href="route('companies.index')"
+                            :current="request()->routeIs('companies.index')"
+                            wire:navigate
+                        >
+                            {{ __('car::strings.Car Companies List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('companies.create')"
+                            :current="request()->routeIs('companies.create')"
+                            wire:navigate
+                        >
+                            {{ __('car::strings.Add Car Company') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('car::strings.Colors')"
+                        class="grid"
+                        icon="swatch"
+                        :expanded="request()->routeIs('colors.*')"
+                    >
+                        <flux:sidebar.item
+                            :href="route('colors.index')"
+                            :current="request()->routeIs('colors.index')"
+                            wire:navigate
+                        >
+                            {{ __('car::strings.Colors List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('colors.create')"
+                            :current="request()->routeIs('colors.create')"
+                            wire:navigate
+                        >
+                            {{ __('car::strings.Add Color') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
                 </flux:sidebar.group>
                 <flux:sidebar.group
                     expandable
+                    icon="user-group"
+                    :heading="__('user::strings.User')"
+                    class="grid"
+                    :expanded="request()->routeIs(['users.*'])"
+                >
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('user::strings.Users')"
+                        class="grid"
+                        icon="user"
+                        :expanded="request()->routeIs('users.*')"
+                    >
+                        <flux:sidebar.item
+                            :href="route('users.index')"
+                            :current="request()->routeIs('users.index')"
+                            wire:navigate
+                        >
+                            {{ __('user::strings.Users List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            :href="route('users.create')"
+                            icon:trailing="plus"
+                            :current="request()->routeIs('users.create')"
+                            wire:navigate
+                        >
+                            {{ __('user::strings.Add User') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                </flux:sidebar.group>
+                <flux:sidebar.group
+                    expandable
+                    icon="shopping-bag"
                     :heading="__('order::strings.Orders')"
                     class="grid"
                     :expanded="request()->routeIs('orders.*')"
                 >
-                    <flux:sidebar.item
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('order::strings.Orders')"
+                        class="grid"
                         icon="shopping-cart"
-                        :href="route('orders.list')"
-                        :current="request()->routeIs('orders.list')"
+                        :expanded="request()->routeIs('orders.*')"
+                    >
+                        <flux:sidebar.item
+                            :href="route('orders.index')"
+                            :current="request()->routeIs('orders.index')"
+                            wire:navigate
+                        >
+                            {{ __('order::strings.Orders') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                </flux:sidebar.group>
+                <flux:sidebar.group
+                    expandable
+                    icon="wrench"
+                    :heading="__('dashboard::strings.General')"
+                    class="grid"
+                    :expanded="request()->routeIs(['countries.*', 'provinces.*', 'cities.*', 'categories.*'])"
+                >
+                    <flux:sidebar.item
+                        icon="globe-alt"
+                        :href="route('countries.index')"
+                        :current="request()->routeIs('countries.index')"
                         wire:navigate
                     >
-                        {{ __('order::strings.Orders') }}
+                        {{ __('dashboard::strings.Countries') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item
+                        icon="map-pin"
+                        :href="route('provinces.index')"
+                        :current="request()->routeIs('provinces.index')"
+                        wire:navigate
+                    >
+                        {{ __('dashboard::strings.Provinces') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item
+                        icon="building-office"
+                        :href="route('cities.index')"
+                        :current="request()->routeIs('cities.index')"
+                        wire:navigate
+                    >
+                        {{ __('dashboard::strings.Cities') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('dashboard::strings.Categories')"
+                        class="grid"
+                        icon="folder-open"
+                        :expanded="request()->routeIs(['categories.*'])"
+                    >
+                        <flux:sidebar.item
+                            :href="route('categories.index')"
+                            :current="request()->routeIs('categories.index')"
+                            wire:navigate
+                        >
+                            {{ __('dashboard::strings.Categories List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('categories.create')"
+                            :current="request()->routeIs('categories.create')"
+                            wire:navigate
+                        >
+                            {{ __('dashboard::strings.Category Create') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
                 </flux:sidebar.group>
             </flux:sidebar.group>
-            <flux:sidebar.group
-                expandable
-                :heading="__('car::strings.Car Companies')"
-                class="grid"
-                :expanded="request()->routeIs('companies.*')"
-            >
-                <flux:sidebar.item
-                    icon="building-office"
-                    :href="route('companies.index')"
-                    :current="request()->routeIs('companies.index')"
-                    wire:navigate
-                >
-                    {{ __('car::strings.Car Companies List') }}
-                </flux:sidebar.item>
-                <flux:sidebar.item
-                    icon="building-office"
-                    icon:trailing="plus"
-                    :href="route('companies.add')"
-                    :current="request()->routeIs('companies.add')"
-                    wire:navigate
-                >
-                    {{ __('car::strings.Add Car Company') }}
-                </flux:sidebar.item>
-            </flux:sidebar.group>
+
         </flux:sidebar.nav>
 
         <flux:spacer />

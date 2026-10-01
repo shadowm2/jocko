@@ -6,4 +6,6 @@ enum UserType: string
 {
     case Admin = 'admin';
     case Customer = 'customer';
+
+    case Supplier = 'supplier';
 }
