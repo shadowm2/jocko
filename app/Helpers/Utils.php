@@ -52,8 +52,12 @@ class Utils
             .str_pad((string) fake()->numberBetween(0, 9999999), 7, '0', STR_PAD_LEFT);
     }
 
-    public static function pDigits(string $value): string
+    public static function pDigits(?string $value): ?string
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         return strtr($value, [
             '0' => '۰',
             '1' => '۱',

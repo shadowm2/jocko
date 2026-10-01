@@ -26,10 +26,10 @@
         {{ __("inventory::strings.purchase_types.{$row->status->value}") }}
     </x-table.cell>
     <x-table.cell>
-        {{ Utils::pDigits($row->ordered_at_jalali->format('Y/m/d')) }}
+        {{ Utils::pDigits($row->ordered_at_jalali?->format('Y/m/d')) }}
     </x-table.cell>
     <x-table.cell>
-        {{ Utils::pDigits($row->received_at_jalali->format('Y/m/d')) }}
+        {{ Utils::pDigits($row->received_at_jalali?->format('Y/m/d')) }}
     </x-table.cell>
     <x-table.cell>
         <flux:button

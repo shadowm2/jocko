@@ -194,7 +194,7 @@ class BrandSeeder extends Seeder
                 $brandFileName = basename(strtolower(
                     str_replace(' ', '-', $brandFileName)
                 ));
-                dd('wtf no image for brand '.$brandFileName.' at this path: '.Storage::disk('assets')->path('images/brands/'));
+                dd('wtf no image for brand '.$brandFileName.' at this path: '.$srcPath);
             }
             $name = $files->first();
             $path = "inventory/brands/$name";
