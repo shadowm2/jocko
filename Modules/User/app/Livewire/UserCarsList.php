@@ -4,19 +4,15 @@ namespace Modules\User\Livewire;
 
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Modules\User\Models\User;
 use Modules\User\Services\UserCarService;
 
 class UserCarsList extends Component
 {
-    protected User $user;
+    use WithPagination;
 
-    public function mount(User $user): void
-    {
-        $this->user = $user;
-    }
-
-    public function onEditClick(): void {}
+    public User $user;
 
     public function render(UserCarService $userCarService): View
     {

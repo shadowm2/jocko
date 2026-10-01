@@ -9,9 +9,7 @@ class OrderFilter extends BaseFilter
     /**
      * @param  array<string, mixed>  $filters
      */
-    public function __construct(
-        private readonly array $filters
-    ) {}
+
 
     protected function filter(): void
     {

@@ -5,7 +5,7 @@
 />
 
 <title>
-    {{ filled($title ?? null) ? $title . ' - ' . config('app.name', 'Laravel') : config('app.name', 'Laravel') }}
+    {{ filled($title ?? null) ? $title : config('app.name', 'Laravel') }}
 </title>
 
 <link
@@ -36,4 +36,4 @@
 <script src="{{ asset('vendor/persian-datepicker/dist/js/persian-datepicker.js') }}"></script>
 
 @fluxAppearance
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+@vite(['resources/css/app.css', 'resources/js/app.js', 'Modules/Inventory/resources/assets/js/app.js', 'Modules/Dashboard/resources/assets/js/app.js'])

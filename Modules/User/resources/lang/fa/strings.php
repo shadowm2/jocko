@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'User' => 'کاربر',
     'Users List' => 'لیست کاربران',
     'Users' => 'کاربران',
     'User :name Cars' => 'لیست خودرو های :name',

@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Repositories\BaseRepository;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Dashboard\Services\FileUploadService;
 
 /**
  * @template TModel of Model
@@ -16,6 +18,8 @@ abstract class BaseService
      * @var TRepository
      */
     protected BaseRepository $repository;
+
+    protected ?string $customDir = null;
 
     /**
      * @param  TRepository  $repository
@@ -43,6 +47,11 @@ abstract class BaseService
         return $this->repository->findBy($val, $col);
     }
 
+    public function findByKey(mixed $val): ?Model
+    {
+        return $this->repository->findByKey($val);
+    }
+
     public function findOrFail(int|string $id): Model
     {
         return $this->repository->findOrFail($id);
@@ -50,10 +59,18 @@ abstract class BaseService
 
     /**
      * @param  array<string, mixed>  $data
+     * @return TModel
+     *
+     * @throws Exception
      */
     public function create(array $data): Model
     {
-        return $this->repository->create($data);
+        $data = $this->interpretData($data);
+
+        $newModel = $this->repository->create($data);
+        $this->handleMedia($newModel, $data);
+
+        return $newModel;
     }
 
     /**
@@ -68,6 +85,7 @@ abstract class BaseService
             $model = $this->find($model);
         }
         $data = $this->interpretData($data);
+        $this->handleMedia($model, $data);
 
         return $this->repository->update($model, $data);
     }
@@ -83,5 +101,51 @@ abstract class BaseService
     protected function interpretData(array $data): array
     {
         return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     *
+     * @throws Exception
+     */
+    public function handleMedia(Model $model, array $data, string $imagesRelation = 'images'): void
+    {
+        $class = get_class($model);
+        $moduleName = explode('\\', $class);
+
+        // Typically: Modules\{ModuleName}\Entities\ModelName
+        if ($moduleName[0] === 'Modules') {
+            /** @var string $moduleName */
+            $moduleName = $moduleName[1] ?? null;
+        } else {
+            throw new Exception('Module name must be a valid module name');
+        }
+
+        if (! empty($data['deleted_images'])) {
+            if (! is_array($data['deleted_images'])) {
+                throw new Exception('deleted_images must be an array');
+            }
+            $deletedImages = $model->$imagesRelation()->whereIn('id', $data['deleted_images'])->get();
+            $deletedImages->each(function ($delImage) {
+                $delImage->deleteFile();
+                $delImage->delete();
+            });
+        }
+
+        if (! empty($data['images'])) {
+            if (! is_array($data['images'])) {
+                throw new Exception('images must be an array');
+            }
+            //            dd($data);
+            foreach ($data['images'] as $image) {
+                resolve(FileUploadService::class)->upload(
+                    file: $image,
+                    module: $moduleName,
+                    model: $model,
+                    disk: 'public',
+                    customDir: $this->customDir
+                );
+            }
+        }
     }
 }

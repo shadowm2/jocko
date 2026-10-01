@@ -10,6 +10,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "ext-curl": "*",
+        "ext-fileinfo": "*",
         "laravel/chisel": "^0.1.0",
         "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.17",
@@ -21,6 +23,7 @@
         "livewire/livewire": "^4.1",
         "morilog/jalali": "^3.5",
         "nwidart/laravel-modules": "^13.0",
+        "predis/predis": "^3.6",
         "spatie/laravel-data": "^4.23",
         "spatie/laravel-permission": "^8.3"
     },

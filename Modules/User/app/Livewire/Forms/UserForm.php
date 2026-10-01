@@ -15,7 +15,7 @@ class UserForm extends Form
 
     public string $last_name;
 
-    public string $email;
+    public ?string $email;
 
     public ?string $mobile;
 
@@ -31,8 +31,8 @@ class UserForm extends Form
         return [
             'first_name' => ['required', 'string'],
             'last_name' => ['required', 'string'],
-            'email' => ['required', 'email', 'unique:Modules\User\Models\User,email'.($this->user ? (','.$this->user->id) : '')],
-            'mobile' => ['nullable', 'string'],
+            'email' => ['nullable', 'email', 'unique:Modules\User\Models\User,email'.($this->user ? (','.$this->user->id) : '')],
+            'mobile' => ['nullable', 'string', 'unique:Modules\User\Models\User,mobile'.($this->user ? (','.$this->user->id) : '')],
             'password' => ['nullable', 'confirmed'],
         ];
     }
@@ -46,7 +46,7 @@ class UserForm extends Form
         $this->mobile = $user->mobile;
     }
 
-    public function save(): User
+    public function save(): void
     {
         $userService = resolve(UserService::class);
         $data = $this->validate();
@@ -55,7 +55,6 @@ class UserForm extends Form
             // Update
             $userService->update($this->user, $data);
 
-            return $this->user;
         } else {
             // Create
             $data = [
@@ -63,7 +62,7 @@ class UserForm extends Form
                 'type' => UserType::Customer->value,
             ];
 
-            return $userService->create($data);
+            $userService->create($data);
         }
     }
 }

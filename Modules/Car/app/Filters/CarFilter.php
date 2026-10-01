@@ -6,9 +6,7 @@ use App\Filters\BaseFilter;
 
 class CarFilter extends BaseFilter
 {
-    public function __construct(
-        private readonly array $filters
-    ) {}
+
 
     protected function filter(): void
     {

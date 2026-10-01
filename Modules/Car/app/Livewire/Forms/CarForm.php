@@ -2,27 +2,39 @@
 
 namespace Modules\Car\Livewire\Forms;
 
-use Livewire\Form;
 use Modules\Car\Models\Car;
 use Modules\Car\Services\CarService;
+use Modules\Dashboard\Livewire\Forms\ImageForm;
 
-class CarForm extends Form
+class CarForm extends ImageForm
 {
     public ?int $id = null;
+
+    public ?Car $car = null;
 
     public string $name;
 
     public string $car_company;
 
-    /** @var array<mixed, string> */
-    protected array $rules = [
-        'name' => 'required',
-        'car_company' => 'required|string|exists:Modules\Car\Models\CarCompany,slug',
-    ];
+    public array $new_images = [];
+
+    /** @return array<mixed, string> */
+    public function rules(): array
+    {
+        return [
+            'name' => 'required',
+            'car_company' => 'required|string|exists:Modules\Car\Models\CarCompany,slug',
+            ...$this->getImageRules($this->car?->images),
+        ];
+    }
 
     public function save(): void
     {
-        $data = $this->validate();
+        try {
+            $data = $this->validate();
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
 
         $carService = resolve(CarService::class);
 
@@ -35,8 +47,10 @@ class CarForm extends Form
 
     public function setCar(Car $car): void
     {
+        $this->car = $car;
         $this->id = $car->id;
         $this->name = $car->name;
         $this->car_company = $car->company->slug;
+        $this->setPreviousImages($car->images);
     }
 }

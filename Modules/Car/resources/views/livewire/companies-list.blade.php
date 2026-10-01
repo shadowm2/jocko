@@ -7,7 +7,7 @@
         <x-slot name="action">
             <flux:button
                 icon:trailing="plus"
-                :href="route('companies.add')"
+                :href="route('companies.create')"
                 variant="primary"
             >
                 {{ __('car::strings.Add Car Company') }}

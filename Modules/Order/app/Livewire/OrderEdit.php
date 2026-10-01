@@ -3,7 +3,6 @@
 namespace Modules\Order\app\Livewire;
 
 use Flux\Flux;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Order\app\Livewire\Forms\OrderForm;
@@ -27,13 +26,13 @@ class OrderEdit extends Component
         $this->form->save();
 
         Flux::toast(__('order::messages.Order Updated Successfully'), variant: 'success');
+        $this->redirectRoute('orders.index', navigate: true);
     }
 
     public function render(
         UserCarService $userCarService,
         UserService $userService
     ): View {
-        Log::info($this->form->user_id);
         $users = $userService->getUsers(paginate: false);
         $userCars = $userCarService->getUserCars($this->form->user_id);
 

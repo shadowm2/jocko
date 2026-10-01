@@ -29,6 +29,8 @@ interface BaseRepositoryInterface
 
     public function findBy(int|string $val, string $col): ?Model;
 
+    public function findByKey(mixed $val): ?Model;
+
     /**
      * @param  array<string>  $columns
      */
@@ -69,4 +71,6 @@ interface BaseRepositoryInterface
      * @return BaseRepository<TModel>
      */
     public function orderBy(string $column = 'id', SortDirection $direction = SortDirection::Ascending): BaseRepository;
+
+    public function exclude(int|array $ids = []): BaseRepository;
 }

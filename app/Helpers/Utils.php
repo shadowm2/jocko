@@ -113,4 +113,15 @@ class Utils
         return preg_replace('/-\d+/', '', $slug);
 
     }
+
+    public static function formatQuantity(float|int|string|null $value, int $decimals = 3): string
+    {
+        if (is_null($value)) {
+            return '-';
+        }
+
+        return number_format((float) $value, $decimals, '.', '')
+                |> (fn ($x) => rtrim($x, '0'))
+                |> (fn ($x) => rtrim($x, '.'));
+    }
 }

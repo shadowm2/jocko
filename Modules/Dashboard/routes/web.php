@@ -1,10 +1,53 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Dashboard\Livewire\CategoryCreate;
+use Modules\Dashboard\Livewire\CategoryEdit;
+use Modules\Dashboard\Livewire\CategoryList;
+use Modules\Dashboard\Livewire\CityCreate;
+use Modules\Dashboard\Livewire\CityEdit;
+use Modules\Dashboard\Livewire\CityList;
+use Modules\Dashboard\Livewire\CountryCreate;
+use Modules\Dashboard\Livewire\CountryEdit;
+use Modules\Dashboard\Livewire\CountryList;
+use Modules\Dashboard\Livewire\ProvinceCreate;
+use Modules\Dashboard\Livewire\ProvinceEdit;
+use Modules\Dashboard\Livewire\ProvinceList;
 
 Route::middleware(['auth', 'verified'])
     ->group(function () {
         Route::view('/dashboard', 'dashboard::dashboard')->name('dashboard');
+        Route::prefix('/countries')
+            ->as('countries.')
+            ->group(function () {
+                Route::livewire('/list', CountryList::class)->name('index');
+                Route::livewire('/new', CountryCreate::class)->name('create');
+                Route::livewire('/{country}/edit', CountryEdit::class)->name('update');
+            });
+
+        Route::prefix('/provinces')
+            ->as('provinces.')
+            ->group(function () {
+                Route::livewire('/list', ProvinceList::class)->name('index');
+                Route::livewire('/new', ProvinceCreate::class)->name('create');
+                Route::livewire('/{province}/edit', ProvinceEdit::class)->name('update');
+            });
+
+        Route::prefix('/cities')
+            ->as('cities.')
+            ->group(function () {
+                Route::livewire('/list', CityList::class)->name('index');
+                Route::livewire('/new', CityCreate::class)->name('create');
+                Route::livewire('/{city}/edit', CityEdit::class)->name('update');
+            });
+
+        Route::prefix('/categories')
+            ->as('categories.')
+            ->group(function () {
+                Route::livewire('/list', CategoryList::class)->name('index');
+                Route::livewire('/new', CategoryCreate::class)->name('create');
+                Route::livewire('/{category}/edit', CategoryEdit::class)->name('update');
+            });
     });
 
 Route::get('/401', fn () => view('errors.401'));

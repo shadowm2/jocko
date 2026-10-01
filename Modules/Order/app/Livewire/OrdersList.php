@@ -4,10 +4,13 @@ namespace Modules\Order\app\Livewire;
 
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Modules\Order\Services\OrderService;
 
 class OrdersList extends Component
 {
+    use WithPagination;
+
     public function render(OrderService $orderService): View
     {
         $columns = [

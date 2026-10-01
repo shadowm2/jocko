@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
+import { defineConfig } from "vite";
+import laravel from "laravel-vite-plugin";
 // Uncomment the import for your frontend framework:
 // import vue from '@vitejs/plugin-vue';
 // import react from '@vitejs/plugin-react';
@@ -7,17 +7,17 @@ import laravel from 'laravel-vite-plugin';
 
 export default defineConfig({
     build: {
-        outDir: '../../public/build-dashboard',
+        outDir: "../../public/build-dashboard",
         emptyOutDir: true,
         manifest: true,
     },
     plugins: [
         laravel({
-            publicDirectory: '../../public',
-            buildDirectory: 'build-dashboard',
+            publicDirectory: "../../public",
+            buildDirectory: "build-dashboard",
             input: [
-                __dirname + '/resources/assets/sass/app.scss',
-                __dirname + '/resources/assets/js/app.js'
+                __dirname + "/resources/assets/sass/app.scss",
+                __dirname + "/resources/assets/js/app.js",
             ],
             refresh: true,
         }),
@@ -35,7 +35,7 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            '@': __dirname + '/resources/js',
+            "@": __dirname + "/resources/assets/js",
         },
     },
 });

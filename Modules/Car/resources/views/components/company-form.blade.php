@@ -2,18 +2,9 @@
     class="space-y-8"
     wire:submit="save"
 >
-    <flux:field>
-        <flux:label>
-            {{ __('car::attributes.Car Company Name') }}
-        </flux:label>
-
-        <flux:input
-            :placeholder="__('car::strings.Enter Car Company Name')"
-            wire:model.live="form.name"
-        />
-
-        <flux:error name="form.name" />
-    </flux:field>
+    <flux:card class="space-y-4">
+        <x-car::company-fields />
+    </flux:card>
 
     <div class="flex justify-start gap-3">
         <flux:button

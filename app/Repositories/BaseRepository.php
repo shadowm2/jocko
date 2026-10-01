@@ -71,8 +71,15 @@ abstract class BaseRepository implements BaseRepositoryInterface
             ->findOrFail($id, $columns);
     }
 
-    public function findBy(int|string $val, string $col): Model
+    public function findBy(int|string $val, string $col): ?Model
     {
+        return $this->query()->where($col, $val)->first();
+    }
+
+    public function findByKey(mixed $val): ?Model
+    {
+        $col = $this->model->getRouteKeyName();
+
         return $this->query()->where($col, $val)->first();
     }
 
@@ -113,10 +120,30 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * @return BaseRepository<TModel>
      */
-    public function orderBy(string $column = 'id', SortDirection $direction = SortDirection::Ascending): BaseRepository
+    public function orderBy(string|Builder $column = 'id', SortDirection $direction = SortDirection::Ascending): BaseRepository
     {
-        $this->query()->orderBy($column, $direction);
+        if ($column instanceof Builder) {
+            $this->query()->orderBy($column, $direction);
+        } else {
+            $this->query()->orderBy($column, $direction);
+        }
 
         return $this;
+    }
+
+    public function exclude(int|array $ids = []): BaseRepository
+    {
+        if (is_numeric($ids)) {
+            $ids = [$ids];
+        }
+
+        $this->query()->whereNotIn('id', $ids);
+
+        return $this;
+    }
+
+    public function getModel()
+    {
+        return $this->model;
     }
 }

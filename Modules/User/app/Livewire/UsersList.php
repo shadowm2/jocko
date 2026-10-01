@@ -5,10 +5,13 @@ namespace Modules\User\Livewire;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Modules\User\Services\UserService;
 
 class UsersList extends Component
 {
+    use WithPagination;
+
     public function onEditClick()
     {
         Flux::toast(

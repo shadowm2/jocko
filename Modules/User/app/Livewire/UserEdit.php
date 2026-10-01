@@ -24,12 +24,12 @@ class UserEdit extends Component
     {
         $this->form->save();
         Flux::toast(__('user::messages.User updated successfully'), variant: 'success');
-        $this->redirectRoute('users.list', navigate: true);
+        $this->redirectRoute('users.index', navigate: true);
     }
 
     public function render(UserService $userService): View
     {
-        return view('user::livewire.user-edit', [])
+        return view('user::livewire.users-edit', [])
             ->layout('dashboard::layouts.app')
             ->layoutData([
                 'title' => __('user::strings.Users'),

@@ -20,7 +20,7 @@ class UserCarsSeeder extends Seeder
         $users = User::all();
         $cars->each(function ($car) use ($users, $faker) {
             $users->each(function ($user) use ($car, $faker) {
-                if ($faker->boolean()) {
+                if ($faker->boolean(99)) {
                     return;
                 }
                 $slug = Utils::generateUniqueSlug($user->first_name.' '.$user->last_name.'-car', UserCar::class);

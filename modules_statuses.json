@@ -3,5 +3,6 @@
     "Auth": true,
     "Dashboard": true,
     "Car": true,
-    "Order": true
+    "Order": true,
+    "Inventory": true
 }

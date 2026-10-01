@@ -7,7 +7,7 @@
         <x-slot name="action">
             <flux:button
                 icon:trailing="plus"
-                :href="route('colors.add')"
+                :href="route('colors.create')"
                 variant="primary"
             >
                 {{ __('car::strings.Add Color') }}

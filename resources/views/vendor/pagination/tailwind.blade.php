@@ -129,7 +129,9 @@
                                     <span aria-current="page">
                                         <span
                                             class="inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 cursor-default leading-5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        >{{ $page }}</span>
+                                        >
+                                            {{ app()->getLocale() === 'fa' ? \App\Helpers\Utils::pDigits($page) : $page }}
+                                        </span>
                                     </span>
                                 @else
                                     <a
@@ -137,7 +139,7 @@
                                         class="inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-700 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:text-gray-300 dark:active:bg-gray-700 dark:focus:border-blue-800 hover:bg-gray-100 dark:hover:bg-gray-900"
                                         aria-label="{{ __('Go to page :page', ['page' => $page]) }}"
                                     >
-                                        {{ $page }}
+                                        {{ app()->getLocale() === 'fa' ? \App\Helpers\Utils::pDigits($page) : $page }}
                                     </a>
                                 @endif
                             @endforeach
