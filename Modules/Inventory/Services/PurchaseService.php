@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Modules\Inventory\Enums\PurchaseStatus;
 use Modules\Inventory\Models\Purchase;
+use Modules\Inventory\Models\PurchaseItem;
 use Modules\Inventory\Repositories\PurchaseRepository;
 
 /**
@@ -43,7 +44,8 @@ class PurchaseService extends BaseService
         $data['supplier_id'] = $supplier->id;
         $slug = $data['warehouse'].' '.$supplier->user->fullName();
         $data['slug'] ??= Utils::generateUniqueSlug($slug, Purchase::class);
-        $data['status'] = PurchaseStatus::getDefault();
+        // Never store a display-only status such as NEW.
+        $data['status'] = $this->persistableStatus($data['status'] ?? null);
 
         $items = $data['items'] ?? [];
         unset($data['items']);
@@ -67,6 +69,10 @@ class PurchaseService extends BaseService
         $items = $data['items'] ?? null;
         unset($data['items']);
 
+        if (array_key_exists('status', $data)) {
+            $data['status'] = $this->persistableStatus($data['status']);
+        }
+
         return DB::transaction(function () use ($model, $data, $items) {
             $updated = parent::update($model, $data);
 
@@ -79,21 +85,23 @@ class PurchaseService extends BaseService
     }
 
     /**
-     * Replace a purchase's line items with the given set.
+     * Reconcile a purchase's line items with the given lines.
      *
-     * Accepts warehouse item slugs (what the picker binds) and resolves
-     * each to its underlying item. Existing lines are soft deleted so the
-     * previous quantities stay recoverable.
+     * Each entry is keyed by warehouse item slug and carries its own
+     * quantity and pricing. Lines that stay selected have their values
+     * updated in place, lines dropped from the selection are soft
+     * deleted, and a line re-selected after removal is restored rather
+     * than duplicated.
      *
-     * @param  array<int, string>  $slugs
+     * @param  array<string, array<string, mixed>>  $lines
      */
-    protected function syncItems(Purchase $purchase, array $slugs): void
+    protected function syncItems(Purchase $purchase, array $lines): void
     {
-        $purchase->items()->delete();
-
-        $slugs = array_values(array_unique(array_filter($slugs)));
+        $slugs = array_values(array_filter(array_keys($lines)));
 
         if (empty($slugs)) {
+            $purchase->items()->delete();
+
             return;
         }
 
@@ -102,21 +110,100 @@ class PurchaseService extends BaseService
             ->keyBy('slug');
 
         foreach ($slugs as $slug) {
-            $warehouseItem = $warehouseItems->get($slug);
-
-            if (! $warehouseItem) {
+            if (! $warehouseItems->has($slug)) {
                 throw new Exception("Warehouse item [{$slug}] not found.");
+            }
+        }
+
+        $itemIds = $warehouseItems->pluck('item_id')->unique()->values()->all();
+
+        $this->restoreItems($purchase, $itemIds);
+
+        $purchase->items()
+            ->whereNotIn('item_id', $itemIds)
+            ->delete();
+
+        $existing = $purchase->items()->get()->keyBy('item_id');
+
+        foreach ($warehouseItems as $slug => $warehouseItem) {
+            $values = $this->lineValues($lines[$slug] ?? []);
+
+            $existingLine = $existing->get($warehouseItem->item_id);
+
+            if ($existingLine) {
+                $existingLine->update($values);
+
+                continue;
             }
 
             $purchase->items()->create([
+                'slug' => Utils::generateUniqueSlug(
+                    'pi '.$purchase->slug.' '.$warehouseItem->slug,
+                    PurchaseItem::class
+                ),
                 'item_id' => $warehouseItem->item_id,
-                'quantity' => 1,
-                'unit_price' => 0,
-                'discount' => 0,
-                'tax' => 0,
-                'total' => 0,
+                ...$values,
             ]);
         }
+    }
+
+    /**
+     * Resolve an incoming status to one that is safe to store, rejecting
+     * display-only states like NEW.
+     */
+    protected function persistableStatus(mixed $status): PurchaseStatus
+    {
+        if ($status instanceof PurchaseStatus) {
+            return $status->isDisplayOnly() ? PurchaseStatus::getDefault() : $status;
+        }
+
+        if (is_string($status)) {
+            return PurchaseStatus::tryFromStored($status);
+        }
+
+        return PurchaseStatus::getDefault();
+    }
+
+    /**
+     * @param  array<string, mixed>  $line
+     * @return array<string, float>
+     */
+    protected function lineValues(array $line): array
+    {
+        $quantity = (float) ($line['quantity'] ?? 1);
+        $unitPrice = (float) ($line['unit_price'] ?? 0);
+        $discount = (float) ($line['discount'] ?? 0);
+        $tax = (float) ($line['tax'] ?? 0);
+
+        return [
+            'quantity' => $quantity,
+            'received_quantity' => 0,
+            'unit_price' => $unitPrice,
+            'discount' => $discount,
+            'tax' => $tax,
+            // Total is derived from quantity x unit price.
+            'total' => round($quantity * $unitPrice, 2),
+        ];
+    }
+
+    /**
+     * Bring back lines that were previously removed from this purchase
+     * but are selected again, so editing the picker does not accumulate
+     * duplicate rows for the same item.
+     *
+     * @param  array<int, int>  $itemIds
+     */
+    protected function restoreItems(Purchase $purchase, array $itemIds): void
+    {
+        if (empty($itemIds)) {
+            return;
+        }
+
+        PurchaseItem::onlyTrashed()
+            ->where('purchase_id', $purchase->id)
+            ->whereIn('item_id', $itemIds)
+            ->get()
+            ->each->restore();
     }
 
     protected function interpretData(array $data): array

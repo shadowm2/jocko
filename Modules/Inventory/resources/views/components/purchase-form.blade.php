@@ -7,6 +7,7 @@
         <x-inventory::purchase-fields
             :$warehouses
             :$suppliers
+            :$itemCatalog
         />
     </flux:card>
 

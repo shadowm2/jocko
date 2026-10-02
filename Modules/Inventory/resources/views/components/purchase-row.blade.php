@@ -23,7 +23,9 @@
         {{ $row->order_number }}
     </x-table.cell>
     <x-table.cell>
-        {{ __("inventory::strings.purchase_types.{$row->status->value}") }}
+        <flux:badge :color="$row->status->color()">
+            {{ $row->status->label() }}
+        </flux:badge>
     </x-table.cell>
     <x-table.cell>
         {{ Utils::pDigits($row->ordered_at_jalali?->format('Y/m/d')) }}

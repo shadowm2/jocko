@@ -93,6 +93,7 @@ return [
     'Select Purchase Expected At' => 'تاریخ تحویل مورد انتظار را انتخاب کنید',
     'Select Purchase Received At' => 'تاریخ تحویل را انتخاب کنید',
     'purchase_types' => [
+        'new' => 'جدید',
         'draft' => 'پیش نویس',
         'ordered' => 'تایید شده',
         'partially_received' => 'بخشی دریافت شده',
@@ -101,5 +102,9 @@ return [
     ],
     'Search' => 'جستجو',
     'Clear Selection' => 'پاک کردن انتخاب',
+    'Remove' => 'حذف',
+    'Purchase Items' => 'اقلام خرید',
+    'Purchase Not Saved Yet' => 'این سفارش هنوز ذخیره نشده است.',
+    'In Stock' => 'موجودی',
     'No items found.' => 'کالایی یافت نشد.',
 ];

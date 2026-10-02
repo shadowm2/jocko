@@ -118,14 +118,18 @@ class Utils
 
     }
 
-    public static function formatQuantity(float|int|string|null $value, int $decimals = 3): string
+    public static function formatQuantity(float|int|string|null $value, int $decimals = 3, $thousandsSeparator = '/'): string
     {
         if (is_null($value)) {
             return '-';
         }
 
-        return number_format((float) $value, $decimals, '.', '')
+        /** @var string $formatted */
+        $formatted = number_format((float) $value, $decimals, '.', $thousandsSeparator)
                 |> (fn ($x) => rtrim($x, '0'))
-                |> (fn ($x) => rtrim($x, '.'));
+                |> (fn ($x) => rtrim($x, '.'))
+                |> self::pDigits(...);
+
+        return $formatted;
     }
 }
