@@ -28,14 +28,10 @@ class AppServiceProvider extends ServiceProvider
 
         Blueprint::macro('slug', function (
             string $column = 'slug',
-            int $length = 255,
-            bool $hasSoftDelete = true
+            int $length = 255
         ) {
             /** @var Blueprint $this */
             $this->string($column, $length);
-            if ($hasSoftDelete) {
-                $this->unique($column, 'deleted_at');
-            }
 
             return $this;
         });

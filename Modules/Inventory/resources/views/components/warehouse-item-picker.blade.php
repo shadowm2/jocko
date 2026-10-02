@@ -24,6 +24,15 @@
                 this.rebuildIndex();
                 this.pruneSelection();
             });
+
+            // Entangling the value keeps this component's own state in sync,
+            // but does not reliably reach the parent's form property. Emit an
+            // explicit event so the parent can re-render its line editor.
+            this.$watch('selected', (value) => {
+                this.$dispatch('warehouse-items-selected', {
+                    slugs: Array.isArray(value) ? value : [],
+                });
+            });
         },
 
         rebuildIndex() {
@@ -79,9 +88,16 @@
                 : [...this.selected, slug];
         },
 
+        removeItem(slug) {
+            if (!Array.isArray(this.selected)) {
+                return;
+            }
+
+            this.selected = this.selected.filter(s => s !== slug);
+        },
+
         clearSelection() {
             this.selected = [];
-            this.open = false;
         },
 
         get filteredItems() {
@@ -114,55 +130,72 @@
         </flux:label>
 
         {{-- Trigger --}}
-        <button
-            type="button"
-            @click="open = !open"
-            class="flex w-full items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm shadow-xs transition hover:bg-zinc-50 dark:border-white/10 dark:bg-white/10 dark:hover:bg-white/15"
+        <div
+            class="flex w-full flex-wrap items-center gap-1 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-sm shadow-xs transition dark:border-white/10 dark:bg-white/10"
         >
-            <span
-                class="flex min-w-0 flex-1 flex-wrap items-center gap-1"
+            {{-- Selected items, each removable without opening the dropdown --}}
+            <template
+                x-for="item in selectedItems"
+                :key="item.slug"
+            >
+                <span
+                    class="inline-flex max-w-full items-center gap-1 rounded-md bg-zinc-100 px-2 py-0.5 text-xs text-zinc-900 dark:bg-white/10 dark:text-white"
+                >
+                    <span
+                        class="truncate"
+                        x-text="item.item.name"
+                    ></span>
+
+                    <span class="text-zinc-400">
+                        (<span x-text="item.quantity"></span>)
+                    </span>
+
+                    <button
+                        type="button"
+                        @click.stop.prevent="removeItem(item.slug)"
+                        class="-me-1 shrink-0 rounded-full p-0.5 text-zinc-400 transition hover:bg-zinc-300/60 hover:text-zinc-700 dark:hover:bg-white/20 dark:hover:text-zinc-100"
+                        :aria-label="@js(__('inventory::strings.Remove')) + ' ' + item.item.name"
+                    >
+                        <flux:icon.x-mark class="size-3" />
+                    </button>
+                </span>
+            </template>
+
+            {{-- Remaining space toggles the dropdown --}}
+            <button
+                type="button"
+                @click="open = !open"
+                class="flex min-h-7 min-w-0 flex-1 items-center justify-between gap-2 rounded-md px-1 text-start"
                 :class="selectedItems.length
                     ?
                     'text-zinc-900 dark:text-white' :
                     'text-zinc-400'"
             >
-                <span x-show="selectedItems.length === 0">
+                <span
+                    class="truncate"
+                    x-show="selectedItems.length === 0"
+                    x-cloak
+                >
                     {{ $placeholder }}
                 </span>
 
-                <template
-                    x-for="item in selectedItems"
-                    :key="item.slug"
-                >
+                <span class="ms-auto flex shrink-0 items-center gap-1">
                     <span
-                        class="inline-flex max-w-full items-center gap-1 rounded-md bg-zinc-100 px-2 py-0.5 text-xs dark:bg-white/10"
+                        x-show="selectedItems.length > 0"
+                        x-cloak
+                        @click.stop.prevent="clearSelection()"
+                        class="rounded-full p-0.5 text-zinc-400 transition hover:bg-zinc-200 hover:text-zinc-600 dark:hover:bg-white/10 dark:hover:text-zinc-100"
                     >
-                        <span
-                            class="truncate"
-                            x-text="item.item.name"
-                        ></span>
-
-                        <span class="text-zinc-400">
-                            (<span x-text="item.quantity"></span>)
-                        </span>
+                        <flux:icon.x-mark class="size-4" />
                     </span>
-                </template>
-            </span>
 
-            <span
-                x-show="selectedItems.length > 0"
-                x-cloak
-                @click.stop="clearSelection()"
-                class="shrink-0 text-zinc-400 transition hover:text-zinc-600 dark:hover:text-zinc-200"
-            >
-                <flux:icon.x-mark class="size-4" />
-            </span>
-
-            <flux:icon.chevron-down
-                class="size-4 shrink-0 text-zinc-400 transition"
-                ::class="{ 'rotate-180': open }"
-            />
-        </button>
+                    <flux:icon.chevron-down
+                        class="size-4 text-zinc-400 transition"
+                        ::class="{ 'rotate-180': open }"
+                    />
+                </span>
+            </button>
+        </div>
 
         {{-- Dropdown --}}
         <div
@@ -185,9 +218,9 @@
             <div class="max-h-72 overflow-y-auto p-1">
                 <button
                     type="button"
-                    x-show="selectedItems.length > 0"
                     @click="clearSelection()"
-                    class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-zinc-100 dark:hover:bg-white/10"
+                    :disabled="selectedItems.length === 0"
+                    class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm disabled:cursor-not-allowed disabled:opacity-50 hover:enabled:bg-zinc-100 dark:hover:enabled:bg-white/10"
                 >
                     <flux:icon.x-mark class="size-4 text-zinc-400" />
 

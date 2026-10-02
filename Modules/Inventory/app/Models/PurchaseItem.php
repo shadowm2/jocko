@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Inventory\Database\Factories\PurchaseItemFactory;
 
 /**
+ * @property string $slug
  * @property int $purchase_id
  * @property int $item_id
  * @property float $quantity
@@ -18,7 +19,7 @@ use Modules\Inventory\Database\Factories\PurchaseItemFactory;
  * @property float $tax
  * @property float $total
  */
-#[Fillable(['purchase_id', 'item_id', 'quantity', 'received_quantity', 'unit_price', 'discount', 'tax', 'total'])]
+#[Fillable(['slug', 'purchase_id', 'item_id', 'quantity', 'received_quantity', 'unit_price', 'discount', 'tax', 'total'])]
 class PurchaseItem extends BaseModel
 {
     use HasFactory;
@@ -26,14 +27,6 @@ class PurchaseItem extends BaseModel
     protected static function newFactory(): PurchaseItemFactory
     {
         return PurchaseItemFactory::new();
-    }
-
-    /**
-     * purchase_items has no slug column, so key lookups by id.
-     */
-    public function getRouteKeyName(): string
-    {
-        return 'id';
     }
 
     public function purchase(): BelongsTo

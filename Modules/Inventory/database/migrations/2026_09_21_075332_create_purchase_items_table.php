@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('purchase_items', function (Blueprint $table) {
             $table->id();
 
+            $table->slug();
+
             $table->foreignId('purchase_id')
                 ->constrained()
                 ->cascadeOnDelete();
@@ -22,14 +24,14 @@ return new class extends Migration
                 ->constrained()
                 ->restrictOnDelete();
 
-            $table->decimal('quantity', 15, 4);
-            $table->decimal('received_quantity', 15, 4)->default(0);
+            $table->decimal('quantity', 18, 4);
+            $table->decimal('received_quantity', 18, 4)->default(0);
 
-            $table->decimal('unit_price', 15, 2);
+            $table->decimal('unit_price', 18, 4);
 
-            $table->decimal('discount', 15, 2)->default(0);
-            $table->decimal('tax', 15, 2)->default(0);
-            $table->decimal('total', 15, 2);
+            $table->decimal('discount', 18, 4)->default(0);
+            $table->decimal('tax', 18, 4)->default(0);
+            $table->decimal('total', 18, 4);
 
             $table->timestamps();
             $table->softDeletes();
