@@ -1,10 +1,12 @@
 @props([
     'model' => null,
     'placeholder' => null,
+    'showWarehousePicker' => false,
 ])
 
 @php
     $model = $model ?? $attributes->wire('model')->value();
+
     $placeholder = $placeholder ?? __('inventory::strings.Select Warehouse Item');
 @endphp
 
@@ -16,14 +18,17 @@
         items: @entangle('items'),
         itemIndex: {},
 
+
         init() {
             this.rebuildIndex();
             this.pruneSelection();
+
 
             this.$watch('items', () => {
                 this.rebuildIndex();
                 this.pruneSelection();
             });
+
 
             // Entangling the value keeps this component's own state in sync,
             // but does not reliably reach the parent's form property. Emit an
@@ -35,11 +40,13 @@
             });
         },
 
+
         rebuildIndex() {
             this.itemIndex = Object.fromEntries(
                 this.items.map(item => [item.slug, item])
             );
         },
+
 
         /**
          * Drop selected slugs that no longer exist in the loaded
@@ -57,57 +64,69 @@
                 return;
             }
 
+
             const pruned = this.selected.filter(slug => slug in this.itemIndex);
+
 
             if (pruned.length !== this.selected.length) {
                 this.selected = pruned;
             }
         },
 
+
         get selectedItems() {
             if (!Array.isArray(this.selected)) {
                 return [];
             }
+
 
             return this.selected
                 .map(slug => this.itemIndex[slug] ?? null)
                 .filter(Boolean);
         },
 
+
         isSelected(slug) {
             return Array.isArray(this.selected) && this.selected.includes(slug);
         },
+
 
         toggleItem(slug) {
             if (!Array.isArray(this.selected)) {
                 this.selected = [];
             }
 
-            this.selected = this.isSelected(slug)
-                ? this.selected.filter(s => s !== slug)
-                : [...this.selected, slug];
+
+            this.selected = this.isSelected(slug) ?
+                this.selected.filter(s => s !== slug) : [...this.selected, slug];
         },
+
 
         removeItem(slug) {
             if (!Array.isArray(this.selected)) {
                 return;
             }
 
+
             this.selected = this.selected.filter(s => s !== slug);
         },
+
 
         clearSelection() {
             this.selected = [];
         },
+
 
         get filteredItems() {
             const search = this.search
                 .toLowerCase()
                 .replaceAll(' ', '');
 
+
             if (!search) {
                 return this.items;
             }
+
 
             return this.items.filter(item =>
                 item.item.name
@@ -117,93 +136,108 @@
             );
         },
 
+
         close() {
             this.open = false;
         },
     }"
-    @click.outside="close()"
-    class="relative"
+    class="relative space-y-4"
 >
+    @if ($showWarehousePicker)
+        <flux:field>
+            <flux:label>{{ __('inventory::attributes.Purchase Warehouse') }}</flux:label>
+            <flux:select
+                wire:model.live="selectedWarehouse"
+                :placeholder="__('inventory::strings.Select Warehouse')"
+            >
+                @foreach ($warehouses as $availableWarehouse)
+                    <flux:select.option value="{{ $availableWarehouse['slug'] }}">
+                        {{ $availableWarehouse['name'] }}
+                    </flux:select.option>
+                @endforeach
+            </flux:select>
+            {{ $slots->get('warehouse-error') }}
+        </flux:field>
+    @endif
+
+    @unless ($showWarehousePicker)
+        <div class="flex items-baseline gap-2 text-sm">
+            <span class="text-zinc-500">{{ __('inventory::attributes.Purchase Warehouse') }}:</span>
+            <span class="font-medium text-zinc-900 dark:text-white">{{ $warehouseName }}</span>
+        </div>
+    @endunless
+
+    <div
+        class="relative"
+        @click.outside="close()"
+    >
     <flux:field>
         <flux:label>
             {{ $attributes->get('label') ?? __('inventory::attributes.Warehouse Item') }}
         </flux:label>
 
         {{-- Trigger --}}
-        <div
-            class="flex w-full flex-wrap items-center gap-1 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-sm shadow-xs transition dark:border-white/10 dark:bg-white/10"
-        >
-            {{-- Selected items, each removable without opening the dropdown --}}
-            <template
-                x-for="item in selectedItems"
-                :key="item.slug"
-            >
-                <span
-                    class="inline-flex max-w-full items-center gap-1 rounded-md bg-zinc-100 px-2 py-0.5 text-xs text-zinc-900 dark:bg-white/10 dark:text-white"
+            <div
+                class="flex w-full flex-wrap items-center gap-1 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-sm shadow-xs transition dark:border-white/10 dark:bg-white/10">
+                {{-- Selected items, each removable without opening the dropdown --}}
+                <template
+                    x-for="item in selectedItems"
+                    :key="item.slug"
                 >
                     <span
-                        class="truncate"
-                        x-text="item.item.name"
-                    ></span>
-
-                    <span class="text-zinc-400">
-                        (<span x-text="item.quantity"></span>)
-                    </span>
-
-                    <button
-                        type="button"
-                        @click.stop.prevent="removeItem(item.slug)"
-                        class="-me-1 shrink-0 rounded-full p-0.5 text-zinc-400 transition hover:bg-zinc-300/60 hover:text-zinc-700 dark:hover:bg-white/20 dark:hover:text-zinc-100"
-                        :aria-label="@js(__('inventory::strings.Remove')) + ' ' + item.item.name"
+                        class="inline-flex max-w-full items-center gap-1 rounded-md bg-zinc-100 px-2 py-0.5 text-xs text-zinc-900 dark:bg-white/10 dark:text-white"
                     >
-                        <flux:icon.x-mark class="size-3" />
-                    </button>
-                </span>
-            </template>
+                        <span class="truncate" x-text="item.item.name"></span>
+                        <span class="text-zinc-400">(<span x-text="$persianDigits(item.quantity)"></span>)</span>
+                        <button
+                            type="button"
+                            @click.stop.prevent="removeItem(item.slug)"
+                            class="-me-1 shrink-0 rounded-full p-0.5 text-zinc-400 transition hover:bg-zinc-300/60 hover:text-zinc-700 dark:hover:bg-white/20 dark:hover:text-zinc-100"
+                            :aria-label="@js(__('inventory::strings.Remove')) + ' ' + item.item.name"
+                        >
+                            <flux:icon.x-mark class="size-3" />
+                        </button>
+                    </span>
+                </template>
 
-            {{-- Remaining space toggles the dropdown --}}
-            <button
-                type="button"
-                @click="open = !open"
-                class="flex min-h-7 min-w-0 flex-1 items-center justify-between gap-2 rounded-md px-1 text-start"
-                :class="selectedItems.length
-                    ?
+                {{-- Remaining space toggles the dropdown --}}
+                <button
+                    type="button"
+                    @click="open = !open"
+                    class="flex min-h-7 min-w-0 flex-1 items-center justify-between gap-2 rounded-md px-1 text-start"
+                :class="selectedItems.length ?
                     'text-zinc-900 dark:text-white' :
                     'text-zinc-400'"
-            >
-                <span
-                    class="truncate"
-                    x-show="selectedItems.length === 0"
-                    x-cloak
                 >
-                    {{ $placeholder }}
-                </span>
-
-                <span class="ms-auto flex shrink-0 items-center gap-1">
-                    <span
-                        x-show="selectedItems.length > 0"
-                        x-cloak
-                        @click.stop.prevent="clearSelection()"
-                        class="rounded-full p-0.5 text-zinc-400 transition hover:bg-zinc-200 hover:text-zinc-600 dark:hover:bg-white/10 dark:hover:text-zinc-100"
-                    >
-                        <flux:icon.x-mark class="size-4" />
+                    <span class="truncate" x-show="selectedItems.length === 0" x-cloak>
+                        {{ $placeholder }}
                     </span>
 
-                    <flux:icon.chevron-down
-                        class="size-4 text-zinc-400 transition"
-                        ::class="{ 'rotate-180': open }"
-                    />
-                </span>
-            </button>
-        </div>
+                    <span class="ms-auto flex shrink-0 items-center gap-1">
+                        <span
+                            x-show="selectedItems.length > 0"
+                            x-cloak
+                            @click.stop.prevent="clearSelection()"
+                            class="rounded-full p-0.5 text-zinc-400 transition hover:bg-zinc-200 hover:text-zinc-600 dark:hover:bg-white/10 dark:hover:text-zinc-100"
+                        >
+                            <flux:icon.x-mark class="size-4" />
+                        </span>
+
+                        <flux:icon.chevron-down
+                            class="size-4 text-zinc-400 transition"
+                            ::class="{ 'rotate-180': open }"
+                        />
+                    </span>
+                </button>
+            </div>
 
         {{-- Dropdown --}}
-        <div
-            x-show="open"
-            x-cloak
-            x-transition.origin.top
-            class="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-white/10 dark:bg-zinc-900"
-        >
+            <div
+                x-show="open"
+                x-cloak
+                x-transition.origin.top
+                class="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-white/10 dark:bg-zinc-900"
+            >
             {{-- Search --}}
             <div class="border-b border-zinc-100 p-2 dark:border-white/10">
                 <flux:input
@@ -243,8 +277,7 @@
                     >
                         <span
                             class="flex size-4 shrink-0 items-center justify-center rounded border"
-                            :class="isSelected(item.slug)
-                                ?
+                            :class="isSelected(item.slug) ?
                                 'border-zinc-900 bg-zinc-900 dark:border-white dark:bg-white' :
                                 'border-zinc-300 dark:border-white/20'"
                         >
@@ -261,7 +294,7 @@
 
                         <span
                             class="ms-auto text-xs text-zinc-400"
-                            x-text="item.quantity"
+                            x-text="$persianDigits(item.quantity)"
                         ></span>
                     </button>
                 </template>
@@ -274,8 +307,8 @@
                     {{ __('inventory::strings.No items found.') }}
                 </div>
             </div>
-        </div>
 
         <flux:error :name="$model" />
     </flux:field>
+    </div>
 </div>

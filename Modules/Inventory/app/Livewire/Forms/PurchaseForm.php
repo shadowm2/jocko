@@ -80,18 +80,55 @@ class PurchaseForm extends Form
                 'total' => 0,
             ], $this->items[$slug] ?? []);
 
-            $line['quantity'] = (float) $line['quantity'];
-            $line['unit_price'] = (float) $line['unit_price'];
-            $line['discount'] = (float) $line['discount'];
-            $line['tax'] = (float) $line['tax'];
-
+            // Preserve raw input while editing so empty or partial values do
+            // not get coerced to zero during picker-driven re-renders.
             // Total is always derived, never taken from the request.
-            $line['total'] = round($line['quantity'] * $line['unit_price'], 2);
+            $line['total'] = round(
+                $this->numericInputValue($line['quantity']) * $this->numericInputValue($line['unit_price']),
+                2,
+            );
 
             $lines[$slug] = $line;
         }
 
         $this->items = $lines;
+    }
+
+    public function syncSelectedItems(): void
+    {
+        $this->syncLineValues();
+    }
+
+    public function lineTotal(string $slug): float
+    {
+        $line = $this->items[$slug] ?? [];
+
+        return round(
+            $this->numericInputValue($line['quantity'] ?? 0) * $this->numericInputValue($line['unit_price'] ?? 0),
+            2,
+        );
+    }
+
+    protected function numericInputValue(mixed $value): float
+    {
+        if (is_string($value)) {
+            $value = str_replace(['٫', '٬'], ['.', ''], Utils::eDigits($value));
+        }
+
+        return is_numeric($value) ? (float) $value : 0;
+    }
+
+    protected function normalizeLineInputDigits(): void
+    {
+        foreach ($this->items as &$line) {
+            foreach (['quantity', 'unit_price', 'discount', 'tax'] as $field) {
+                if (is_string($line[$field] ?? null)) {
+                    $line[$field] = str_replace(['٫', '٬'], ['.', ''], Utils::eDigits($line[$field]));
+                }
+            }
+        }
+
+        unset($line);
     }
 
     /**
@@ -152,6 +189,7 @@ class PurchaseForm extends Form
      */
     public function save(): void
     {
+        $this->normalizeLineInputDigits();
         $this->syncLineValues();
 
         $data = $this->validate();
@@ -168,6 +206,32 @@ class PurchaseForm extends Form
         } else {
             $purchaseService->create($data);
         }
+    }
+
+    /** Save only the purchase lines from the list's item editor. */
+    public function saveItems(): void
+    {
+        if (! $this->purchase) {
+            throw new Exception('A saved purchase is required to update its items.');
+        }
+
+        $this->normalizeLineInputDigits();
+        $this->syncLineValues();
+        $rules = $this->getRules();
+        $data = $this->validate([
+            'selected' => $rules['selected'],
+            'selected.*' => $rules['selected.*'],
+            'items' => $rules['items'],
+            'items.*.quantity' => $rules['items.*.quantity'],
+            'items.*.unit_price' => $rules['items.*.unit_price'],
+            'items.*.total' => $rules['items.*.total'],
+        ]);
+
+        resolve(PurchaseService::class)->update($this->purchase->id, [
+            'items' => $data['items'] ?? [],
+        ]);
+
+        $this->purchase->refresh();
     }
 
     /**

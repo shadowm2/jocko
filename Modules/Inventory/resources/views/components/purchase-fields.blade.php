@@ -12,30 +12,17 @@
     />
 </flux:field>
 
-<flux:field>
-    <flux:label>
-        {{ __('inventory::strings.Select Warehouse') }}
-    </flux:label>
-    <flux:select
-        wire:model.live="form.warehouse"
-        :placeholder="__('inventory::strings.Select Warehouse')"
-    >
-        @foreach ($warehouses as $warehouse)
-            <flux:select.option value="{{ $warehouse->slug }}">
-                {{ $warehouse->name }}
-            </flux:select.option>
-        @endforeach
-    </flux:select>
-    <flux:error name="form.warehouse" />
-</flux:field>
-
 <livewire:inventory-warehouse-item-picker
-    :warehouse="$this->form->warehouse"
+    :show-warehouse-picker="true"
     wire:model="form.selected"
     :label="__('inventory::attributes.Warehouse Item')"
     :placeholder="__('inventory::strings.Select Warehouse Item')"
     wire:key="purchase-order-item-picker"
-/>
+>
+    <x-slot:warehouse-error>
+        <flux:error name="form.warehouse" />
+    </x-slot:warehouse-error>
+</livewire:inventory-warehouse-item-picker>
 
 @if (count($itemCatalog))
     <flux:field>
@@ -43,33 +30,7 @@
             {{ __('inventory::strings.Purchase Items') }}
         </flux:label>
 
-        <div
-            class="space-y-0 overflow-hidden rounded-b-lg"
-            x-data="{
-                recalcTotal(slug) {
-                        const quantity = this.$refs['quantity-' + slug];
-                        const unitPrice = this.$refs['unitPrice-' + slug];
-                        const total = this.$refs['total-' + slug];
-
-
-                        if (!quantity || !unitPrice || !total) {
-                            return;
-                        }
-
-
-                        const value =
-                            (parseFloat(quantity.value) || 0) * (parseFloat(unitPrice.value) || 0);
-
-
-                        total.textContent = value ? value.toFixed(2) : '0.00';
-                    },
-                    init() {
-                        Object.keys(this.$refs)
-                            .filter((key) => key.startsWith('quantity-'))
-                            .forEach((key) => this.recalcTotal(key.replace('quantity-', '')));
-                    },
-            }"
-        >
+        <div class="space-y-0 overflow-hidden rounded-b-lg">
             {{-- Column headings sit once above the rows instead of on every row. --}}
             <div
                 class="grid grid-cols-[minmax(0,1fr)_12rem_12rem_14rem] items-center gap-2 rounded-t-lg border border-zinc-200 bg-zinc-50 px-2 py-1 text-xs font-medium text-zinc-500 dark:border-white/10 dark:bg-white/5 dark:text-zinc-400">
@@ -90,6 +51,8 @@
 
                 <div
                     wire:key="purchase-line-{{ $slug }}"
+                    x-data="numericLine"
+                    @localized-digits-input="setValue($event)"
                     @class([
                         'grid grid-cols-[minmax(0,1fr)_12rem_12rem_14rem] items-start gap-x-2 gap-y-0.5 border-x border-b border-zinc-200 px-2 py-1.5 dark:border-white/10',
                         'bg-red-50/70 dark:bg-red-950/20' => $hasError,
@@ -106,62 +69,42 @@
                     </div>
 
                     <div>
-                        <flux:input
+                        <x-dashboard::numeric-input
                             size="sm"
-                            type="number"
-                            step="any"
-                            min="0"
-                            x-ref="quantity-{{ $slug }}"
-                            wire:model="form.items.{{ $slug }}.quantity"
-                            @input="recalcTotal('{{ $slug }}')"
+                            data-numeric-field="quantity"
+                            wire:model.number="form.items.{{ $slug }}.quantity"
+                            :error="$quantityError"
                             :placeholder="__('inventory::attributes.Purchase Quantity')"
-                            :aria-label="__('inventory::attributes.Purchase Quantity').
-                            ' — '.$details['name']"
+                            :aria-label="__('inventory::attributes.Purchase Quantity') . ' — ' . $details['name']"
                             @class([
                                 '[&_input]:px-2 [&_input]:text-center [&_input]:rounded-sm [&_input]:h-8',
                                 '[&_input]:border-red-400 dark:[&_input]:border-red-500' => $errors->has(
                                     $quantityError),
                             ])
                         />
-
-                        <flux:error
-                            :name="$quantityError"
-                            :icon="null"
-                            class="mt-0.5 text-xs leading-tight"
-                        />
                     </div>
 
                     <div>
-                        <flux:input
+                        <x-dashboard::numeric-input
                             size="sm"
-                            type="number"
-                            step="any"
-                            min="0"
-                            x-ref="unitPrice-{{ $slug }}"
-                            wire:model="form.items.{{ $slug }}.unit_price"
-                            @input="recalcTotal('{{ $slug }}')"
+                            data-numeric-field="unit_price"
+                            wire:model.number="form.items.{{ $slug }}.unit_price"
+                            :error="$unitPriceError"
                             :placeholder="__('inventory::attributes.Purchase Unit Price')"
-                            :aria-label="__('inventory::attributes.Purchase Unit Price').
-                            ' — '.$details['name']"
+                            :aria-label="__('inventory::attributes.Purchase Unit Price') . ' — ' . $details['name']"
                             @class([
                                 '[&_input]:px-2 [&_input]:text-center [&_input]:rounded-sm [&_input]:h-8',
                                 '[&_input]:border-red-400 dark:[&_input]:border-red-500' => $errors->has(
                                     $unitPriceError),
                             ])
                         />
-
-                        <flux:error
-                            :name="$unitPriceError"
-                            :icon="null"
-                            class="mt-0.5 text-xs leading-tight"
-                        />
                     </div>
 
                     {{-- Total is derived from quantity x unit price, so it is shown, not edited. --}}
                     <div
-                        x-ref="total-{{ $slug }}"
                         class="flex h-8 items-center justify-start rounded-sm border border-dashed border-zinc-300 bg-zinc-50 px-2 text-sm tabular-nums text-zinc-700 dark:border-white/15 dark:bg-white/5 dark:text-zinc-200"
                         aria-live="polite"
+                        x-text="total"
                     >
                         {{ \App\Helpers\Utils::formatQuantity((float) ($this->form->items[$slug]['total'] ?? 0), 2) }}
                     </div>
@@ -192,12 +135,12 @@
     <flux:label>
         {{ __('inventory::attributes.Purchase Order Number') }}
     </flux:label>
-    <flux:input
+    <x-dashboard::numeric-input
         wire:model="form.order_number"
         :placeholder="__('inventory::strings.Enter Purchase Order Number')"
     >
 
-    </flux:input>
+    </x-dashboard::numeric-input>
     <flux:error name="form.order_number" />
 </flux:field>
 

@@ -18,6 +18,7 @@ use Morilog\Jalali\Jalalian;
  *
  * @property string $slug
  * @property string $order_number
+ * @property Warehouse $warehouse
  */
 #[Fillable(['slug', 'supplier_id', 'warehouse_id', 'order_number', 'status', 'ordered_at', 'received_at', 'expected_at', 'notes'])]
 class Purchase extends BaseModel
@@ -37,11 +38,13 @@ class Purchase extends BaseModel
         return PurchaseFactory::new();
     }
 
+    /** @return BelongsTo<Warehouse, $this> */
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
     }
 
+    /** @return BelongsTo<Supplier, $this> */
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);

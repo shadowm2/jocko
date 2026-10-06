@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Inventory\Enums\PurchaseStatus;
 use Modules\Inventory\Models\Purchase;
 use Modules\Inventory\Models\PurchaseItem;
+use Modules\Inventory\Models\Supplier;
 use Modules\Inventory\Repositories\PurchaseRepository;
 
 /**
@@ -38,8 +39,12 @@ class PurchaseService extends BaseService
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function create(array $data): Purchase
     {
+        /** @var Supplier $supplier */
         $supplier = resolve(SupplierService::class)->findByKey($data['supplier']);
         $data['supplier_id'] = $supplier->id;
         $slug = $data['warehouse'].' '.$supplier->user->fullName();
@@ -53,6 +58,7 @@ class PurchaseService extends BaseService
         $purchase = DB::transaction(function () use ($data, $items) {
             $purchase = parent::create($data);
             $this->syncItems($purchase, $items);
+            resolve(StockMovementService::class)->purchase($purchase);
 
             return $purchase;
         });
@@ -78,6 +84,7 @@ class PurchaseService extends BaseService
 
             if (is_array($items)) {
                 $this->syncItems($model, $items);
+                resolve(StockMovementService::class)->syncPurchase($model);
             }
 
             return $updated;

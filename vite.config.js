@@ -2,6 +2,9 @@ import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { glob } from "glob";
+import { resolve } from "node:path";
+
+const projectRoot = process.cwd();
 
 const moduleAssets = [
     ...glob.sync("Modules/*/resources/assets/js/app.js"),
@@ -29,7 +32,8 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            "@inventory": "/Modules/Inventory/resources/assets/js",
+            "@inventory": resolve(projectRoot, "Modules/Inventory/resources/assets/js"),
+            "@dashboard": resolve(projectRoot, "Modules/Dashboard/resources/assets/js"),
         },
     },
 });
