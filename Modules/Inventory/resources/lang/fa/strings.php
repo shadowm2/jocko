@@ -85,6 +85,7 @@ return [
     'Purchases' => 'سفارش های خرید',
     'Purchases List' => 'لیست سفارش های خرید',
     'Purchase Add' => 'ثبت سفارش خرید',
+    'Purchase Edit' => 'ویرایش سفارش خرید',
     'Save Purchase' => 'ثبت سفارش خرید',
     'Select Supplier' => 'تامین کننده را انتخاب کنید',
     'Enter Purchase Order Number' => 'شماره سفارش خرید را وارد کنید',
@@ -107,4 +108,5 @@ return [
     'Purchase Not Saved Yet' => 'این سفارش هنوز ذخیره نشده است.',
     'In Stock' => 'موجودی',
     'No items found.' => 'کالایی یافت نشد.',
+    'Purchase Stock In' => 'ورود کالا از سفارش خرید',
 ];

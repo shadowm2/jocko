@@ -13,9 +13,22 @@ return new class extends Migration
     {
         Schema::create('stock_movements', function (Blueprint $table) {
             $table->id();
+
+            $table->slug();
+
             $table->foreignId('item_id')
                 ->constrained('items')
                 ->cascadeOnDelete();
+
+            $table->foreignId('warehouse_item_id')
+                ->nullable()
+                ->constrained('warehouse_items')
+                ->nullOnDelete();
+
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
 
             $table->foreignId('from_warehouse_id')
                 ->nullable()
@@ -27,15 +40,22 @@ return new class extends Migration
                 ->constrained('warehouses')
                 ->nullOnDelete();
 
-            $table->decimal('quantity', 15, 3);
+            $table->decimal('quantity', 18, 4);
 
-            $table->string('type');
+            $table->decimal('unit_cost', 18, 4)->default(0);
+            $table->decimal('total_cost', 18, 4)->default(0);
+
+            // Warehouse item quantity right after this movement.
+            $table->decimal('balance_after', 18, 4)->nullable();
+
+            $table->string('type')->index();
 
             $table->nullableMorphs('reference');
 
             $table->text('description')->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index([
                 'item_id',

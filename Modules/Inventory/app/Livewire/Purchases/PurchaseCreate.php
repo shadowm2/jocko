@@ -8,11 +8,16 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Modules\Inventory\Livewire\Forms\PurchaseForm;
 use Modules\Inventory\Services\SupplierService;
-use Modules\Inventory\Services\WarehouseService;
 
 class PurchaseCreate extends Component
 {
     public PurchaseForm $form;
+
+    #[On('warehouse-selected')]
+    public function handleWarehouseSelected(?string $warehouse): void
+    {
+        $this->form->warehouse = $warehouse ?? '';
+    }
 
     #[On('warehouse-items-selected')]
     public function handleItemsSelected(array $slugs): void
@@ -29,13 +34,11 @@ class PurchaseCreate extends Component
 
     public function render(): View
     {
-        $warehouseService = resolve(WarehouseService::class);
         $supplierService = resolve(SupplierService::class);
-        $warehouses = $warehouseService->getWarehouses(paginate: false);
         $suppliers = $supplierService->getSuppliers(paginate: false);
 
         return view('inventory::livewire.purchases-create', [
-            ...compact('warehouses', 'suppliers'),
+            ...compact('suppliers'),
             'itemCatalog' => $this->form->selectedCatalog(),
         ])
             ->layout('dashboard::layouts.app')

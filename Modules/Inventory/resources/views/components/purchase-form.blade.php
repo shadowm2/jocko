@@ -5,7 +5,6 @@
 >
     <flux:card class="space-y-4">
         <x-inventory::purchase-fields
-            :$warehouses
             :$suppliers
             :$itemCatalog
         />

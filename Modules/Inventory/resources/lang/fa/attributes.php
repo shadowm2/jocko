@@ -40,6 +40,7 @@ return [
     'Purchase Quantity' => 'تعداد',
     'Purchase Unit Price' => 'قیمت واحد',
     'Purchase Total' => 'مبلغ کل',
+    'Purchase Items and Total' => 'اقلام / مبلغ کل',
     'Warehouse Item Min Quantity' => 'حداقل تعداد',
     'Warehouse Item Min Quantity Unlimited' => 'بدون محدودیت',
     'Warehouse Item Max Quantity' => 'حداکثر تعداد',
