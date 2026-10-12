@@ -24,7 +24,8 @@
 
     </x-table.toolbar>
 
-    <div class="overflow-hidden">
+    <div class="relative overflow-hidden">
+        <x-table.loading />
 
         <flux:table>
 

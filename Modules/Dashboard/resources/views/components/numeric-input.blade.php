@@ -1,6 +1,7 @@
 @props([
     'label' => null,
     'error' => null,
+    'errorClass' => 'text-sm',
     'precision' => 18,
     'scale' => 4,
 ])
@@ -18,7 +19,6 @@
     <flux:input
         type="text"
         inputmode="decimal"
-        dir="ltr"
         max="{{ $maxValue }}"
         maxlength="{{ $integerDigits + ($scale > 0 ? $scale + 1 : 0) }}"
         data-max-integer-digits="{{ $integerDigits }}"
@@ -29,6 +29,9 @@
     />
 
     @if ($error)
-        <flux:error :name="$error" />
+        <flux:error
+            :name="$error"
+            :class="$errorClass"
+        />
     @endif
 </flux:field>

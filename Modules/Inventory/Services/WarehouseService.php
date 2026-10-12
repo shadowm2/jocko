@@ -52,12 +52,12 @@ class WarehouseService extends BaseService
 
             return Warehouse::find($activeWarehouseId);
         } else {
-            $activeWarehouse = Warehouse::withCount('items')
+            $activeWarehouse = Warehouse::withCount('warehouseItems')
                 ->orderByDesc('warehouse_items_count')
                 ->orderBy('created_at')
                 ->first();
             if ($activeWarehouse) {
-                Cache::forever($cacheKey, $activeWarehouse->id);
+                Cache::set($cacheKey, $activeWarehouse->id, 3600);
 
                 return $activeWarehouse;
             } else {

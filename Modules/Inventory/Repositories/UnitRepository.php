@@ -32,7 +32,7 @@ class UnitRepository extends BaseRepository implements UnitRepositoryInterface
      */
     public function filtered(array $filters): UnitRepository
     {
-        (new UnitFilter($filters))
+        new UnitFilter($filters)
             ->apply($this->query());
 
         return $this;

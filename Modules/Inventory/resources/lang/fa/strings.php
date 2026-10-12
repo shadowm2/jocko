@@ -10,6 +10,7 @@ return [
     'Edit Unit Group' => 'ویرایش گروه واحد',
     'Units' => 'واحد ها',
     'Units List' => 'لیست واحد ها',
+    'Search Units' => 'جستجو در واحدها',
     'Unit Add' => 'ایجاد واحد',
     'Unit Name' => 'نام واحد',
     'Enter Unit Name' => 'نام واحد را وارد کنید',
@@ -85,6 +86,9 @@ return [
     'Purchases' => 'سفارش های خرید',
     'Purchases List' => 'لیست سفارش های خرید',
     'Purchase Add' => 'ثبت سفارش خرید',
+    'Search Purchases' => 'جستجو در سفارش ها',
+    'Ordered From' => 'از تاریخ سفارش',
+    'Ordered To' => 'تا تاریخ سفارش',
     'Purchase Edit' => 'ویرایش سفارش خرید',
     'Save Purchase' => 'ثبت سفارش خرید',
     'Select Supplier' => 'تامین کننده را انتخاب کنید',
@@ -109,4 +113,5 @@ return [
     'In Stock' => 'موجودی',
     'No items found.' => 'کالایی یافت نشد.',
     'Purchase Stock In' => 'ورود کالا از سفارش خرید',
+    'Select Purchase Item Unit' => 'واحد کالا را انتخاب کنید',
 ];

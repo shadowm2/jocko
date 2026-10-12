@@ -19,32 +19,23 @@ class PurchaseForm extends Form
 
     public ?Purchase $purchase = null;
 
-    //    public string $warehouse = '';
-    public string $warehouse = 'simonis-llc';
+    public string $warehouse = '';
 
-    //    public string $supplier = '';
-    public string $supplier = 'supplier-logan-anderson';
+    public string $supplier = '';
 
-    //    public string $order_number = '';
-    public string $order_number = 'BX-11158';
+    public string $order_number = '';
 
-    //    public string $ordered_at = '';
-    public string $ordered_at = '1404/01/01';
+    public string $ordered_at = '';
 
-    //    public string $ordered_at_gregorian = '';
-    public string $ordered_at_gregorian = '2025/03/21';
+    public string $ordered_at_gregorian = '';
 
-    //    public string $expected_at = '';
-    public string $expected_at = '1404/01/02';
+    public string $expected_at = '';
 
-    //    public string $expected_at_gregorian = '';
-    public string $expected_at_gregorian = '2025/03/22';
+    public string $expected_at_gregorian = '';
 
-    //    public string $received_at = '';
-    public string $received_at = '1404/01/03';
+    public string $received_at = '';
 
-    //    public string $received_at_gregorian = '';
-    public string $received_at_gregorian = '2025/03/23';
+    public string $received_at_gregorian = '';
 
     public ?string $notes = '';
 
@@ -78,6 +69,7 @@ class PurchaseForm extends Form
                 'discount' => 0,
                 'tax' => 0,
                 'total' => 0,
+                'unit_id' => null,
             ], $this->items[$slug] ?? []);
 
             // Preserve raw input while editing so empty or partial values do
@@ -178,8 +170,9 @@ class PurchaseForm extends Form
                 Rule::exists('warehouse_items', 'slug'),
             ],
             'items' => ['nullable', 'array'],
-            'items.*.quantity' => ['required', 'numeric', 'min:0'],
+            'items.*.quantity' => ['required', 'numeric', 'min:1'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
+            'items.*.unit_id' => ['nullable', 'integer', 'exists:Modules\Inventory\Models\Unit,id'],
             'items.*.total' => ['required', 'numeric', 'min:0'],
         ];
     }
@@ -224,6 +217,7 @@ class PurchaseForm extends Form
             'items' => $rules['items'],
             'items.*.quantity' => $rules['items.*.quantity'],
             'items.*.unit_price' => $rules['items.*.unit_price'],
+            'items.*.unit_id' => $rules['items.*.unit_id'],
             'items.*.total' => $rules['items.*.total'],
         ]);
 
@@ -232,6 +226,15 @@ class PurchaseForm extends Form
         ]);
 
         $this->purchase->refresh();
+    }
+
+    public function removePurchaseItem(string $slug): void
+    {
+        $this->selected = array_values(array_filter(
+            $this->selected,
+            static fn (string $selectedSlug): bool => $selectedSlug !== $slug,
+        ));
+        $this->syncSelectedItems();
     }
 
     /**
@@ -254,6 +257,11 @@ class PurchaseForm extends Form
                 $warehouseItem->slug => [
                     'name' => $warehouseItem->item->name,
                     'quantity' => (float) $warehouseItem->quantity,
+                    'units' => $warehouseItem->item->unitGroup->units
+                        ->where('is_active', true)
+                        ->values()
+                        ->map(fn ($unit) => ['id' => $unit->id, 'name' => $unit->name, 'symbol' => $unit->symbol])
+                        ->all(),
                 ],
             ])
             ->all();
@@ -338,6 +346,7 @@ class PurchaseForm extends Form
             $lines[$warehouseItem->slug] = [
                 'quantity' => (float) $line->quantity,
                 'unit_price' => (float) $line->unit_price,
+                'unit_id' => $line->unit_id,
                 'discount' => (float) $line->discount,
                 'tax' => (float) $line->tax,
                 'total' => (float) $line->total,

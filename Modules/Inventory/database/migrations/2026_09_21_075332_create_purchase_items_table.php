@@ -24,6 +24,11 @@ return new class extends Migration
                 ->constrained()
                 ->restrictOnDelete();
 
+            $table->foreignId('unit_id')
+                ->nullable()
+                ->constrained('units')
+                ->restrictOnDelete();
+
             $table->decimal('quantity', 18, 4);
             $table->decimal('received_quantity', 18, 4)->default(0);
 
