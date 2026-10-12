@@ -173,7 +173,7 @@ class PurchaseService extends BaseService
 
     /**
      * @param  array<string, mixed>  $line
-     * @return array<string, float>
+     * @return array<string, mixed>
      */
     protected function lineValues(array $line): array
     {
@@ -184,6 +184,7 @@ class PurchaseService extends BaseService
 
         return [
             'quantity' => $quantity,
+            'unit_id' => isset($line['unit_id']) && $line['unit_id'] !== '' ? (int) $line['unit_id'] : null,
             'received_quantity' => 0,
             'unit_price' => $unitPrice,
             'discount' => $discount,

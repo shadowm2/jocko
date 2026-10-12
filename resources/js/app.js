@@ -11,11 +11,19 @@ function initDatePickers() {
             initialValue: false,
             onSelect() {
                 const value = $(input).val();
-                const wireModel = $(input).attr("wire:model");
+                let wireModel, isLive;
+
+                if ($(input).attr("wire:model.live") === undefined) {
+                    wireModel = $(input).attr("wire:model");
+                    isLive = false;
+                } else {
+                    wireModel = $(input).attr("wire:model.live");
+                    isLive = true;
+                }
 
                 Livewire.find(
                     input.closest("[wire\\:id]")?.getAttribute("wire:id"),
-                ).$set(wireModel, value);
+                ).$set(wireModel, value, isLive);
             },
         });
     });

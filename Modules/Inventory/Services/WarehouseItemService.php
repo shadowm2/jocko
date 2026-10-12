@@ -89,8 +89,11 @@ class WarehouseItemService extends BaseService
         return parent::interpretData($data);
     }
 
-    public function getItemsInWarehouse(Warehouse|string $warehouse, array $filters = [], $paginate = false): Collection|LengthAwarePaginator
+    public function getItemsInWarehouse(Warehouse|string|null $warehouse, array $filters = [], $paginate = false): Collection|LengthAwarePaginator
     {
+        if ($warehouse === null) {
+            return $paginate ? new LengthAwarePaginator([], 0, 1) : new Collection;
+        }
         if (is_string($warehouse)) {
             $warehouse = resolve(WarehouseService::class)->findByKey($warehouse);
         }

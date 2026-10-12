@@ -44,6 +44,11 @@ class WarehouseItemPicker extends Component
      */
     protected ?string $loadedWarehouse = null;
 
+    public function updatedValue($items): void
+    {
+        $this->dispatch('warehouse-item-picker-updated');
+    }
+
     public function updatedWarehouse(): void
     {
         if ($this->showWarehousePicker) {
@@ -111,6 +116,7 @@ class WarehouseItemPicker extends Component
 
     protected function loadItems(): void
     {
+        //        dd($this->warehouse);
         $warehouse = $this->showWarehousePicker ? $this->selectedWarehouse : $this->warehouse;
 
         if ($this->loadedWarehouse === $warehouse) {

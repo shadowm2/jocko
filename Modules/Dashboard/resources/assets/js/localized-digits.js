@@ -1,15 +1,20 @@
 export function isRtl(element) {
     const root = document.documentElement;
 
-    return root.dir === "rtl"
-        || window.getComputedStyle(element).direction === "rtl"
-        || root.lang.toLowerCase().startsWith("fa");
+    return (
+        root.dir === "rtl" ||
+        window.getComputedStyle(element).direction === "rtl" ||
+        root.lang.toLowerCase().startsWith("fa")
+    );
 }
 
 export function toPersianDigits(value) {
     const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
 
-    return String(value).replace(/[0-9]/g, (digit) => persianDigits[Number(digit)]);
+    return String(value).replace(
+        /[0-9]/g,
+        (digit) => persianDigits[Number(digit)],
+    );
 }
 
 export function toEnglishDigits(value) {
@@ -33,25 +38,31 @@ export function restrictToDigits(input, persian) {
         let integerDigits = 0;
         let fractionalDigits = 0;
 
-        return [...value].filter((character) => {
-            if (/[0-9۰-۹٠-٩]/.test(character)) {
-                if (decimalSeen) {
-                    if (fractionalDigits >= maxDecimalPlaces) return false;
-                    fractionalDigits++;
-                } else {
-                    if (integerDigits >= maxIntegerDigits) return false;
-                    integerDigits++;
+        return [...value]
+            .filter((character) => {
+                if (/[0-9۰-۹٠-٩]/.test(character)) {
+                    if (decimalSeen) {
+                        if (fractionalDigits >= maxDecimalPlaces) return false;
+                        fractionalDigits++;
+                    } else {
+                        if (integerDigits >= maxIntegerDigits) return false;
+                        integerDigits++;
+                    }
+
+                    return true;
+                }
+                if (
+                    /[.٫]/.test(character) &&
+                    !decimalSeen &&
+                    maxDecimalPlaces > 0
+                ) {
+                    decimalSeen = true;
+                    return true;
                 }
 
-                return true;
-            }
-            if (/[.٫]/.test(character) && !decimalSeen && maxDecimalPlaces > 0) {
-                decimalSeen = true;
-                return true;
-            }
-
-            return false;
-        }).join("");
+                return false;
+            })
+            .join("");
     };
     const sanitized = sanitize(original);
     const englishValue = toEnglishDigits(sanitized);
@@ -88,7 +99,7 @@ export default function localizedDigits() {
     return {
         init() {
             const rtl = isRtl(this.$el);
-            this.$el.dir = "ltr";
+            this.setDirection();
 
             if (rtl) {
                 this.$el.value = toPersianDigits(this.$el.value);
@@ -101,7 +112,7 @@ export default function localizedDigits() {
             if (event.target.dataset.localizedDigitsSync === "true") return;
 
             const rtl = isRtl(this.$el);
-            this.$el.dir = "ltr";
+            this.setDirection();
             restrictToDigits(event.target, rtl);
             this.notifyValue(event.target);
         },
@@ -111,6 +122,12 @@ export default function localizedDigits() {
                 field: input.dataset.numericField,
                 value: toEnglishDigits(input.value),
             });
+        },
+
+        setDirection() {
+            if (!["rtl", "ltr"].includes(this.$el.dir)) {
+                this.$el.dir = "ltr";
+            }
         },
     };
 }

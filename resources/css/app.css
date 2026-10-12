@@ -126,3 +126,29 @@ ui-sidebar {
     @apply min-w-[300px];
 }
 
+ui-sidebar [data-flux-sidebar-group]:has(> div > div > [data-flux-sidebar-item][data-current]) > div > div > [data-flux-sidebar-item]:not([data-current]):not(:hover) {
+    background-color: color-mix(in srgb, var(--color-accent) 6%, transparent);
+}
+
+ui-sidebar [data-flux-sidebar-group] [data-flux-sidebar-item][data-current] {
+    background-color: color-mix(in srgb, var(--color-accent) 12%, transparent);
+    border-inline-start: 3px solid var(--color-accent);
+    color: var(--color-accent-content);
+    font-weight: 600;
+}
+
+ui-sidebar ui-disclosure[data-flux-sidebar-group] > button {
+    background-color: color-mix(in srgb, var(--color-zinc-500) 8%, transparent);
+    color: var(--color-zinc-700);
+    font-weight: 600;
+}
+
+.dark ui-sidebar ui-disclosure[data-flux-sidebar-group] > button {
+    background-color: color-mix(in srgb, white 5%, transparent);
+    color: var(--color-zinc-200);
+}
+
+ui-sidebar ui-disclosure[data-flux-sidebar-group]:has([data-flux-sidebar-item][data-current]) > button {
+    background-color: color-mix(in srgb, var(--color-accent) 8%, transparent);
+    color: var(--color-accent-content);
+}

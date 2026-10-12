@@ -29,10 +29,15 @@ class UnitService extends BaseService
     public function getUnits(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
         $this->repository
-            ->filtered($filters)
-            ->orderBy('unit_group_id')
-            ->orderBy('conversion_factor', \SortDirection::Descending)
-            ->withRelations();
+            ->filtered($filters);
+
+        if (! in_array($filters['sort_by'] ?? null, ['unit_group_id', 'name', 'symbol', 'conversion_factor'], true)) {
+            $this->repository
+                ->orderBy('unit_group_id')
+                ->orderBy('conversion_factor', \SortDirection::Descending);
+        }
+
+        $this->repository->withRelations();
 
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }

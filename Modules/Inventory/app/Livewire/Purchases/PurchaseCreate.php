@@ -4,26 +4,15 @@ namespace Modules\Inventory\Livewire\Purchases;
 
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
-use Livewire\Attributes\On;
 use Livewire\Component;
-use Modules\Inventory\Livewire\Forms\PurchaseForm;
+use Modules\Inventory\Livewire\Purchases\Concerns\RemovesPurchaseItems;
+use Modules\Inventory\Livewire\Purchases\Concerns\UsesWarehouseItemPicker;
 use Modules\Inventory\Services\SupplierService;
 
 class PurchaseCreate extends Component
 {
-    public PurchaseForm $form;
-
-    #[On('warehouse-selected')]
-    public function handleWarehouseSelected(?string $warehouse): void
-    {
-        $this->form->warehouse = $warehouse ?? '';
-    }
-
-    #[On('warehouse-items-selected')]
-    public function handleItemsSelected(array $slugs): void
-    {
-        $this->form->selected = array_values($slugs);
-    }
+    use RemovesPurchaseItems;
+    use UsesWarehouseItemPicker;
 
     public function save(): void
     {

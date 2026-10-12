@@ -19,7 +19,7 @@ use Modules\Inventory\Database\Factories\PurchaseItemFactory;
  * @property float $tax
  * @property float $total
  */
-#[Fillable(['slug', 'purchase_id', 'item_id', 'quantity', 'received_quantity', 'unit_price', 'discount', 'tax', 'total'])]
+#[Fillable(['slug', 'purchase_id', 'item_id', 'unit_id', 'quantity', 'received_quantity', 'unit_price', 'discount', 'tax', 'total'])]
 class PurchaseItem extends BaseModel
 {
     use HasFactory;
@@ -40,5 +40,10 @@ class PurchaseItem extends BaseModel
     public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

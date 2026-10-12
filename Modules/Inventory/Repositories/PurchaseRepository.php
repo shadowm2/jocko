@@ -20,7 +20,7 @@ class PurchaseRepository extends BaseRepository implements PurchaseRepositoryInt
     public function withRelations(): PurchaseRepository
     {
         $this->query()
-            ->with([])
+            ->with(['supplier.user', 'warehouse'])
             ->with('items.item')
             ->withCount('items')
             ->withSum('items', 'total');

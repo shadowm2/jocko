@@ -9,6 +9,7 @@ use Modules\Inventory\Enums\StockMovementType;
 use Modules\Inventory\Models\Purchase;
 use Modules\Inventory\Models\PurchaseItem;
 use Modules\Inventory\Models\StockMovement;
+use Modules\Inventory\Models\Unit;
 use Modules\Inventory\Models\WarehouseItem;
 use Modules\Inventory\Repositories\StockMovementRepository;
 
@@ -34,7 +35,7 @@ class StockMovementService extends BaseService
         $movements = new Collection;
 
         /** @var PurchaseItem $line */
-        foreach ($purchase->items()->get() as $line) {
+        foreach ($purchase->items()->with(['unit', 'item.unitGroup.units'])->get() as $line) {
             /** @var ?WarehouseItem $warehouseItem */
             $warehouseItem = $purchase->warehouse->warehouseItems()
                 ->where('item_id', $line->item_id)
@@ -44,10 +45,11 @@ class StockMovementService extends BaseService
                 continue;
             }
 
-            $warehouseItem->increment('quantity', $line->quantity);
+            $values = $this->movementValues($line);
+            $warehouseItem->increment('quantity', $values['quantity']);
             $warehouseItem->refresh();
 
-            $movements->push($this->createMovement($purchase, $line, $warehouseItem));
+            $movements->push($this->createMovement($purchase, $line, $warehouseItem, $values));
         }
 
         return $movements;
@@ -65,7 +67,10 @@ class StockMovementService extends BaseService
      */
     public function syncPurchase(Purchase $purchase): Collection
     {
-        $lines = $purchase->items()->get()->keyBy('item_id');
+        $lines = $purchase->items()
+            ->with(['unit', 'item.unitGroup.units'])
+            ->get()
+            ->keyBy('item_id');
 
         $movements = StockMovement::query()
             ->where('reference_type', $purchase->getMorphClass())
@@ -96,13 +101,14 @@ class StockMovementService extends BaseService
                 continue;
             }
 
+            $values = $this->movementValues($line);
             $movement = $movements->get($line->item_id);
 
             if (! $movement) {
-                $warehouseItem->increment('quantity', $line->quantity);
+                $warehouseItem->increment('quantity', $values['quantity']);
                 $warehouseItem->refresh();
 
-                $kept->push($this->createMovement($purchase, $line, $warehouseItem));
+                $kept->push($this->createMovement($purchase, $line, $warehouseItem, $values));
 
                 continue;
             }
@@ -112,20 +118,19 @@ class StockMovementService extends BaseService
             if ((int) $movement->warehouse_item_id !== (int) $warehouseItem->id) {
                 WarehouseItem::find($movement->warehouse_item_id)
                     ?->decrement('quantity', $movement->quantity);
-                $warehouseItem->increment('quantity', $line->quantity);
+                $warehouseItem->increment('quantity', $values['quantity']);
             } else {
-                $warehouseItem->increment('quantity', $line->quantity - $movement->quantity);
+                $warehouseItem->increment('quantity', $values['quantity'] - (float) $movement->quantity);
             }
 
             $warehouseItem->refresh();
-            $unitCost = (float) $line->unit_price;
 
             $movement->update([
                 'warehouse_item_id' => $warehouseItem->id,
                 'to_warehouse_id' => $purchase->warehouse_id,
-                'quantity' => $line->quantity,
-                'unit_cost' => $unitCost,
-                'total_cost' => round($line->quantity * $unitCost, 4),
+                'quantity' => $values['quantity'],
+                'unit_cost' => $values['unit_cost'],
+                'total_cost' => $values['total_cost'],
                 'balance_after' => (float) $warehouseItem->quantity,
             ]);
 
@@ -135,9 +140,17 @@ class StockMovementService extends BaseService
         return $kept;
     }
 
-    protected function createMovement(Purchase $purchase, PurchaseItem $line, WarehouseItem $warehouseItem): StockMovement
+    /**
+     * @param  array{quantity:float,unit_cost:float,total_cost:float}|null  $values
+     */
+    protected function createMovement(
+        Purchase $purchase,
+        PurchaseItem $line,
+        WarehouseItem $warehouseItem,
+        ?array $values = null,
+    ): StockMovement
     {
-        $unitCost = (float) $line->unit_price;
+        $values ??= $this->movementValues($line);
 
         return $this->repository->create([
             'slug' => Utils::generateUniqueSlug(
@@ -149,15 +162,64 @@ class StockMovementService extends BaseService
             'user_id' => auth()->id(),
             'from_warehouse_id' => null,
             'to_warehouse_id' => $purchase->warehouse_id,
-            'quantity' => $line->quantity,
-            'unit_cost' => $unitCost,
-            'total_cost' => round($line->quantity * $unitCost, 4),
+            'quantity' => $values['quantity'],
+            'unit_cost' => $values['unit_cost'],
+            'total_cost' => $values['total_cost'],
             'balance_after' => (float) $warehouseItem->quantity,
             'type' => StockMovementType::PURCHASE->value,
             'reference_type' => $purchase->getMorphClass(),
             'reference_id' => $purchase->id,
             'description' => __('inventory::strings.Purchase Stock In'),
         ]);
+    }
+
+    /**
+     * Convert the purchase quantity and price to the item's base unit before
+     * applying stock changes. Warehouse item quantities are always stored in
+     * the unit group unit marked as base.
+     *
+     * @return array{quantity:float,unit_cost:float,total_cost:float}
+     */
+    private function movementValues(PurchaseItem $line): array
+    {
+        $line->loadMissing(['unit', 'item.unitGroup.units']);
+
+        $baseUnit = $line->item->unitGroup?->units
+            ->first(fn (Unit $unit): bool => (bool) $unit->is_base);
+
+        if (! $baseUnit) {
+            throw new \InvalidArgumentException("Item [{$line->item_id}] has no base unit.");
+        }
+
+        if ($line->unit_id !== null && ! $line->unit) {
+            throw new \InvalidArgumentException("Purchase item [{$line->id}] has an unavailable unit.");
+        }
+
+        $purchaseUnit = $line->unit ?? $baseUnit;
+        if ((int) $purchaseUnit->unit_group_id !== (int) $baseUnit->unit_group_id) {
+            throw new \InvalidArgumentException("Purchase item [{$line->id}] uses a unit from another unit group.");
+        }
+
+        $baseFactor = (float) $baseUnit->conversion_factor;
+        $purchaseFactor = (float) $purchaseUnit->conversion_factor;
+        if ($baseFactor <= 0 || $purchaseFactor <= 0) {
+            throw new \InvalidArgumentException("Purchase item [{$line->id}] has an invalid unit conversion factor.");
+        }
+
+        $conversionFactor = $purchaseFactor / $baseFactor;
+        $purchaseQuantity = (float) $line->quantity;
+        $baseQuantity = round($purchaseQuantity * $conversionFactor, 3);
+        if ($purchaseQuantity > 0 && $baseQuantity <= 0) {
+            throw new \InvalidArgumentException("Purchase item [{$line->id}] converts to a quantity below warehouse precision.");
+        }
+
+        $totalCost = round((float) $line->total, 4);
+
+        return [
+            'quantity' => $baseQuantity,
+            'unit_cost' => $baseQuantity > 0 ? round($totalCost / $baseQuantity, 4) : 0,
+            'total_cost' => $totalCost,
+        ];
     }
     //
     //    public function consume(): StockMovement
