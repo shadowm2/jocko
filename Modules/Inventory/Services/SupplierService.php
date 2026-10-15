@@ -31,13 +31,21 @@ class SupplierService extends BaseService
      */
     public function getSuppliers(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
-        $this->repository
-            ->filtered($filters)
-            ->orderBy(
-                User::select('last_name')
-                    ->whereColumn('user_id', 'users.id')
-            )
-            ->withRelations();
+        $this->repository->filtered($filters);
+
+        if (! in_array($filters['sort_by'] ?? null, ['name', 'city', 'phone', 'is_active'], true)) {
+            $this->repository->orderBy(
+                User::query()
+                    ->select('last_name')
+                    ->whereColumn('users.id', 'suppliers.user_id')
+            )->orderBy(
+                User::query()
+                    ->select('first_name')
+                    ->whereColumn('users.id', 'suppliers.user_id')
+            )->orderBy('suppliers.id');
+        }
+
+        $this->repository->withRelations();
 
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }

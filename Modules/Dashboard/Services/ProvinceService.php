@@ -27,14 +27,14 @@ class ProvinceService extends BaseService
      */
     public function getProvinces(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
-        $this->repository
-            ->filtered($filters)
-            ->orderBy(
+        $this->repository->filtered($filters);
+        if (! in_array($filters['sort_by'] ?? null, ['name', 'country', 'is_active'], true)) {
+            $this->repository->orderBy(
                 Country::select('name')
                     ->whereColumn('countries.id', 'provinces.country_id')
-            )
-            ->orderBy('name')
-            ->withRelations();
+            )->orderBy('name');
+        }
+        $this->repository->withRelations();
 
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }

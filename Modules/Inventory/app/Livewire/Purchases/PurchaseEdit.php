@@ -24,7 +24,10 @@ class PurchaseEdit extends Component
 
     public function save(): void
     {
-        $this->form->save();
+        if (! $this->form->save()) {
+            return;
+        }
+
         Flux::toast(text: __('inventory::messages.Purchase Order Updated Successfully'), variant: 'success');
         $this->redirectRoute('purchases.index', navigate: true);
     }

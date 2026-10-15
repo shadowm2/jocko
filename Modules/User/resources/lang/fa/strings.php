@@ -3,6 +3,7 @@
 return [
     'User' => 'کاربر',
     'Users List' => 'لیست کاربران',
+    'Search Users' => 'جستجو در کاربران',
     'Users' => 'کاربران',
     'User :name Cars' => 'لیست خودرو های :name',
     'Save Car' => 'ذخیره خودرو',

@@ -167,10 +167,7 @@
         </div>
     @endunless
 
-    <div
-        class="relative"
-        @click.outside="close()"
-    >
+    <div class="relative">
         <flux:field>
             <flux:label>
                 {{ $attributes->get('label') ?? __('inventory::attributes.Warehouse Item') }}
@@ -178,7 +175,9 @@
 
             {{-- Trigger --}}
             <div
-                class="flex w-full flex-wrap items-center gap-1 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-sm shadow-xs transition dark:border-white/10 dark:bg-white/10">
+                @click.outside="close()"
+                class="flex w-full flex-wrap items-center gap-1 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-sm shadow-xs transition dark:border-white/10 dark:bg-white/10"
+            >
                 {{-- Selected items, each removable without opening the dropdown --}}
                 <template
                     x-for="item in selectedItems"
@@ -242,6 +241,7 @@
             <div
                 x-show="open"
                 x-cloak
+                @click.prevent.stop
                 x-transition.origin.top
                 class="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-white/10 dark:bg-zinc-900"
             >
@@ -293,7 +293,10 @@
                                     class="size-3 text-white dark:text-zinc-900"
                                 />
                             </span>
-
+                            <img
+                                :src="item.item.image.url"
+                                class="w-[60px] h-[50px] object-cover object-center rounded-md"
+                            />
                             <span
                                 class="truncate"
                                 x-text="item.item.name"

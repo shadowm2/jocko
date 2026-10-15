@@ -28,9 +28,15 @@ class ItemService extends BaseService
     public function getItems(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
         $this->repository
-            ->filtered($filters)
-            ->orderBy('name')
-            ->withRelations();
+            ->filtered($filters);
+
+        if (! in_array($filters['sort_by'] ?? null, ['name', 'category', 'unit_group', 'is_active'], true)) {
+            $this->repository
+                ->orderBy('name')
+                ->orderBy('items.id');
+        }
+
+        $this->repository->withRelations();
 
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }

@@ -138,13 +138,24 @@ class WarehouseItemPicker extends Component
             );
 
         $this->items = $items
-            ->map(static fn ($warehouseItem) => [
-                'slug' => $warehouseItem->slug,
-                'item' => [
-                    'name' => $warehouseItem->item->name,
-                ],
-                'quantity' => $warehouseItem->quantity,
-            ])
+            ->map(static function ($warehouseItem) {
+                $img = $warehouseItem->item->images()->first();
+                if ($img) {
+                    $img = [
+                        'url' => $img->publicPath(),
+                        'name' => $img->name,
+                    ];
+                }
+
+                return [
+                    'slug' => $warehouseItem->slug,
+                    'item' => [
+                        'name' => $warehouseItem->item->name,
+                        'image' => $img,
+                    ],
+                    'quantity' => $warehouseItem->quantity,
+                ];
+            })
             ->values()
             ->all();
     }

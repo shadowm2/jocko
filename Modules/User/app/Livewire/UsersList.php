@@ -6,11 +6,28 @@ use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\User\Enums\UserType;
 use Modules\User\Services\UserService;
 
 class UsersList extends Component
 {
     use WithPagination;
+    use InteractsWithTableFilters;
+
+    public array $filters = ['search' => '', 'type' => ''];
+    public string $sortBy = 'last_name';
+    public string $sortDirection = 'asc';
+    protected function defaultTableFilters(): array { return ['search' => '', 'type' => '']; }
+    private function filterDefinitions(): array
+    {
+        $types = collect(UserType::cases())->mapWithKeys(fn ($type) => [$type->value => ucfirst($type->value)])->all();
+        return [
+            ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('user::strings.Search Users')],
+            ['name' => 'type', 'type' => 'select', 'label' => __('user::attributes.User Type'), 'placeholder' => __('strings.All'), 'options' => $types],
+        ];
+    }
+    private function sortOptions(): array { return ['first_name' => __('user::attributes.First Name'), 'last_name' => __('user::attributes.Last Name'), 'email' => __('user::attributes.Email'), 'type' => __('user::attributes.User Type')]; }
 
     public function onEditClick()
     {
@@ -40,11 +57,13 @@ class UsersList extends Component
                 'label' => '',
             ],
         ];
-        $users = $userService->getUsers();
+        $users = $userService->getUsers([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);
 
         return view('user::livewire.users-list', [
             ...compact('columns'),
             'rows' => $users,
+            'filterDefinitions' => $this->filterDefinitions(),
+            'sortOptions' => $this->sortOptions(),
         ])
             ->layout('dashboard::layouts.app')
             ->layoutData([

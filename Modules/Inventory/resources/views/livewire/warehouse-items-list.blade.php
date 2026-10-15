@@ -4,6 +4,7 @@
         :$columns
         :$rows
         :title="__('inventory::strings.Warehouse Items List')"
+        row-component="inventory::components.warehouse-item-row"
     >
         @if ($warehouse instanceof \Illuminate\Database\Eloquent\Model)
             <x-slot name="action">

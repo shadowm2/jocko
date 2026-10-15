@@ -26,11 +26,11 @@ class CountryService extends BaseService
      */
     public function getCountries(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
-        $this->repository
-            ->filtered($filters)
-            ->orderBy('is_active', \SortDirection::Descending)
-            ->orderBy('name')
-            ->withRelations();
+        $this->repository->filtered($filters);
+        if (! in_array($filters['sort_by'] ?? null, ['name', 'code', 'is_active'], true)) {
+            $this->repository->orderBy('is_active', \SortDirection::Descending)->orderBy('name');
+        }
+        $this->repository->withRelations();
 
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }

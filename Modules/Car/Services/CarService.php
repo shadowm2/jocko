@@ -28,10 +28,11 @@ class CarService extends BaseService
      */
     public function getCars(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
-        $this->repository
-            ->filtered($filters)
-            ->orderBy('name')
-            ->withRelations();
+        $this->repository->filtered($filters);
+        if (! in_array($filters['sort_by'] ?? null, ['name', 'company'], true)) {
+            $this->repository->orderBy('name')->orderBy('cars.id');
+        }
+        $this->repository->withRelations();
         //        $this->repository->query()->where('slug', '=', 'fortwo');
 
         return $paginate ? $this->repository->paginate() : $this->repository->all();

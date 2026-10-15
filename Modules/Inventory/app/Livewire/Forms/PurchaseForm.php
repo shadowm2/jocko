@@ -4,6 +4,7 @@ namespace Modules\Inventory\Livewire\Forms;
 
 use App\Helpers\Utils;
 use App\Rules\JalaliDate;
+use Flux\Flux;
 use Exception;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
@@ -180,7 +181,7 @@ class PurchaseForm extends Form
     /**
      * @throws Exception
      */
-    public function save(): void
+    public function save(): bool
     {
         $this->normalizeLineInputDigits();
         $this->syncLineValues();
@@ -194,15 +195,23 @@ class PurchaseForm extends Form
 
         unset($data['selected']);
 
-        if ($this->purchase) {
-            $purchaseService->update($this->purchase->id, $data);
-        } else {
-            $purchaseService->create($data);
+        try {
+            if ($this->purchase) {
+                $purchaseService->update($this->purchase->id, $data);
+            } else {
+                $purchaseService->create($data);
+            }
+        } catch (\Throwable $e) {
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
+
+            return false;
         }
+
+        return true;
     }
 
     /** Save only the purchase lines from the list's item editor. */
-    public function saveItems(): void
+    public function saveItems(): bool
     {
         if (! $this->purchase) {
             throw new Exception('A saved purchase is required to update its items.');
@@ -221,11 +230,19 @@ class PurchaseForm extends Form
             'items.*.total' => $rules['items.*.total'],
         ]);
 
-        resolve(PurchaseService::class)->update($this->purchase->id, [
-            'items' => $data['items'] ?? [],
-        ]);
+        try {
+            resolve(PurchaseService::class)->update($this->purchase->id, [
+                'items' => $data['items'] ?? [],
+            ]);
+        } catch (\Throwable $e) {
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
+
+            return false;
+        }
 
         $this->purchase->refresh();
+
+        return true;
     }
 
     public function removePurchaseItem(string $slug): void

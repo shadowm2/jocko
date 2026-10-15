@@ -59,7 +59,10 @@ class PurchaseList extends Component
 
     public function savePurchaseItems(): void
     {
-        $this->form->saveItems();
+        if (! $this->form->saveItems()) {
+            return;
+        }
+
         Flux::modal('purchase-items-editor')->close();
         Flux::toast(text: __('inventory::messages.Purchase Order Updated Successfully'), variant: 'success');
     }

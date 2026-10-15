@@ -4,6 +4,7 @@
         :$rows
         :title="__('dashboard::strings.Cities List')"
     >
+        <x-slot name="toolbar"><x-table.filters :filters="$filterDefinitions" :sort-options="$sortOptions" :sort-by="$sortBy" :sort-direction="$sortDirection" clear-action="clearFilters" /></x-slot>
         <x-slot name="action">
             <flux:button
                 icon:trailing="plus"

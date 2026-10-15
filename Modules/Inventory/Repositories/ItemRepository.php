@@ -22,6 +22,7 @@ class ItemRepository extends BaseRepository implements ItemRepositoryInterface
         $this->query()
             ->withCount('brands')
             ->with([
+                'category',
                 'unitGroup',
             ]);
 

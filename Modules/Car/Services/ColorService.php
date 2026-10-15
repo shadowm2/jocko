@@ -23,11 +23,18 @@ class ColorService extends BaseService
     /**
      * @return LengthAwarePaginator<int, Color>|Collection<int, Color>
      */
-    public function getColors(bool $paginate = true): LengthAwarePaginator|Collection
+    public function getColors(array|bool $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
-        $query = $this->repository
-            ->withRelations()
-            ->orderBy('hex');
+        if (is_bool($filters)) {
+            $paginate = $filters;
+            $filters = [];
+        }
+
+        $this->repository->filtered($filters);
+        if (! in_array($filters['sort_by'] ?? null, ['name', 'hex'], true)) {
+            $this->repository->orderBy('hex')->orderBy('colors.id');
+        }
+        $query = $this->repository->withRelations();
 
         return $paginate ?
             $query->paginate() : $query->get();

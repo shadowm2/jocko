@@ -28,13 +28,23 @@ class UnitFilter extends BaseFilter
                 continue;
             }
 
-            $values = array_values(array_filter(
-                (array) $this->filters[$field],
-                static fn (mixed $value): bool => in_array((string) $value, ['0', '1'], true),
-            ));
+            $value = $this->filters[$field];
 
-            if (count($values) === 1) {
-                $this->builder->where($field, (bool) $values[0]);
+            if (is_array($value)) {
+                $values = array_values(array_filter(
+                    $value,
+                    static fn (mixed $item): bool => in_array((string) $item, ['0', '1'], true),
+                ));
+
+                if (count($values) === 1) {
+                    $this->builder->where($field, (bool) $values[0]);
+                }
+
+                continue;
+            }
+
+            if ($value === true || $value === 1 || $value === '1') {
+                $this->builder->where($field, true);
             }
         }
 

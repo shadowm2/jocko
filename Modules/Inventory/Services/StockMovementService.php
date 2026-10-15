@@ -210,7 +210,7 @@ class StockMovementService extends BaseService
         $purchaseQuantity = (float) $line->quantity;
         $baseQuantity = round($purchaseQuantity * $conversionFactor, 3);
         if ($purchaseQuantity > 0 && $baseQuantity <= 0) {
-            throw new \InvalidArgumentException("Purchase item [{$line->id}] converts to a quantity below warehouse precision.");
+            throw new \InvalidArgumentException(__('inventory::messages.Purchase item [:id] converts to a quantity below warehouse precision.', ['id' => $line->id]));
         }
 
         $totalCost = round((float) $line->total, 4);

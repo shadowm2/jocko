@@ -5,7 +5,6 @@
     <flux:select
         :placeholder="__('inventory::strings.Select Warehouse')"
         wire:model="form.warehouse"
-        disabled
     >
         @foreach ($warehouses as $warehouse)
             <flux:select.option value="{{ $warehouse->slug }}">
@@ -106,8 +105,4 @@
     <flux:error name="form.max_quantity" />
 </flux:field>
 
-<flux:input
-    type="hidden"
-    wire:model="form.warehouse"
-    value="{{ $currentWarehouse?->slug }}"
-/>
+

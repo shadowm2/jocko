@@ -26,7 +26,6 @@ class WarehouseItemEdit extends Component
     public function mount(): void
     {
         $this->form->setWarehouseItem($this->warehouseItem);
-        $this->form->setActiveWarehouse($this->warehouse);
     }
 
     public function save(): void
