@@ -13,7 +13,7 @@
     <x-table.cell>
         <flux:button
             variant="ghost"
-            :href="route('categories.update', ['category' => $row->category])"
+            :href="route('categories.edit', ['category' => $row->category])"
         >
             {{ $row->category->name }}
         </flux:button>
@@ -21,7 +21,7 @@
     <x-table.cell>
         <flux:button
             variant="ghost"
-            :href="route('units.groups.update', ['unitGroup' => $row->unitGroup])"
+            :href="route('units.groups.edit', ['unitGroup' => $row->unitGroup])"
         >
             {{ $row->unitGroup->name }}
         </flux:button>
@@ -38,7 +38,7 @@
     <x-table.cell>
         <flux:button
             :tooltip="__('inventory::strings.Edit Item')"
-            :href="route('items.update', ['item' => $row->slug])"
+            :href="route('items.edit', ['item' => $row->slug])"
             icon="pencil-square"
             variant="ghost"
         />

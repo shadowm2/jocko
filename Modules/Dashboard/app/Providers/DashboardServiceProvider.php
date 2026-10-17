@@ -3,6 +3,7 @@
 namespace Modules\Dashboard\Providers;
 
 use App\Providers\BaseModuleServiceProvider;
+use Modules\Dashboard\Services\SettingService;
 
 class DashboardServiceProvider extends BaseModuleServiceProvider
 {
@@ -32,4 +33,11 @@ class DashboardServiceProvider extends BaseModuleServiceProvider
         EventServiceProvider::class,
         RouteServiceProvider::class,
     ];
+
+    public function boot(): void
+    {
+        parent::boot();
+
+        resolve(SettingService::class)->applyToConfig();
+    }
 }

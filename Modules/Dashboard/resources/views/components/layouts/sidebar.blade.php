@@ -401,7 +401,7 @@
                     icon="wrench"
                     :heading="__('dashboard::strings.General')"
                     class="grid"
-                    :expanded="request()->routeIs(['countries.*', 'provinces.*', 'cities.*', 'categories.*'])"
+                    :expanded="request()->routeIs(['countries.*', 'provinces.*', 'cities.*', 'categories.*', 'system-settings.*'])"
                 >
                     <flux:sidebar.item
                         icon="globe-alt"
@@ -450,6 +450,14 @@
                             {{ __('dashboard::strings.Category Create') }}
                         </flux:sidebar.item>
                     </flux:sidebar.group>
+                    <flux:sidebar.item
+                        icon="key"
+                        :href="route('system-settings.edit')"
+                        :current="request()->routeIs('system-settings.edit')"
+                        wire:navigate
+                    >
+                        {{ __('dashboard::strings.System Settings') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.group>
 

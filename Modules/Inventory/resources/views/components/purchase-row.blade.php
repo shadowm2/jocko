@@ -6,7 +6,7 @@
 
         <flux:button
             variant="ghost"
-            :href="route('suppliers.update', ['supplier' => $row->supplier])"
+            :href="route('suppliers.edit', ['supplier' => $row->supplier])"
         >
             {{ $row->supplier->user->fullName() }}
         </flux:button>
@@ -14,7 +14,7 @@
     <x-table.cell>
         <flux:button
             variant="ghost"
-            :href="route('warehouses.update', ['warehouse' => $row->warehouse])"
+            :href="route('warehouses.edit', ['warehouse' => $row->warehouse])"
         >
             {{ $row->warehouse->name }}
         </flux:button>
@@ -50,7 +50,7 @@
         <flux:button
             icon="pencil-square"
             variant="ghost"
-            :href="route('purchases.update', ['purchase' => $row])"
+            :href="route('purchases.edit', ['purchase' => $row])"
         />
     </x-table.cell>
 </x-table.row>

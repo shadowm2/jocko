@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_items', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->slug();
-            $table->foreignId('order_id')->constrained();
+            $table->string('key')->unique(); // group.field, e.g. kavenegar.api_key
+            $table->text('value')->nullable(); // encrypted
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_items');
+        Schema::dropIfExists('settings');
     }
 };

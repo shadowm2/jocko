@@ -9,10 +9,14 @@
     <flux:heading size="lg">
         {{ __("order::strings.:user User's Order", ['user' => $order?->user->fullName() ?? '']) }}
     </flux:heading>
+    @if ($order)
+        <flux:subheading>{{ $order->order_number }}</flux:subheading>
+    @endif
     <flux:card class="space-y-4">
         <x-order::order-fields
             :$users
             :$userCars
+            :$itemCatalog
             :order="$order"
         />
     </flux:card>

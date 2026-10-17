@@ -72,6 +72,18 @@ class Utils
         ]);
     }
 
+    /**
+     * An Iranian mobile in the form stored in the users table (09121234567),
+     * from 9121234567, 989121234567, +98 912 123 4567, 0098..., Persian digits...
+     * Anything that is not an Iranian mobile comes back as bare digits.
+     */
+    public static function normalizeMobile(string $value): string
+    {
+        $digits = preg_replace('/\D/', '', self::eDigits($value));
+
+        return preg_match('/^(?:0098|98|0)?(9\d{9})$/', $digits, $matches) ? '0'.$matches[1] : $digits;
+    }
+
     public static function eDigits(string $value): string
     {
         return strtr($value, [

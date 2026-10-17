@@ -16,6 +16,9 @@ return new class extends Migration
             $table->slug();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('user_car_id')->constrained('user_car');
+            $table->foreignId('warehouse_id')->constrained()->restrictOnDelete();
+            $table->string('order_number')->unique();
+            $table->string('status')->index();
             $table->text('description')->nullable();
 
             $table->timestamps();

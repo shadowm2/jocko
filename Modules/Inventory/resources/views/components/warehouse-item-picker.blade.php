@@ -191,7 +191,7 @@
                             class="truncate"
                             x-text="item.item.name"
                         ></span>
-                        <span class="text-zinc-400">(<span x-text="$persianDigits(item.quantity)"></span>)</span>
+                        <span class="text-zinc-400">(<span x-text="item.quantity"></span>)</span>
                         <button
                             type="button"
                             @click.stop.prevent="removeItem(item.slug)"
@@ -301,7 +301,7 @@
 
                             <span
                                 class="ms-auto text-xs text-zinc-400"
-                                x-text="$persianDigits(item.quantity)"
+                                x-text="item.quantity"
                             ></span>
                         </button>
                     </template>

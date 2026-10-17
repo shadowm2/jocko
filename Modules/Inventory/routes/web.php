@@ -30,74 +30,57 @@ use Modules\Inventory\Livewire\Warehouses\WarehouseEdit;
 use Modules\Inventory\Livewire\Warehouses\WarehouseList;
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::prefix('units')
-        ->as('units.')
-        ->group(function () {
-            Route::livewire('/list', UnitList::class)->name('index');
-            Route::livewire('/new', UnitCreate::class)->name('create');
-            Route::livewire('/{unit}/edit', UnitEdit::class)->name('update');
+    Route::prefix('units')->as('units.')->group(function () {
+        Route::livewire('/list', UnitList::class)->name('index');
+        Route::livewire('/new', UnitCreate::class)->name('create');
+        Route::livewire('/{unit}/edit', UnitEdit::class)->name('edit');
 
-            Route::prefix('groups')
-                ->as('groups.')
-                ->group(function () {
-                    Route::livewire('/list', UnitGroupList::class)->name('index');
-                    Route::livewire('/new', UnitGroupCreate::class)->name('create');
-                    Route::livewire('/{unitGroup}/edit', UnitGroupEdit::class)->name('update');
-                });
+        Route::prefix('groups')->as('groups.')->group(function () {
+            Route::livewire('/list', UnitGroupList::class)->name('index');
+            Route::livewire('/new', UnitGroupCreate::class)->name('create');
+            Route::livewire('/{unitGroup}/edit', UnitGroupEdit::class)->name('edit');
         });
+    });
 
-    Route::prefix('purchases')
-        ->as('purchases.')
-        ->group(function () {
-            Route::livewire('/list', PurchaseList::class)->name('index');
-            Route::livewire('/new', PurchaseCreate::class)->name('create');
-            Route::livewire('/{purchase}/edit', PurchaseEdit::class)->name('update');
+    Route::prefix('purchases')->as('purchases.')->group(function () {
+        Route::livewire('/list', PurchaseList::class)->name('index');
+        Route::livewire('/new', PurchaseCreate::class)->name('create');
+        Route::livewire('/{purchase}/edit', PurchaseEdit::class)->name('edit');
+    });
+
+    Route::prefix('suppliers')->as('suppliers.')->group(function () {
+        Route::livewire('/list', SupplierList::class)->name('index');
+        Route::livewire('/new', SupplierCreate::class)->name('create');
+        Route::livewire('/{supplier}/edit', SupplierEdit::class)->name('edit');
+    });
+
+    Route::prefix('brands')->as('brands.')->group(function () {
+        Route::livewire('/list', BrandList::class)->name('index');
+        Route::livewire('/new', BrandCreate::class)->name('create');
+        Route::livewire('/{brand}/edit', BrandEdit::class)->name('edit');
+    });
+
+    Route::prefix('items')->as('items.')->group(function () {
+        Route::livewire('/list', ItemList::class)->name('index');
+        Route::livewire('/new', ItemCreate::class)->name('create');
+        Route::livewire('/{item}/edit', ItemEdit::class)->name('edit');
+
+        Route::prefix('{item}/brands')->as('brands.')->group(function () {
+            Route::livewire('/list', ItemBrandList::class)->name('index');
+            Route::livewire('/new', ItemBrandCreate::class)->name('create');
+            Route::livewire('/{itemBrand}/edit', ItemBrandEdit::class)->name('edit');
         });
+    });
 
-    Route::prefix('suppliers')
-        ->as('suppliers.')
-        ->group(function () {
-            Route::livewire('/list', SupplierList::class)->name('index');
-            Route::livewire('/new', SupplierCreate::class)->name('create');
-            Route::livewire('/{supplier}/edit', SupplierEdit::class)->name('update');
+    Route::prefix('warehouses')->as('warehouses.')->group(function () {
+        Route::livewire('/list', WarehouseList::class)->name('index');
+        Route::livewire('/new', WarehouseCreate::class)->name('create');
+        Route::livewire('/{warehouse}/edit', WarehouseEdit::class)->name('edit');
+
+        Route::prefix('items')->as('items.')->group(function () {
+            Route::livewire('/list', WarehouseItemList::class)->name('index');
+            Route::livewire('/{warehouse}/new', WarehouseItemCreate::class)->name('create');
+            Route::livewire('/{warehouse}/{warehouseItem}/edit', WarehouseItemEdit::class)->name('edit');
         });
-
-    Route::prefix('brands')
-        ->as('brands.')
-        ->group(function () {
-            Route::livewire('/list', BrandList::class)->name('index');
-            Route::livewire('/new', BrandCreate::class)->name('create');
-            Route::livewire('/{brand}/edit', BrandEdit::class)->name('update');
-        });
-
-    Route::prefix('items')
-        ->as('items.')
-        ->group(function () {
-            Route::livewire('/list', ItemList::class)->name('index');
-            Route::livewire('/new', ItemCreate::class)->name('create');
-            Route::livewire('/{item}/edit', ItemEdit::class)->name('update');
-            Route::prefix('/{item}/brands')
-                ->as('brands.')
-                ->group(function () {
-                    Route::livewire('/list', ItemBrandList::class)->name('index');
-                    Route::livewire('/new', ItemBrandCreate::class)->name('create');
-                    Route::livewire('/{itemBrand}/edit', ItemBrandEdit::class)->name('update');
-                });
-        });
-    Route::prefix('warehouses')
-        ->as('warehouses.')
-        ->group(function () {
-            Route::livewire('/list', WarehouseList::class)->name('index');
-            Route::livewire('/create', WarehouseCreate::class)->name('create');
-            Route::livewire('/{warehouse}/edit', WarehouseEdit::class)->name('update');
-
-            Route::prefix('/items')
-                ->as('items.')
-                ->group(function () {
-                    Route::livewire('/list', WarehouseItemList::class)->name('index');
-                    Route::livewire('/{warehouse}/create', WarehouseItemCreate::class)->name('create');
-                    Route::livewire('/{warehouse}/{warehouseItem}/edit', WarehouseItemEdit::class)->name('update');
-                });
-        });
-
+    });
 });

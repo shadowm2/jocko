@@ -22,6 +22,13 @@ return [
         'key' => env('RESEND_API_KEY'),
     ],
 
+    'kavenegar' => [
+        'key' => env('KAVENEGAR_API_KEY'),
+        'sender' => env('KAVENEGAR_SENDER'),
+        'otp_template' => env('KAVENEGAR_OTP_TEMPLATE'),
+        'enabled' => env('SMS_ENABLED', true),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

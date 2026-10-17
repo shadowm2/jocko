@@ -4,7 +4,7 @@ import { isRtl, toPersianDigits } from "@dashboard/localized-digits.js";
 // calculator independent of nested component refs.
 export default function numericLine() {
     return {
-        total: "0.00",
+        total: "0",
         quantity: 0,
         unitPrice: 0,
 
@@ -30,7 +30,9 @@ export default function numericLine() {
         updateTotal() {
             const quantity = this.parseNumber(this.quantity);
             const unitPrice = this.parseNumber(this.unitPrice);
-            const total = (quantity * unitPrice).toFixed(2);
+            const total = (quantity * unitPrice).toLocaleString("en-US", {
+                maximumFractionDigits: 2,
+            });
 
             this.total = isRtl(this.$el) ? toPersianDigits(total) : total;
         },

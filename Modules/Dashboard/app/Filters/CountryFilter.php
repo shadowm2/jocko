@@ -6,8 +6,6 @@ use App\Filters\BaseFilter;
 
 class CountryFilter extends BaseFilter
 {
-
-
     protected function filter(): void
     {
         if (isset($this->filters['is_active'])) {
