@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Order\app\Livewire;
+namespace Modules\Order\Livewire;
 
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -14,12 +14,13 @@ class OrdersList extends Component
     public function render(OrderService $orderService): View
     {
         $columns = [
-            [
-                'label' => __('order::attributes.User Name'),
-            ],
-            [
-                'label' => __('order::attributes.User Car'),
-            ],
+            ['label' => __('order::attributes.Order Number')],
+            ['label' => __('order::attributes.User Name')],
+            ['label' => __('order::attributes.User Car')],
+            ['label' => __('order::attributes.Warehouse')],
+            ['label' => __('order::attributes.Items and Total')],
+            ['label' => __('order::attributes.Order Status')],
+            ['label' => __('order::attributes.Payment Status')],
             [],
         ];
         $orders = $orderService->getOrders([]);
@@ -30,7 +31,7 @@ class OrdersList extends Component
         ])
             ->layout('dashboard::layouts.app')
             ->layoutData([
-                'title' => __('dashboard::strings.Cars'),
+                'title' => __('order::strings.Orders'),
             ]);
     }
 }

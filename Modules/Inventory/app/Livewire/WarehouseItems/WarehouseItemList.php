@@ -44,6 +44,10 @@ class WarehouseItemList extends Component
                 'type' => 'float',
             ],
             [
+                'label' => __('inventory::attributes.Stock Status'),
+                'component' => 'inventory::warehouse-item-stock-status-cell',
+            ],
+            [
                 'label' => '',
                 'component' => 'inventory::warehouse-item-action-cell',
             ],

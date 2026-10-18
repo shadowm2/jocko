@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'Log in to your account' => 'Log in to your account',
+    'Login' => 'Log in',
+    'Enter your mobile and password below to log in' => 'Enter your mobile number and password below to log in',
+    'Remember Me' => 'Remember me',
+    'Sign Up' => 'Sign up',
+    'Don\'t have an account?' => 'Don\'t have an account?',
+    'Create account' => 'Create account',
+    'Enter your details below to create your account' => 'Enter your details below to create your account',
+    'Already have an account?' => 'Already have an account?',
+    'Security Settings' => 'Security settings',
+    'Update password' => 'Update password',
+    'Ensure your account is using a long, random password to stay secure' => 'Ensure your account is using a long, random password to stay secure',
+    'Log in with SMS code' => 'Log in with SMS code',
+    'Log in with password' => 'Log in with password',
+    'Enter your mobile number to receive a login code' => 'Enter your mobile number to receive a login code by SMS',
+    'A login code has been sent to :mobile' => 'A login code has been sent to :mobile',
+    'This mobile number is not registered for login.' => 'This mobile number is not registered for login.',
+    'Send code' => 'Send code',
+    'Resend code' => 'Resend code',
+    'Change number' => 'Change number',
+    'Could not send the code. Please try again later.' => 'Could not send the code. Please try again later.',
+    'The code is invalid or has expired.' => 'The code is invalid or has expired.',
+    'Your login code is :code' => 'Your login code is :code',
+];

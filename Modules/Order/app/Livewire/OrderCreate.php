@@ -1,20 +1,17 @@
 <?php
 
-namespace Modules\Order\app\Livewire;
+namespace Modules\Order\Livewire;
 
 use Flux\Flux;
 use Illuminate\View\View;
 use Livewire\Component;
-use Modules\Order\app\Livewire\Forms\OrderForm;
-use Modules\Order\app\Models\Order;
+use Modules\Order\Livewire\Concerns\ManagesOrderItems;
 use Modules\User\Services\UserCarService;
 use Modules\User\Services\UserService;
 
 class OrderCreate extends Component
 {
-    public Order $order;
-
-    public OrderForm $form;
+    use ManagesOrderItems;
 
     public function save(): void
     {
@@ -30,10 +27,14 @@ class OrderCreate extends Component
     ): View {
         $users = $userService->getUsers(paginate: false);
         $userCars = $userCarService->getUserCars($this->form->user_id);
+        $itemCatalog = $this->form->selectedCatalog();
 
         return view('order::livewire.order-create', [
-            ...compact('userCars', 'users'),
+            ...compact('userCars', 'users', 'itemCatalog'),
         ])
-            ->layout('dashboard::layouts.app');
+            ->layout('dashboard::layouts.app')
+            ->layoutData([
+                'title' => __('order::strings.Submit Order'),
+            ]);
     }
 }

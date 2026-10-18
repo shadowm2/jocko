@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'Order' => 'Order',
+    'Orders' => 'Orders',
+    'Orders List' => 'Orders list',
+    'Save Order' => 'Save order',
+    ':user User\'s Order' => 'Order of user :user',
+    'User' => 'User',
+    'Edit Order' => 'Edit order',
+    'Submit Order' => 'Submit order',
+    'Enter order description' => 'Enter the order description',
+    'Payments' => 'Payments',
+    'Payments List' => 'Payments list',
+    'Submit Payment' => 'Submit payment',
+    'Edit Payment' => 'Edit payment',
+    'Save Payment' => 'Save payment',
+    'Select Order' => 'Select order',
+    'Enter payment description' => 'Enter the payment description',
+    'payment_methods' => [
+        'cash' => 'Cash',
+        'card' => 'Card',
+        'transfer' => 'Bank transfer',
+        'cheque' => 'Cheque',
+    ],
+    'payment_statuses' => [
+        'unpaid' => 'Unpaid',
+        'partial' => 'Partially paid',
+        'paid' => 'Paid',
+    ],
+];

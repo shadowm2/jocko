@@ -6,7 +6,6 @@ use App\Filters\BaseFilter;
 use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Inventory\Enums\PurchaseStatus;
-use Morilog\Jalali\Jalalian;
 
 class PurchaseFilter extends BaseFilter
 {
@@ -38,12 +37,12 @@ class PurchaseFilter extends BaseFilter
             $this->builder->where('supplier_id', (int) $supplierId);
         }
 
-        $orderedFrom = $this->validDate($this->filters['ordered_from'] ?? null);
+        $orderedFrom = Utils::jalaliToDate($this->filters['ordered_from'] ?? null);
         if ($orderedFrom !== null) {
             $this->builder->whereDate('ordered_at', '>=', $orderedFrom);
         }
 
-        $orderedTo = $this->validDate($this->filters['ordered_to'] ?? null);
+        $orderedTo = Utils::jalaliToDate($this->filters['ordered_to'] ?? null);
         if ($orderedTo !== null) {
             $this->builder->whereDate('ordered_at', '<=', $orderedTo);
         }
@@ -57,25 +56,5 @@ class PurchaseFilter extends BaseFilter
         $sortBy = $sortColumns[$this->filters['sort_by'] ?? ''] ?? 'ordered_at';
         $direction = ($this->filters['sort_direction'] ?? '') === 'asc' ? 'asc' : 'desc';
         $this->builder->orderBy($sortBy, $direction)->orderBy('id', 'desc');
-    }
-
-    private function validDate(mixed $value): ?string
-    {
-        $value = Utils::eDigits($value);
-        try {
-
-            if (! is_string($value) || ! Jalalian::fromFormat('Y/m/d', $value)) {
-                return null;
-            }
-        } catch (\Exception $e) {
-            if ($value) {
-                dd($value);
-            }
-
-            //            dd($e);
-            return null;
-        }
-
-        return Jalalian::fromFormat('Y/m/d', $value)?->toCarbon()->toDateString();
     }
 }

@@ -10,4 +10,6 @@ return [
     'City Updated Successfully' => 'شهر با موفقیت ویرایش شد',
     'Category Created Successfully' => 'دسته بندی جدید با موفقیت ایجاد شد',
     'Category Updated Successfully' => 'دسته بندی با موفقیت ویرایش شد',
+    'Settings Saved Successfully' => 'تنظیمات با موفقیت ذخیره شد',
+    'Setting Cleared Successfully' => 'تنظیم با موفقیت پاک شد',
 ];

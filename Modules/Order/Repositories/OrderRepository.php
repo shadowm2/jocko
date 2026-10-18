@@ -3,8 +3,8 @@
 namespace Modules\Order\Repositories;
 
 use App\Repositories\BaseRepository;
-use Modules\Order\app\Filters\OrderFilter;
-use Modules\Order\app\Models\Order;
+use Modules\Order\Filters\OrderFilter;
+use Modules\Order\Models\Order;
 use Modules\Order\Repositories\Contracts\OrderRepositoryInterface;
 
 /**
@@ -20,7 +20,10 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     public function withRelations(): OrderRepository
     {
         $this->query()
-            ->with([]);
+            ->with(['user', 'userCar.car', 'warehouse'])
+            ->withCount('items')
+            ->withSum('items', 'total')
+            ->withSum('payments', 'amount');
 
         return $this;
     }

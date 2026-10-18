@@ -19,4 +19,9 @@ return [
     'Warehouse Item Updated Successfully' => 'کالای انبار با موفقیت ویرایش شد',
     'Purchase Order Created Successfully' => 'سفارش خرید با موفقیت ایجاد شد',
     'Purchase Order Updated Successfully' => 'سفارش خرید با موفقیت ویرایش شد',
+    'Insufficient Stock' => 'موجودی انبار کافی نیست',
+    'Stock Adjustment Recorded Successfully' => 'تعدیل موجودی با موفقیت ثبت شد',
+    'No Stock Change' => 'موجودی تغییری نمی کند',
+    'Stock Transfer Recorded Successfully' => 'انتقال موجودی با موفقیت ثبت شد',
+    'Same Warehouse' => 'انبار مقصد باید با انبار مبدا متفاوت باشد',
 ];

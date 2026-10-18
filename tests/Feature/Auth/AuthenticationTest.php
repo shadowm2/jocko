@@ -1,7 +1,8 @@
 <?php
 
-use Modules\User\App\Models\User;
 use Laravel\Fortify\Features;
+use Modules\User\Enums\UserType;
+use Modules\User\Models\User;
 
 test('login screen can be rendered', function () {
     $response = $this->get(route('login'));
@@ -10,10 +11,10 @@ test('login screen can be rendered', function () {
 });
 
 test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['type' => UserType::Admin, 'password' => 'password']);
 
     $response = $this->post(route('login.store'), [
-        'email' => $user->email,
+        'mobile' => $user->mobile,
         'password' => 'password',
     ]);
 
@@ -25,14 +26,14 @@ test('users can authenticate using the login screen', function () {
 });
 
 test('users can not authenticate with invalid password', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['type' => UserType::Admin]);
 
     $response = $this->post(route('login.store'), [
-        'email' => $user->email,
+        'mobile' => $user->mobile,
         'password' => 'wrong-password',
     ]);
 
-    $response->assertSessionHasErrorsIn('email');
+    $response->assertSessionHasErrors('mobile');
 
     $this->assertGuest();
 });
@@ -48,7 +49,7 @@ test('users with two factor enabled are redirected to two factor challenge', fun
     $user = User::factory()->withTwoFactor()->create();
 
     $response = $this->post(route('login.store'), [
-        'email' => $user->email,
+        'mobile' => $user->mobile,
         'password' => 'password',
     ]);
 

@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Livewire\Livewire;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class BaseModuleServiceProvider extends ModuleServiceProvider
@@ -51,35 +50,4 @@ class BaseModuleServiceProvider extends ModuleServiceProvider
     // {
     //     $schedule->command('inspire')->hourly();
     // }
-
-    public function boot(): void
-    {
-        parent::boot();
-
-        $this->loadLivewireComponents();
-    }
-
-    protected function loadLivewireComponents(): void
-    {
-        $reflection = new \ReflectionClass($this);
-        /** @var string $filePath */
-        $filePath = $reflection->getFileName();
-        $directory = dirname($filePath).'/../Livewire/';
-
-        if (! is_dir($directory)) {
-            return;
-        }
-
-        /** @var list<string> $files */
-        $files = glob($directory.'/*.php');
-        foreach ($files as $file) {
-            $className = basename($file, '.php');
-            $namespace = 'Modules\\'.$this->name.'\\app\\Livewire\\'.$className;
-
-            if (class_exists($namespace)) {
-                $alias = str($className)->kebab()->toString();
-                Livewire::component($alias, $namespace);
-            }
-        }
-    }
 }

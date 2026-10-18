@@ -2,7 +2,7 @@
 <div>
     <flux:button
         :tooltip="__('inventory::strings.Edit Unit Group')"
-        :href="route('units.groups.update', ['unitGroup' => $row->slug])"
+        :href="route('units.groups.edit', ['unitGroup' => $row->slug])"
         icon="pencil-square"
         variant="ghost"
     />

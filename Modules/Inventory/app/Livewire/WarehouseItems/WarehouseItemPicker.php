@@ -2,6 +2,7 @@
 
 namespace Modules\Inventory\Livewire\WarehouseItems;
 
+use App\Helpers\Utils;
 use Illuminate\Contracts\View\View;
 use InvalidArgumentException;
 use Livewire\Attributes\Modelable;
@@ -143,7 +144,7 @@ class WarehouseItemPicker extends Component
                 'item' => [
                     'name' => $warehouseItem->item->name,
                 ],
-                'quantity' => $warehouseItem->quantity,
+                'quantity' => Utils::formatQuantity($warehouseItem->quantity, thousandsSeparator: ','),
             ])
             ->values()
             ->all();

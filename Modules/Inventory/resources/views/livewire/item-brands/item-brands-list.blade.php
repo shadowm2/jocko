@@ -4,7 +4,7 @@
             <flux:text>
                 {{ __('inventory::attributes.Item Name') }}
             </flux:text>
-            <flux:link :href="route('items.update', ['item' => $item])">
+            <flux:link :href="route('items.edit', ['item' => $item])">
                 <span class="text-bold text-lg">
                     {{ $item->name }}
                 </span>
