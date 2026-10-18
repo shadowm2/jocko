@@ -194,6 +194,7 @@ return [
     'Shop Name' => 'نام فروشگاه',
     'Shop Address' => 'نشانی',
     'Shop Phone' => 'تلفن',
+    'Low Stock Alert Mobile' => 'موبایل دریافت هشدار کمبود موجودی',
     'Save Settings' => 'ذخیره تنظیمات',
     'Set' => 'تنظیم شده',
     'Not Set' => 'تنظیم نشده',

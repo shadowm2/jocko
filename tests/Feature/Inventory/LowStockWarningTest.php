@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
+use Modules\Dashboard\Exceptions\SmsException;
+use Modules\Dashboard\Facades\Sms;
 use Modules\Inventory\Enums\StockMovementType;
 use Modules\Inventory\Events\StockRunningLow;
 use Modules\Inventory\Livewire\StockMovements\StockAdjustmentCreate;
@@ -93,4 +95,51 @@ it('shows a warning toast on the adjustment page, and only when the stock runs l
 
     $adjust('5')->assertHasNoErrors()->assertNotDispatched('toast-show', $warning);
     $adjust('15')->assertHasNoErrors()->assertDispatched('toast-show', $warning);
+});
+
+describe('text message', function () {
+    beforeEach(fn () => config(['shop.alert_mobile' => '09121234567']));
+
+    it('texts the alert number once, when stock first drops to the minimum', function () {
+        Sms::shouldReceive('send')->once()->with('09121234567', Mockery::on(fn (string $text) => str_contains($text, 'Oil') && str_contains($text, 'Main')));
+
+        ($this->adjust)(-15);
+        ($this->adjust)(-10);
+        ($this->adjust)(-1);
+    });
+
+    it('does not text again when an order is saved again while the item is already low', function () {
+        Sms::shouldReceive('send')->once();
+        $order = Order::forceCreate([
+            'slug' => 'o1', 'user_id' => 1, 'user_car_id' => 1, 'warehouse_id' => $this->main->id,
+            'order_number' => 'ORD-00001', 'status' => OrderStatus::PENDING,
+        ]);
+        $save = fn () => resolve(OrderService::class)->update($order, ['items' => ['main-oil' => ['quantity' => 25, 'unit_price' => 5, 'unit_id' => $this->piece->id]]]);
+
+        $save();
+        $save();
+
+        expect((float) $this->stock->fresh()->quantity)->toBe(5.0);
+    });
+
+    it('texts for a transfer that empties the source down to its minimum', function () {
+        Sms::shouldReceive('send')->once();
+
+        resolve(StockMovementService::class)->transfer($this->stock, $this->spare, 25);
+    });
+
+    it('sends nothing without an alert number', function () {
+        config(['shop.alert_mobile' => null]);
+        Sms::shouldReceive('send')->never();
+
+        ($this->adjust)(-25);
+    });
+
+    it('still saves the change when the text fails', function () {
+        Sms::shouldReceive('send')->once()->andThrow(new SmsException('API key is not set'));
+
+        ($this->adjust)(-25);
+
+        expect((float) $this->stock->fresh()->quantity)->toBe(5.0);
+    });
 });

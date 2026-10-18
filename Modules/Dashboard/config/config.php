@@ -31,6 +31,11 @@ return [
                     'config' => 'shop.phone',
                     'rules' => 'nullable|string|max:50',
                 ],
+                'alert_mobile' => [
+                    'label' => 'dashboard::strings.Low Stock Alert Mobile',
+                    'config' => 'shop.alert_mobile',
+                    'rules' => 'nullable|string|max:20',
+                ],
             ],
         ],
         'kavenegar' => [
