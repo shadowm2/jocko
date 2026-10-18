@@ -194,6 +194,7 @@ return [
     'Shop Name' => 'Shop name',
     'Shop Address' => 'Address',
     'Shop Phone' => 'Phone',
+    'Low Stock Alert Mobile' => 'Mobile for low stock alerts',
     'Save Settings' => 'Save settings',
     'Set' => 'Set',
     'Not Set' => 'Not set',

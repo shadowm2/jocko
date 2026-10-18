@@ -201,6 +201,7 @@ class StockMovementService extends BaseService
             }
 
             // Put the old deduction back first, then take the full new quantity.
+            $before = (float) $warehouseItem->quantity;
             $movement = $movements->get($itemId);
             if ($movement) {
                 WarehouseItem::find($movement->warehouse_item_id)?->increment('quantity', $movement->quantity);
@@ -217,7 +218,7 @@ class StockMovementService extends BaseService
             }
 
             $warehouseItem->decrement('quantity', $quantity);
-            $this->warnIfLow($warehouseItem);
+            $this->warnIfLow($warehouseItem, $before);
 
             $attributes = [
                 'warehouse_item_id' => $warehouseItem->id,
@@ -270,11 +271,12 @@ class StockMovementService extends BaseService
                 ]);
             }
 
+            $before = (float) $warehouseItem->quantity;
             $warehouseItem->increment('quantity', $delta);
             $warehouseItem->refresh();
 
             if ($delta < 0) {
-                $this->warnIfLow($warehouseItem);
+                $this->warnIfLow($warehouseItem, $before);
             }
 
             return $this->repository->create([
@@ -334,11 +336,12 @@ class StockMovementService extends BaseService
                     'quantity' => 0,
                 ]);
 
+            $before = (float) $source->quantity;
             $source->decrement('quantity', $quantity);
             $target->increment('quantity', $quantity);
             $source->refresh();
 
-            $this->warnIfLow($source);
+            $this->warnIfLow($source, $before);
 
             return $this->repository->create([
                 'slug' => Utils::generateUniqueSlug('sm '.$source->slug.' transfer', StockMovement::class),
@@ -359,10 +362,10 @@ class StockMovementService extends BaseService
      * After stock was taken out: once the change is saved (not if it rolls
      * back), tell the user when the item is now at or below its minimum.
      */
-    private function warnIfLow(WarehouseItem $warehouseItem): void
+    private function warnIfLow(WarehouseItem $warehouseItem, float $before): void
     {
         if ($warehouseItem->isLowStock()) {
-            DB::afterCommit(fn () => event(new StockRunningLow($warehouseItem)));
+            DB::afterCommit(fn () => event(new StockRunningLow($warehouseItem, $before)));
         }
     }
 

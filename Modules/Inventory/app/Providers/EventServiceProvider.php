@@ -5,6 +5,7 @@ namespace Modules\Inventory\Providers;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Modules\Inventory\Events\StockRunningLow;
 use Modules\Inventory\Listeners\NotifyLowStock;
+use Modules\Inventory\Listeners\TextLowStock;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        StockRunningLow::class => [NotifyLowStock::class],
+        StockRunningLow::class => [NotifyLowStock::class, TextLowStock::class],
     ];
 
     /**
