@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Order\Livewire\OrderCreate;
 use Modules\Order\Livewire\OrderEdit;
+use Modules\Order\Livewire\OrderInvoice;
 use Modules\Order\Livewire\OrdersList;
 use Modules\Order\Livewire\PaymentCreate;
 use Modules\Order\Livewire\PaymentEdit;
@@ -13,6 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::livewire('/list', OrdersList::class)->name('index');
         Route::livewire('/new', OrderCreate::class)->name('create');
         Route::livewire('/{order}/edit', OrderEdit::class)->name('edit');
+        Route::livewire('/{order}/invoice', OrderInvoice::class)->name('invoice');
     });
 
     Route::prefix('payments')->as('payments.')->group(function () {

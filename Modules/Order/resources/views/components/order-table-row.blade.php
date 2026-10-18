@@ -37,5 +37,12 @@
             icon="pencil-square"
             variant="ghost"
         />
+        <flux:button
+            href="{{ route('orders.invoice', ['order' => $row]) }}"
+            target="_blank"
+            :tooltip="__('order::strings.Invoice')"
+            icon="printer"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>
