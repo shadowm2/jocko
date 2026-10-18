@@ -8,4 +8,5 @@ return [
     'Confirm Password' => 'تکرار رمز عبور',
     'New password' => 'رمز عبور جدید',
     'Current password' => 'رمز عبور فعلی',
+    'Code' => 'کد',
 ];

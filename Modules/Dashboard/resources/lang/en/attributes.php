@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'First Name' => 'First name',
+    'Last Name' => 'Last name',
+    'Email' => 'Email',
+    'Save' => 'Save',
+    'Delete Account' => 'Delete account',
+    'Mobile' => 'Mobile number',
+    'Password' => 'Password',
+    'Cancel' => 'Cancel',
+    'Confirm' => 'Confirm',
+    'Country Name' => 'Country name',
+    'Country Code' => 'Country code (2 letters)',
+    'Country Code3' => 'Country code (3 letters)',
+    'Is Active' => 'Active',
+    'Province Name' => 'Province name',
+    'Province Country' => 'Country',
+    'City Name' => 'City name',
+    'City Province' => 'Province',
+    'City' => 'City',
+    'Category Name' => 'Category name',
+    'Category Type' => 'Category type',
+    'Category Description' => 'Description',
+    'Category Sort Order' => 'Priority',
+    'Category Icon' => 'Icon',
+    'Category Parent' => 'Parent category',
+];

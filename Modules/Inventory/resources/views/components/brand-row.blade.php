@@ -20,7 +20,7 @@
     <x-table.cell>
         <flux:button
             :tooltip="__('inventory::strings.Edit Brand')"
-            :href="route('brands.update', ['brand' => $row->slug])"
+            :href="route('brands.edit', ['brand' => $row->slug])"
             icon="pencil-square"
             variant="ghost"
         />

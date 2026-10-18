@@ -1,9 +1,12 @@
 <?php
 
-namespace Modules\Order\database\factories;
+namespace Modules\Order\Database\Factories;
 
+use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Order\app\Models\Order;
+use Modules\Inventory\Models\Warehouse;
+use Modules\Order\Enums\OrderStatus;
+use Modules\Order\Models\Order;
 
 class OrderFactory extends Factory
 {
@@ -17,6 +20,15 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        return [];
+        $orderNumber = Order::nextNumber();
+
+        return [
+            'slug' => Utils::generateUniqueSlug($orderNumber, Order::class),
+            // Warehouses are seeded separately; pick an existing one.
+            'warehouse_id' => Warehouse::query()->inRandomOrder()->value('id'),
+            'order_number' => $orderNumber,
+            'status' => $this->faker->randomElement(OrderStatus::cases()),
+            'description' => $this->faker->optional()->sentence(),
+        ];
     }
 }

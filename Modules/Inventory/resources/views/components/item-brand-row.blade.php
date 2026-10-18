@@ -1,19 +1,9 @@
 <x-table.row>
     <x-table.cell>
-        <flux:button
-            variant="ghost"
-            :href="route('items.update', ['item' => $row->item])"
-        >
-            {{ $row->item->name }}
-        </flux:button>
+        <flux:link :href="route('items.edit', ['item' => $row->item])">{{ $row->item->name }}</flux:link>
     </x-table.cell>
     <x-table.cell>
-        <flux:button
-            variant="ghost"
-            :href="route('brands.update', ['brand' => $row->brand])"
-        >
-            {{ $row->brand->name }}
-        </flux:button>
+        <flux:link :href="route('brands.edit', ['brand' => $row->brand])">{{ $row->brand->name }}</flux:link>
     </x-table.cell>
     <x-table.cell>
         {{ $row->sku }}
@@ -39,7 +29,7 @@
     <x-table.cell>
         <flux:button
             :tooltip="__('inventory::strings.Edit Item Brand')"
-            :href="route('items.brands.update', ['item' => $item, 'itemBrand' => $row])"
+            :href="route('items.brands.edit', ['item' => $item, 'itemBrand' => $row])"
             icon="pencil-square"
             variant="ghost"
         />

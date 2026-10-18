@@ -20,7 +20,7 @@ class StockMovementRepository extends BaseRepository implements StockMovementRep
     public function withRelations(): StockMovementRepository
     {
         $this->query()
-            ->with([]);
+            ->with(['item', 'fromWarehouse', 'toWarehouse', 'user', 'reference']);
 
         return $this;
     }

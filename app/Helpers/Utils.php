@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Morilog\Jalali\Jalalian;
 
 class Utils
 {
@@ -70,6 +71,40 @@ class Utils
             '8' => '۸',
             '9' => '۹',
         ]);
+    }
+
+    /**
+     * An Iranian mobile in the form stored in the users table (09121234567),
+     * from 9121234567, 989121234567, +98 912 123 4567, 0098..., Persian digits...
+     * Anything that is not an Iranian mobile comes back as bare digits.
+     */
+    public static function normalizeMobile(string $value): string
+    {
+        $digits = preg_replace('/\D/', '', self::eDigits($value));
+
+        return preg_match('/^(?:0098|98|0)?(9\d{9})$/', $digits, $matches) ? '0'.$matches[1] : $digits;
+    }
+
+    /**
+     * A Jalali Y/m/d date as typed or picked in a filter, as a Gregorian Y-m-d
+     * string. Anything that is not one, e.g. a half typed date, gives null.
+     */
+    public static function jalaliToDate(mixed $value): ?string
+    {
+        if (! is_string($value)) {
+            return null;
+        }
+
+        $value = str_replace('-', '/', self::eDigits(trim($value)));
+        if (! preg_match('#^\d{4}/\d{2}/\d{2}$#', $value)) {
+            return null;
+        }
+
+        try {
+            return Jalalian::fromFormat('Y/m/d', $value)->toCarbon()->toDateString();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     public static function eDigits(string $value): string

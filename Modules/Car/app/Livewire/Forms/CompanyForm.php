@@ -12,25 +12,20 @@ class CompanyForm extends ImageForm
 
     public string $name;
 
-    public ?CarCompany $company;
+    public ?CarCompany $company = null;
 
     public function rules()
     {
         return [
             'name' => 'required|unique:Modules\Car\Models\CarCompany,name'.
                 ($this->id ? ",{$this->id}" : ''),
-            ...$this->getImageRules($this->company->logo),
+            ...$this->getImageRules($this->company?->logo),
         ];
     }
 
     public function save(): void
     {
-        try {
-
-            $data = $this->validate();
-        } catch (\Exception $exception) {
-            dd($exception);
-        }
+        $data = $this->validate();
 
         $companyService = resolve(CarCompanyService::class);
 

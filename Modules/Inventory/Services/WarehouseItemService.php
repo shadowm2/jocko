@@ -7,6 +7,8 @@ use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Modules\Inventory\Enums\StockMovementType;
 use Modules\Inventory\Models\Item;
 use Modules\Inventory\Models\Warehouse;
 use Modules\Inventory\Models\WarehouseItem;
@@ -41,19 +43,24 @@ class WarehouseItemService extends BaseService
         $data = $this->interpretData($data);
         $item = resolve(ItemService::class)->findByKey($data['item']);
         $warehouse = resolve(WarehouseService::class)->findByKey($data['warehouse']);
-        $warehouseItem = $this->itemInWarehouse($item, $warehouse);
-        if ($warehouseItem) {
-            $data['quantity'] += $warehouseItem->quantity;
+        $quantity = (float) ($data['quantity'] ?? 0);
+        unset($data['quantity']);
 
-            parent::update($warehouseItem, $data);
+        return DB::transaction(function () use ($data, $item, $warehouse, $quantity): WarehouseItem {
+            $warehouseItem = $this->itemInWarehouse($item, $warehouse);
+            if ($warehouseItem) {
+                parent::update($warehouseItem, $data);
+                $type = StockMovementType::ADJUSTMENT;
+            } else {
+                $data['slug'] ??= Utils::generateUniqueSlug('wi '.$data['warehouse'].' '.$data['item'], WarehouseItem::class);
+                $warehouseItem = parent::create($data);
+                $type = StockMovementType::INITIAL_STOCK;
+            }
+
+            resolve(StockMovementService::class)->adjust($warehouseItem, $quantity, $type);
 
             return $warehouseItem->refresh();
-        } else {
-            $data['slug'] ??= Utils::generateUniqueSlug('wi '.$data['warehouse'].' '.$data['item'], WarehouseItem::class);
-
-            return parent::create($data);
-        }
-
+        });
     }
 
     public function update(int|Model $model, array $data): bool
@@ -61,7 +68,24 @@ class WarehouseItemService extends BaseService
         unset($data['item']);
         $data = $this->interpretData($data);
 
-        return parent::update($model, $data);
+        // The form edits the quantity as a value; stock only changes through movements.
+        $newQuantity = $data['quantity'] ?? null;
+        unset($data['quantity']);
+
+        return DB::transaction(function () use ($model, $data, $newQuantity): bool {
+            $model = $model instanceof Model ? $model : $this->findOrFail($model);
+            $updated = parent::update($model, $data);
+
+            if ($newQuantity !== null) {
+                resolve(StockMovementService::class)->adjust(
+                    $model,
+                    (float) $newQuantity - (float) $model->quantity,
+                    StockMovementType::ADJUSTMENT,
+                );
+            }
+
+            return $updated;
+        });
     }
 
     protected function interpretData(array $data): array

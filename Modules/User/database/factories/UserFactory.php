@@ -33,8 +33,14 @@ class UserFactory extends Factory
             'type' => $type,
             'slug' => $slug,
             'email' => $this->faker->unique()->safeEmail(),
+            'email_verified_at' => now(),
             'mobile' => Utils::iranianMobile(),
             'password' => Hash::make($password),
         ];
+    }
+
+    public function unverified(): static
+    {
+        return $this->state(['email_verified_at' => null]);
     }
 }

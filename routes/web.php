@@ -2,4 +2,5 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+// Guests go on to the login page through the dashboard's auth middleware.
+Route::redirect('/', '/dashboard')->name('home');

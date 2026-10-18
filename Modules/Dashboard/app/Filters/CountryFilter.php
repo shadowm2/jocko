@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CountryFilter extends BaseFilter
 {
-
-
     protected function filter(): void
     {
         $search = trim((string) ($this->filters['search'] ?? ''));

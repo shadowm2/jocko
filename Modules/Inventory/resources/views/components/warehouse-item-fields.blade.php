@@ -22,7 +22,7 @@
     <flux:select
         :placeholder="__('inventory::strings.Select Warehouse Item')"
         wire:model="form.item"
-        :disabled="request()->routeIs('warehouses.items.update')"
+        :disabled="request()->routeIs('warehouses.items.edit')"
     >
         @foreach ($items as $item)
             <flux:select.option value="{{ $item->slug }}">

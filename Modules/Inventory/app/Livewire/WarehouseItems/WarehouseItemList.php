@@ -37,6 +37,10 @@ class WarehouseItemList extends Component
                 'label' => __('inventory::attributes.Warehouse Item Max Quantity'),
             ],
             [
+                'label' => __('inventory::attributes.Stock Status'),
+                'component' => 'inventory::warehouse-item-stock-status-cell',
+            ],
+            [
                 'label' => '',
                 'component' => 'inventory::warehouse-item-action-cell',
             ],

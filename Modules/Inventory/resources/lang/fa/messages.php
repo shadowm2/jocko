@@ -20,4 +20,10 @@ return [
     'Purchase Order Created Successfully' => 'سفارش خرید با موفقیت ایجاد شد',
     'Purchase Order Updated Successfully' => 'سفارش خرید با موفقیت ویرایش شد',
     'Purchase item [:id] converts to a quantity below warehouse precision.' => 'آیتم خرید [:id] به مقداری کمتر از دقت انبار تبدیل می‌شود.',
+    'Insufficient Stock' => 'موجودی انبار کافی نیست',
+    'Stock Adjustment Recorded Successfully' => 'تعدیل موجودی با موفقیت ثبت شد',
+    'No Stock Change' => 'موجودی تغییری نمی کند',
+    'Stock Transfer Recorded Successfully' => 'انتقال موجودی با موفقیت ثبت شد',
+    'Same Warehouse' => 'انبار مقصد باید با انبار مبدا متفاوت باشد',
+    'Low Stock Warning' => 'موجودی :item در :warehouse به :quantity رسید (حداقل :minimum)',
 ];

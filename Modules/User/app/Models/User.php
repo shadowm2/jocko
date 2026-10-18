@@ -32,7 +32,7 @@ use Modules\User\Enums\UserType;
  * @extends BaseAuthenticatableModel<User>
  */
 #[Fillable(['slug', 'first_name', 'last_name', 'mobile', 'password', 'email', 'type'])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
+#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'otp_code'])]
 class User extends BaseAuthenticatableModel
 {
     /** @use HasFactory<UserFactory> */
@@ -47,6 +47,7 @@ class User extends BaseAuthenticatableModel
     {
         return [
             'email_verified_at' => 'datetime',
+            'otp_issued_at' => 'datetime',
             'password' => 'hashed',
             'type' => UserType::class,
         ];

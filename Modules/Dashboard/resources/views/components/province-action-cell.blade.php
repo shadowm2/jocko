@@ -2,7 +2,7 @@
 <div>
     <flux:button
         :tooltip="__('dashboard::strings.Edit Province')"
-        :href="route('provinces.update', ['province' => $row->slug])"
+        :href="route('provinces.edit', ['province' => $row->slug])"
         icon="pencil-square"
         variant="ghost"
     />
