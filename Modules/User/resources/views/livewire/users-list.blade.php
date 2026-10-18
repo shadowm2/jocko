@@ -6,7 +6,11 @@
         row-component="user::components.user-list-row"
     >
         <x-slot name="toolbar">
-            <x-table.filters :filters="$filterDefinitions" :sort-options="$sortOptions" :sort-by="$sortBy" :sort-direction="$sortDirection" clear-action="clearFilters" />
+            <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">
+                <x-table.filters :filters="$filterDefinitions" :sort-options="$sortOptions" :sort-by="$sortBy" :sort-direction="$sortDirection" clear-action="clearFilters"
+                panel
+            />
+            </x-table.filter-drawer>
         </x-slot>
 
         <x-slot name="action">

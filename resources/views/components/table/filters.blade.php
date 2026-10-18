@@ -5,6 +5,7 @@
     'sortBy' => '',
     'sortDirection' => 'asc',
     'clearAction' => null,
+    'panel' => false,
 ])
 
 <fieldset
@@ -12,7 +13,7 @@
     wire:loading.class="opacity-60"
     class="w-full space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700"
 >
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 {{ $panel ? '' : 'lg:grid-cols-4' }}">
         @foreach ($filters as $filter)
             @php
                 $name = $filter['name'];
@@ -21,8 +22,9 @@
                 $wireModel = $model . '.' . $name;
             @endphp
 
+            <div class="{{ $type === 'checkboxes' ? 'sm:col-span-2' : '' }}">
             @if ($type === 'checkboxes')
-                <fieldset class="space-y-2 sm:col-span-2">
+                <fieldset class="space-y-2">
                     <legend class="text-sm font-medium">{{ $label }}</legend>
                     <div class="flex flex-wrap gap-x-4 gap-y-2">
                         @foreach ($filter['options'] ?? [] as $value => $optionLabel)
@@ -75,6 +77,7 @@
                     />
                 </flux:field>
             @endif
+            </div>
         @endforeach
 
         @if ($sortOptions)

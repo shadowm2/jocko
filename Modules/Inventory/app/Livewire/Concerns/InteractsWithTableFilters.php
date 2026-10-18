@@ -33,6 +33,18 @@ trait InteractsWithTableFilters
         $this->resetPage();
     }
 
+    public function clearFilter(string $name): void
+    {
+        $defaults = $this->defaultTableFilters();
+
+        if (! array_key_exists($name, $defaults)) {
+            return;
+        }
+
+        $this->filters[$name] = $defaults[$name];
+        $this->resetPage();
+    }
+
     private function filterDefinitions()
     {
         return [];
