@@ -22,7 +22,8 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         $this->query()
             ->with(['user', 'userCar.car', 'warehouse'])
             ->withCount('items')
-            ->withSum('items', 'total');
+            ->withSum('items', 'total')
+            ->withSum('payments', 'amount');
 
         return $this;
     }

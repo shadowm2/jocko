@@ -20,6 +20,7 @@ class OrdersList extends Component
             ['label' => __('order::attributes.Warehouse')],
             ['label' => __('order::attributes.Items and Total')],
             ['label' => __('order::attributes.Order Status')],
+            ['label' => __('order::attributes.Payment Status')],
             [],
         ];
         $orders = $orderService->getOrders([]);

@@ -14,4 +14,9 @@ return [
     'Unit Price' => 'قیمت واحد',
     'Total' => 'جمع',
     'Items and Total' => 'اقلام و جمع',
+    'Amount' => 'مبلغ',
+    'Payment Method' => 'روش پرداخت',
+    'Paid At' => 'تاریخ پرداخت',
+    'Payment Status' => 'پرداخت',
+    'Balance' => 'مانده',
 ];

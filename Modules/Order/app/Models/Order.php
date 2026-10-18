@@ -11,6 +11,7 @@ use Modules\Car\Models\UserCar;
 use Modules\Inventory\Models\Warehouse;
 use Modules\Order\Database\Factories\OrderFactory;
 use Modules\Order\Enums\OrderStatus;
+use Modules\Order\Enums\PaymentStatus;
 use Modules\User\Models\User;
 
 /**
@@ -23,6 +24,8 @@ use Modules\User\Models\User;
  * @property string $order_number
  * @property OrderStatus $status
  * @property ?string $description
+ * @property-read ?float $items_sum_total
+ * @property-read ?float $payments_sum_amount
  */
 #[Fillable(['slug', 'user_id', 'user_car_id', 'warehouse_id', 'order_number', 'status', 'description'])]
 class Order extends BaseModel
@@ -80,5 +83,24 @@ class Order extends BaseModel
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * @return HasMany<Payment, $this>
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Uses the eager loaded sums when the list query has them.
+     */
+    public function paymentStatus(): PaymentStatus
+    {
+        return PaymentStatus::for(
+            (float) ($this->items_sum_total ?? $this->items()->sum('total')),
+            (float) ($this->payments_sum_amount ?? $this->payments()->sum('amount')),
+        );
     }
 }

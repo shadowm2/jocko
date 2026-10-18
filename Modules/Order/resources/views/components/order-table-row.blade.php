@@ -26,6 +26,11 @@
         </flux:badge>
     </x-table.cell>
     <x-table.cell>
+        <flux:badge :color="$row->paymentStatus()->color()">
+            {{ $row->paymentStatus()->label() }}
+        </flux:badge>
+    </x-table.cell>
+    <x-table.cell>
         <flux:button
             href="{{ route('orders.edit', ['order' => $row]) }}"
             :tooltip="__('order::strings.Edit Order')"

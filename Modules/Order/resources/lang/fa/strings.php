@@ -22,4 +22,22 @@ return [
         'completed' => 'انجام شده',
         'cancelled' => 'لغو شده',
     ],
+    'Payments' => 'پرداخت ها',
+    'Payments List' => 'لیست پرداخت ها',
+    'Submit Payment' => 'ثبت پرداخت',
+    'Edit Payment' => 'ویرایش پرداخت',
+    'Save Payment' => 'ذخیره پرداخت',
+    'Select Order' => 'سفارش را انتخاب کنید',
+    'Enter payment description' => 'توضیحات پرداخت را وارد کنید',
+    'payment_methods' => [
+        'cash' => 'نقد',
+        'card' => 'کارت',
+        'transfer' => 'واریز بانکی',
+        'cheque' => 'چک',
+    ],
+    'payment_statuses' => [
+        'unpaid' => 'پرداخت نشده',
+        'partial' => 'پرداخت جزئی',
+        'paid' => 'پرداخت شده',
+    ],
 ];
