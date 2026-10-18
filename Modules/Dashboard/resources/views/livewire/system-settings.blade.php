@@ -53,7 +53,7 @@
                         :type="$secret ? 'password' : 'text'"
                         :placeholder="$secret && $isSet ? '••••••••••••' : ''"
                         autocomplete="off"
-                        dir="ltr"
+                        :dir="$field['dir'] ?? 'ltr'"
                     />
                     <flux:error name="values.{{ $group }}.{{ $name }}" />
                 </flux:field>

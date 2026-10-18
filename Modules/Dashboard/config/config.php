@@ -13,6 +13,26 @@ return [
      | Labels are translation keys.
      */
     'settings' => [
+        'shop' => [
+            'label' => 'dashboard::strings.Shop Details',
+            'fields' => [
+                'name' => [
+                    'label' => 'dashboard::strings.Shop Name',
+                    'config' => 'app.name',
+                    'dir' => 'rtl',
+                ],
+                'address' => [
+                    'label' => 'dashboard::strings.Shop Address',
+                    'config' => 'shop.address',
+                    'dir' => 'rtl',
+                ],
+                'phone' => [
+                    'label' => 'dashboard::strings.Shop Phone',
+                    'config' => 'shop.phone',
+                    'rules' => 'nullable|string|max:50',
+                ],
+            ],
+        ],
         'kavenegar' => [
             'label' => 'dashboard::strings.Kavenegar SMS',
             'fields' => [

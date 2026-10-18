@@ -9,6 +9,12 @@
         <div>
             <h1 class="text-2xl font-bold">{{ config('app.name') }}</h1>
             <p class="text-zinc-500">{{ __('order::strings.Invoice') }}</p>
+            @if (filled(config('shop.address')))
+                <p class="text-zinc-500">{{ config('shop.address') }}</p>
+            @endif
+            @if (filled(config('shop.phone')))
+                <p class="text-zinc-500">{{ Utils::pDigits(config('shop.phone')) }}</p>
+            @endif
         </div>
         <div class="space-y-1 text-end">
             <div class="font-semibold"><span dir="ltr">{{ $order->order_number }}</span></div>

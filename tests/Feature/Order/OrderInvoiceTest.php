@@ -44,6 +44,16 @@ it('prints the customer, the lines, what was paid and what is still owed', funct
         ->assertSee('window.print()', false);
 });
 
+it('puts the shop details in the header when they are set', function () {
+    $page = fn () => $this->actingAs($this->customer)->get(route('orders.invoice', $this->order));
+
+    $page()->assertDontSee('Valiasr');
+
+    config(['app.name' => 'Jocko Garage', 'shop.address' => 'Tehran, Valiasr', 'shop.phone' => '02112345678']);
+
+    $page()->assertSee(['Jocko Garage', 'Tehran, Valiasr', '۰۲۱۱۲۳۴۵۶۷۸']);
+});
+
 it('is only for signed in users and only for orders that exist', function () {
     $this->get(route('orders.invoice', $this->order))->assertRedirect();
 
