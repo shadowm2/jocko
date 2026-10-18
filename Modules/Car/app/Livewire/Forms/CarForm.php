@@ -30,11 +30,7 @@ class CarForm extends ImageForm
 
     public function save(): void
     {
-        try {
-            $data = $this->validate();
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $data = $this->validate();
 
         $carService = resolve(CarService::class);
 
