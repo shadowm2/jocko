@@ -78,6 +78,33 @@ it('rejects a payment with no amount or a non-positive one', function (string $a
     expect(Payment::count())->toBe(0);
 })->with(['empty' => [''], 'zero' => ['0'], 'negative' => ['-5'], 'text' => ['abc']]);
 
+it('rejects a payment larger than what the order still owes', function () {
+    ($this->pay)(4000);
+    $pay = fn (string $amount) => Livewire::test(PaymentCreate::class)
+        ->set('form.order', 'o1')
+        ->set('form.amount', $amount)
+        ->call('save');
+
+    $pay('6,000.01')->assertHasErrors('form.amount');
+    expect(Payment::count())->toBe(1);
+
+    $pay('6,000')->assertHasNoErrors();
+    expect(Payment::count())->toBe(2);
+});
+
+it('does not count a payment against itself when editing it', function () {
+    ($this->pay)(4000);
+    $payment = ($this->pay)(6000);
+    $edit = fn (string $amount) => Livewire::test(PaymentEdit::class, ['payment' => $payment])
+        ->set('form.amount', $amount)
+        ->call('save');
+
+    $edit('6000')->assertHasNoErrors();
+    $edit('6001')->assertHasErrors('form.amount');
+    $edit('2000')->assertHasNoErrors();
+    expect((float) $payment->fresh()->amount)->toBe(2000.0);
+});
+
 it('edits a payment without moving it to another order', function () {
     $payment = ($this->pay)(1000);
 
