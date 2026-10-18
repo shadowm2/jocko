@@ -6,6 +6,9 @@ use App\Helpers\Utils;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
+use Modules\Inventory\Enums\PurchaseStatus;
+use Modules\Inventory\Models\PurchaseItem;
+use Modules\Inventory\Models\Supplier;
 use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Models\Order;
 use Modules\Order\Models\OrderItem;
@@ -55,6 +58,22 @@ class Reports extends Component
             ->sortByDesc('balance')
             ->values();
 
+        // Money committed to suppliers: drafts and cancelled purchases are not spending.
+        // Dated by the day it was ordered, or created when no order date was set.
+        $day = 'date(coalesce(purchases.ordered_at, purchases.created_at))';
+        $bySupplier = PurchaseItem::query()
+            ->join('purchases', 'purchases.id', '=', 'purchase_items.purchase_id')
+            ->whereNull('purchases.deleted_at')
+            ->whereIn('purchases.status', [PurchaseStatus::ORDERED->value, PurchaseStatus::PARTIALLY_RECEIVED->value, PurchaseStatus::RECEIVED->value])
+            ->when($from, fn (Builder $query) => $query->whereRaw("{$day} >= ?", [$from]))
+            ->when($to, fn (Builder $query) => $query->whereRaw("{$day} <= ?", [$to]))
+            ->selectRaw('purchases.supplier_id, sum(purchase_items.total) as spent, count(distinct purchases.id) as purchases')
+            ->groupBy('purchases.supplier_id')
+            ->orderByDesc('spent')
+            ->limit(self::LIST_SIZE)
+            ->get();
+        $suppliers = Supplier::query()->with('user')->findMany($bySupplier->pluck('supplier_id'))->keyBy('id');
+
         return view('dashboard::livewire.reports', [
             'orderCount' => $orderCount,
             'revenue' => $revenue,
@@ -74,6 +93,7 @@ class Reports extends Component
                 ->limit(self::LIST_SIZE)
                 ->with('item')
                 ->get(),
+            'bySupplier' => $bySupplier->each(fn (PurchaseItem $row) => $row->setRelation('supplier', $suppliers->get($row->supplier_id))),
             'outstandingTotal' => $outstanding->sum('balance'),
             'outstandingCount' => $outstanding->count(),
             'outstanding' => $outstanding->take(self::LIST_SIZE),
