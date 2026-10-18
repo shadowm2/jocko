@@ -1,19 +1,9 @@
 <x-table.row>
     <x-table.cell>
-        <flux:button
-            variant="ghost"
-            :href="route('items.edit', ['item' => $row->item])"
-        >
-            {{ $row->item->name }}
-        </flux:button>
+        <flux:link :href="route('items.edit', ['item' => $row->item])">{{ $row->item->name }}</flux:link>
     </x-table.cell>
     <x-table.cell>
-        <flux:button
-            variant="ghost"
-            :href="route('brands.edit', ['brand' => $row->brand])"
-        >
-            {{ $row->brand->name }}
-        </flux:button>
+        <flux:link :href="route('brands.edit', ['brand' => $row->brand])">{{ $row->brand->name }}</flux:link>
     </x-table.cell>
     <x-table.cell>
         {{ $row->sku }}

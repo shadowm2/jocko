@@ -6,7 +6,7 @@
         {{ $row->order_number }}
     </x-table.cell>
     <x-table.cell>
-        {{ $row->user->fullName() }}
+        <flux:link href="{{ route('users.edit', ['user' => $row->user]) }}">{{ $row->user->fullName() }}</flux:link>
     </x-table.cell>
     <x-table.cell>
         {{ $row->userCar->car->name }}

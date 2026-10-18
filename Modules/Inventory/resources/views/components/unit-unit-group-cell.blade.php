@@ -1,9 +1,4 @@
 @props(['row' => null])
 <div>
-    <flux:button
-        :href="route('units.groups.edit', ['unitGroup' => $row->unitGroup->slug])"
-        variant="ghost"
-    >
-        {{ $row->unitGroup->name }}
-    </flux:button>
+    <flux:link :href="route('units.groups.edit', ['unitGroup' => $row->unitGroup->slug])">{{ $row->unitGroup->name }}</flux:link>
 </div>

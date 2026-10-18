@@ -4,20 +4,10 @@
 <x-table.row>
     <x-table.cell>
 
-        <flux:button
-            variant="ghost"
-            :href="route('suppliers.edit', ['supplier' => $row->supplier])"
-        >
-            {{ $row->supplier->user->fullName() }}
-        </flux:button>
+        <flux:link :href="route('suppliers.edit', ['supplier' => $row->supplier])">{{ $row->supplier->user->fullName() }}</flux:link>
     </x-table.cell>
     <x-table.cell>
-        <flux:button
-            variant="ghost"
-            :href="route('warehouses.edit', ['warehouse' => $row->warehouse])"
-        >
-            {{ $row->warehouse->name }}
-        </flux:button>
+        <flux:link :href="route('warehouses.edit', ['warehouse' => $row->warehouse])">{{ $row->warehouse->name }}</flux:link>
     </x-table.cell>
     <x-table.cell>
         {{ $row->order_number }}

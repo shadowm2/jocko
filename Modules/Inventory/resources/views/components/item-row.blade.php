@@ -11,20 +11,10 @@
         {{ $row->name }}
     </x-table.cell>
     <x-table.cell>
-        <flux:button
-            variant="ghost"
-            :href="route('categories.edit', ['category' => $row->category])"
-        >
-            {{ $row->category->name }}
-        </flux:button>
+        <flux:link :href="route('categories.edit', ['category' => $row->category])">{{ $row->category->name }}</flux:link>
     </x-table.cell>
     <x-table.cell>
-        <flux:button
-            variant="ghost"
-            :href="route('units.groups.edit', ['unitGroup' => $row->unitGroup])"
-        >
-            {{ $row->unitGroup->name }}
-        </flux:button>
+        <flux:link :href="route('units.groups.edit', ['unitGroup' => $row->unitGroup])">{{ $row->unitGroup->name }}</flux:link>
     </x-table.cell>
     <x-table.cell>
         {{ \App\Helpers\Utils::pDigits($row->brands_count) }}
