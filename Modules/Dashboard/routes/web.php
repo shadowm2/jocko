@@ -14,10 +14,12 @@ use Modules\Dashboard\Livewire\Overview;
 use Modules\Dashboard\Livewire\ProvinceCreate;
 use Modules\Dashboard\Livewire\ProvinceEdit;
 use Modules\Dashboard\Livewire\ProvinceList;
+use Modules\Dashboard\Livewire\Reports;
 use Modules\Dashboard\Livewire\SystemSettings;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('/dashboard', Overview::class)->name('dashboard');
+    Route::livewire('/reports', Reports::class)->name('reports.index');
     Route::livewire('/system-settings', SystemSettings::class)->name('system-settings.edit');
 
     Route::prefix('countries')->as('countries.')->group(function () {
