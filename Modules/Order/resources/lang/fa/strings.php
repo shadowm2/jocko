@@ -46,4 +46,10 @@ return [
     'Created To' => 'ثبت تا تاریخ',
     'Paid From' => 'پرداخت از تاریخ',
     'Paid To' => 'پرداخت تا تاریخ',
+    'Invoice' => 'فاکتور',
+    'Print' => 'چاپ',
+    'Customer' => 'مشتری',
+    'Mobile' => 'موبایل',
+    'Item' => 'کالا',
+    'Paid Total' => 'پرداخت شده',
 ];

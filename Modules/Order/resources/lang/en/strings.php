@@ -34,4 +34,10 @@ return [
     'Created To' => 'Created to',
     'Paid From' => 'Paid from',
     'Paid To' => 'Paid to',
+    'Invoice' => 'Invoice',
+    'Print' => 'Print',
+    'Customer' => 'Customer',
+    'Mobile' => 'Mobile',
+    'Item' => 'Item',
+    'Paid Total' => 'Paid',
 ];
