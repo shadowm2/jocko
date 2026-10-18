@@ -24,4 +24,5 @@ return [
     'No Stock Change' => 'This would not change the stock',
     'Stock Transfer Recorded Successfully' => 'Stock transfer recorded',
     'Same Warehouse' => 'The destination must differ from the source warehouse',
+    'Low Stock Warning' => ':item in :warehouse is down to :quantity (minimum :minimum)',
 ];

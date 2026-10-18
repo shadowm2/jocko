@@ -11,6 +11,7 @@ use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Modules\Inventory\Enums\StockMovementType;
+use Modules\Inventory\Events\StockRunningLow;
 use Modules\Inventory\Models\Purchase;
 use Modules\Inventory\Models\PurchaseItem;
 use Modules\Inventory\Models\StockMovement;
@@ -216,6 +217,7 @@ class StockMovementService extends BaseService
             }
 
             $warehouseItem->decrement('quantity', $quantity);
+            $this->warnIfLow($warehouseItem);
 
             $attributes = [
                 'warehouse_item_id' => $warehouseItem->id,
@@ -270,6 +272,10 @@ class StockMovementService extends BaseService
 
             $warehouseItem->increment('quantity', $delta);
             $warehouseItem->refresh();
+
+            if ($delta < 0) {
+                $this->warnIfLow($warehouseItem);
+            }
 
             return $this->repository->create([
                 'slug' => Utils::generateUniqueSlug('sm '.$warehouseItem->slug.' '.$type->value, StockMovement::class),
@@ -332,6 +338,8 @@ class StockMovementService extends BaseService
             $target->increment('quantity', $quantity);
             $source->refresh();
 
+            $this->warnIfLow($source);
+
             return $this->repository->create([
                 'slug' => Utils::generateUniqueSlug('sm '.$source->slug.' transfer', StockMovement::class),
                 'item_id' => $source->item_id,
@@ -345,6 +353,17 @@ class StockMovementService extends BaseService
                 'description' => $description,
             ]);
         }, 3);
+    }
+
+    /**
+     * After stock was taken out: once the change is saved (not if it rolls
+     * back), tell the user when the item is now at or below its minimum.
+     */
+    private function warnIfLow(WarehouseItem $warehouseItem): void
+    {
+        if ($warehouseItem->isLowStock()) {
+            DB::afterCommit(fn () => event(new StockRunningLow($warehouseItem)));
+        }
     }
 
     /**

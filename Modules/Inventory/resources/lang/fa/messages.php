@@ -24,4 +24,5 @@ return [
     'No Stock Change' => 'موجودی تغییری نمی کند',
     'Stock Transfer Recorded Successfully' => 'انتقال موجودی با موفقیت ثبت شد',
     'Same Warehouse' => 'انبار مقصد باید با انبار مبدا متفاوت باشد',
+    'Low Stock Warning' => 'موجودی :item در :warehouse به :quantity رسید (حداقل :minimum)',
 ];
