@@ -4,9 +4,11 @@ namespace Modules\Order\Livewire\Forms;
 
 use App\Helpers\Utils;
 use App\Rules\JalaliDate;
+use Closure;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 use Modules\Order\Enums\PaymentMethod;
+use Modules\Order\Models\Order;
 use Modules\Order\Models\Payment;
 use Modules\Order\Services\PaymentService;
 use Morilog\Jalali\Jalalian;
@@ -32,11 +34,30 @@ class PaymentForm extends Form
     {
         return [
             'order' => 'required|string|exists:orders,slug',
-            'amount' => ['required', 'numeric', 'gt:0'],
+            'amount' => ['required', 'numeric', 'gt:0', $this->withinBalance(...)],
             'method' => ['required', Rule::enum(PaymentMethod::class)],
             'paid_at' => ['required', 'string', new JalaliDate],
             'description' => 'nullable|string',
         ];
+    }
+
+    /**
+     * A payment can't exceed what the order still owes, not counting this
+     * payment itself when it is being edited.
+     */
+    private function withinBalance(string $attribute, mixed $value, Closure $fail): void
+    {
+        $order = Order::where('slug', $this->order)->first();
+        if (! $order) {
+            return;
+        }
+
+        $paid = $order->payments()->when($this->payment, fn ($payments) => $payments->whereKeyNot($this->payment->id))->sum('amount');
+        $balance = round((float) $order->items()->sum('total') - (float) $paid, 2);
+
+        if (round((float) $value, 2) > $balance) {
+            $fail(__('order::messages.Payment Exceeds Balance', ['balance' => Utils::pDigits(Utils::formatQuantity($balance, 2, ','))]));
+        }
     }
 
     /**
