@@ -5,6 +5,13 @@
         :$columns
         row-component="order::components.order-table-row"
     >
+        <x-slot name="toolbar">
+            <x-table.filters
+                :filters="$filterDefinitions"
+                clear-action="clearFilters"
+            />
+        </x-slot>
+
         <x-slot name="action">
             <flux:button
                 icon:trailing="plus"

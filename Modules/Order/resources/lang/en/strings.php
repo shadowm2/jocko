@@ -28,4 +28,10 @@ return [
         'partial' => 'Partially paid',
         'paid' => 'Paid',
     ],
+    'Search' => 'Search',
+    'Search Orders' => 'Order number, customer name or mobile',
+    'Created From' => 'Created from',
+    'Created To' => 'Created to',
+    'Paid From' => 'Paid from',
+    'Paid To' => 'Paid to',
 ];

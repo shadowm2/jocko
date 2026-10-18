@@ -62,7 +62,7 @@
                     border-zinc-200 border-b-zinc-300/80 dark:border-white/10"
                         wire:model.live="{{ $wireModel }}"
                         value="{{ data_get($this, $wireModel) }}"
-                        placeholder="{{ __('inventory::strings.Select Purchase Ordered At') }}"
+                        placeholder="{{ $filter['placeholder'] ?? __('inventory::strings.Select Purchase Ordered At') }}"
                     />
                 </flux:field>
             @else

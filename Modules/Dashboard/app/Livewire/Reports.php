@@ -78,8 +78,8 @@ class Reports extends Component
             'outstandingCount' => $outstanding->count(),
             'outstanding' => $outstanding->take(self::LIST_SIZE),
             'filterDefinitions' => [
-                ['name' => 'from', 'type' => 'date', 'label' => __('dashboard::strings.From Date')],
-                ['name' => 'to', 'type' => 'date', 'label' => __('dashboard::strings.To Date')],
+                ['name' => 'from', 'type' => 'date', 'label' => __('dashboard::strings.From Date'), 'placeholder' => __('strings.Select Date')],
+                ['name' => 'to', 'type' => 'date', 'label' => __('dashboard::strings.To Date'), 'placeholder' => __('strings.Select Date')],
             ],
         ])
             ->layout('dashboard::layouts.app')

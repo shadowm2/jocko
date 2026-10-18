@@ -4,6 +4,8 @@ namespace Modules\Order\Models;
 
 use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -96,6 +98,40 @@ class Order extends BaseModel
     /**
      * Uses the eager loaded sums when the list query has them.
      */
+    /**
+     * By order number, or by the customer's name or mobile.
+     *
+     * @param  Builder<Order>  $query
+     */
+    #[Scope]
+    protected function matching(Builder $query, string $term): void
+    {
+        $query->where(fn (Builder $query) => $query
+            ->where('order_number', 'like', "%{$term}%")
+            ->orWhereHas('user', fn (Builder $user) => $user
+                ->where('first_name', 'like', "%{$term}%")
+                ->orWhere('last_name', 'like', "%{$term}%")
+                ->orWhere('mobile', 'like', "%{$term}%")));
+    }
+
+    /**
+     * The same rule as PaymentStatus::for(), computed in SQL so a list can filter on it.
+     *
+     * @param  Builder<Order>  $query
+     */
+    #[Scope]
+    protected function paymentStatusIs(Builder $query, PaymentStatus $status): void
+    {
+        $total = '(select coalesce(sum(total), 0) from order_items where order_items.order_id = orders.id and order_items.deleted_at is null)';
+        $paid = '(select coalesce(sum(amount), 0) from payments where payments.order_id = orders.id and payments.deleted_at is null)';
+
+        $query->whereRaw(match ($status) {
+            PaymentStatus::UNPAID => "round({$paid}, 2) <= 0",
+            PaymentStatus::PAID => "round({$paid}, 2) > 0 and round({$paid}, 2) >= round({$total}, 2)",
+            PaymentStatus::PARTIAL => "round({$paid}, 2) > 0 and round({$paid}, 2) < round({$total}, 2)",
+        });
+    }
+
     public function paymentStatus(): PaymentStatus
     {
         return PaymentStatus::for(
