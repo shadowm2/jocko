@@ -87,12 +87,20 @@
                 >
                     {{ __('dashboard::strings.Dashboard') }}
                 </flux:sidebar.item>
+                <flux:sidebar.item
+                    icon="chart-bar"
+                    :href="route('reports.index')"
+                    :current="request()->routeIs('reports.index')"
+                    wire:navigate
+                >
+                    {{ __('dashboard::strings.Reports') }}
+                </flux:sidebar.item>
                 <flux:sidebar.group
                     expandable
                     icon="circle-stack"
                     :heading="__('dashboard::strings.Inventory')"
                     class="grid"
-                    :expanded="request()->routeIs(['brands.*', 'items.*', 'suppliers.*', 'units.*','purchases.*', 'warehouses.*'])"
+                    :expanded="request()->routeIs(['brands.*', 'items.*', 'suppliers.*', 'units.*','purchases.*', 'warehouses.*', 'stock-movements.*'])"
                 >
                     <flux:sidebar.group
                         expandable
@@ -254,6 +262,13 @@
                         >
                             {{ __('inventory::strings.Warehouse Items List') }}
                         </flux:sidebar.item>
+                        <flux:sidebar.item
+                            :href="route('warehouses.items.low-stock')"
+                            :current="request()->routeIs('warehouses.items.low-stock')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Low Stock') }}
+                        </flux:sidebar.item>
                         @if ($activeWarehouse)
                             <flux:sidebar.item
                                 :href="route('warehouses.items.create', ['warehouse' => $activeWarehouse->slug])"
@@ -263,6 +278,37 @@
                                 {{ __('inventory::strings.Warehouse Items Create') }}
                             </flux:sidebar.item>
                         @endif
+                    </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('inventory::strings.Stock Movements')"
+                        class="grid"
+                        icon="arrows-right-left"
+                        :expanded="request()->routeIs('stock-movements.*')"
+                    >
+                        <flux:sidebar.item
+                            :href="route('stock-movements.index')"
+                            :current="request()->routeIs('stock-movements.index')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Stock Movements List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('stock-movements.create')"
+                            :current="request()->routeIs('stock-movements.create')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Stock Adjustment Add') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('stock-movements.transfer')"
+                            :current="request()->routeIs('stock-movements.transfer')"
+                            wire:navigate
+                        >
+                            {{ __('inventory::strings.Stock Transfer Add') }}
+                        </flux:sidebar.item>
                     </flux:sidebar.group>
                 </flux:sidebar.group>
                 <flux:sidebar.group
@@ -378,7 +424,7 @@
                     icon="shopping-bag"
                     :heading="__('order::strings.Orders')"
                     class="grid"
-                    :expanded="request()->routeIs('orders.*')"
+                    :expanded="request()->routeIs(['orders.*', 'payments.*'])"
                 >
                     <flux:sidebar.group
                         expandable
@@ -393,6 +439,29 @@
                             wire:navigate
                         >
                             {{ __('order::strings.Orders') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('order::strings.Payments')"
+                        class="grid"
+                        icon="banknotes"
+                        :expanded="request()->routeIs('payments.*')"
+                    >
+                        <flux:sidebar.item
+                            :href="route('payments.index')"
+                            :current="request()->routeIs('payments.index')"
+                            wire:navigate
+                        >
+                            {{ __('order::strings.Payments List') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon:trailing="plus"
+                            :href="route('payments.create')"
+                            :current="request()->routeIs('payments.create')"
+                            wire:navigate
+                        >
+                            {{ __('order::strings.Submit Payment') }}
                         </flux:sidebar.item>
                     </flux:sidebar.group>
                 </flux:sidebar.group>
