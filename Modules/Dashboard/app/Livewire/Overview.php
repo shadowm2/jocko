@@ -19,9 +19,7 @@ class Overview extends Component
 
     public function render(): View
     {
-        $lowStock = WarehouseItem::query()
-            ->whereNotNull('min_quantity')
-            ->whereColumn('quantity', '<=', 'min_quantity');
+        $lowStock = WarehouseItem::query()->lowStock();
 
         return view('dashboard::livewire.overview', [
             'orderCount' => Order::count(),

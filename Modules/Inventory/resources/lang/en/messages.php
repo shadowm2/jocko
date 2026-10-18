@@ -20,4 +20,8 @@ return [
     'Purchase Order Created Successfully' => 'Purchase order created successfully',
     'Purchase Order Updated Successfully' => 'Purchase order updated successfully',
     'Insufficient Stock' => 'Not enough stock in the warehouse',
+    'Stock Adjustment Recorded Successfully' => 'Stock adjustment recorded',
+    'No Stock Change' => 'This would not change the stock',
+    'Stock Transfer Recorded Successfully' => 'Stock transfer recorded',
+    'Same Warehouse' => 'The destination must differ from the source warehouse',
 ];

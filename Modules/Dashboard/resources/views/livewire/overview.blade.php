@@ -194,7 +194,7 @@
                     @endif
                 </flux:heading>
                 <flux:button
-                    :href="route('warehouses.items.index')"
+                    :href="route('warehouses.items.low-stock')"
                     size="sm"
                     variant="ghost"
                     wire:navigate

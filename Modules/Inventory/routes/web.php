@@ -13,6 +13,9 @@ use Modules\Inventory\Livewire\Items\ItemList;
 use Modules\Inventory\Livewire\Purchases\PurchaseCreate;
 use Modules\Inventory\Livewire\Purchases\PurchaseEdit;
 use Modules\Inventory\Livewire\Purchases\PurchaseList;
+use Modules\Inventory\Livewire\StockMovements\StockAdjustmentCreate;
+use Modules\Inventory\Livewire\StockMovements\StockMovementList;
+use Modules\Inventory\Livewire\StockMovements\StockTransferCreate;
 use Modules\Inventory\Livewire\Suppliers\SupplierCreate;
 use Modules\Inventory\Livewire\Suppliers\SupplierEdit;
 use Modules\Inventory\Livewire\Suppliers\SupplierList;
@@ -22,6 +25,7 @@ use Modules\Inventory\Livewire\UnitGroups\UnitGroupList;
 use Modules\Inventory\Livewire\Units\UnitCreate;
 use Modules\Inventory\Livewire\Units\UnitEdit;
 use Modules\Inventory\Livewire\Units\UnitList;
+use Modules\Inventory\Livewire\WarehouseItems\LowStockList;
 use Modules\Inventory\Livewire\WarehouseItems\WarehouseItemCreate;
 use Modules\Inventory\Livewire\WarehouseItems\WarehouseItemEdit;
 use Modules\Inventory\Livewire\WarehouseItems\WarehouseItemList;
@@ -72,6 +76,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
+    Route::prefix('stock-movements')->as('stock-movements.')->group(function () {
+        Route::livewire('/list', StockMovementList::class)->name('index');
+        Route::livewire('/new', StockAdjustmentCreate::class)->name('create');
+        Route::livewire('/transfer', StockTransferCreate::class)->name('transfer');
+    });
+
     Route::prefix('warehouses')->as('warehouses.')->group(function () {
         Route::livewire('/list', WarehouseList::class)->name('index');
         Route::livewire('/new', WarehouseCreate::class)->name('create');
@@ -79,6 +89,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::prefix('items')->as('items.')->group(function () {
             Route::livewire('/list', WarehouseItemList::class)->name('index');
+            Route::livewire('/low-stock', LowStockList::class)->name('low-stock');
             Route::livewire('/{warehouse}/new', WarehouseItemCreate::class)->name('create');
             Route::livewire('/{warehouse}/{warehouseItem}/edit', WarehouseItemEdit::class)->name('edit');
         });

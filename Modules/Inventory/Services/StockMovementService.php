@@ -6,13 +6,16 @@ use App\Helpers\Utils;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Modules\Inventory\Enums\StockMovementType;
 use Modules\Inventory\Models\Purchase;
 use Modules\Inventory\Models\PurchaseItem;
 use Modules\Inventory\Models\StockMovement;
 use Modules\Inventory\Models\Unit;
+use Modules\Inventory\Models\Warehouse;
 use Modules\Inventory\Models\WarehouseItem;
 use Modules\Inventory\Repositories\StockMovementRepository;
 
@@ -25,6 +28,19 @@ class StockMovementService extends BaseService
         StockMovementRepository $repository
     ) {
         parent::__construct($repository);
+    }
+
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, StockMovement>|Collection<int, StockMovement>
+     */
+    public function getStockMovements(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
+    {
+        $this->repository
+            ->filtered($filters)
+            ->withRelations();
+
+        return $paginate ? $this->repository->paginate() : $this->repository->all();
     }
 
     /**
@@ -229,6 +245,109 @@ class StockMovementService extends BaseService
     }
 
     /**
+     * Change a warehouse item's stock by a signed amount, in the item's base
+     * unit (positive comes in, negative goes out), and record why. A zero
+     * change records nothing.
+     *
+     * @throws ValidationException when more would leave than is on hand
+     */
+    public function adjust(WarehouseItem $warehouseItem, float $delta, StockMovementType $type, ?string $description = null): ?StockMovement
+    {
+        $delta = round($delta, 3);
+        if ($delta === 0.0) {
+            return null;
+        }
+
+        return DB::transaction(function () use ($warehouseItem, $delta, $type, $description): StockMovement {
+            // Locked so two adjustments or sales cannot both spend the same stock.
+            $warehouseItem = WarehouseItem::query()->lockForUpdate()->findOrFail($warehouseItem->id);
+
+            if (round((float) $warehouseItem->quantity + $delta, 3) < 0) {
+                throw ValidationException::withMessages([
+                    'quantity' => __('inventory::messages.Insufficient Stock'),
+                ]);
+            }
+
+            $warehouseItem->increment('quantity', $delta);
+            $warehouseItem->refresh();
+
+            return $this->repository->create([
+                'slug' => Utils::generateUniqueSlug('sm '.$warehouseItem->slug.' '.$type->value, StockMovement::class),
+                'item_id' => $warehouseItem->item_id,
+                'warehouse_item_id' => $warehouseItem->id,
+                'user_id' => auth()->id(),
+                'from_warehouse_id' => $delta < 0 ? $warehouseItem->warehouse_id : null,
+                'to_warehouse_id' => $delta > 0 ? $warehouseItem->warehouse_id : null,
+                'quantity' => abs($delta),
+                'balance_after' => (float) $warehouseItem->quantity,
+                'type' => $type->value,
+                'description' => $description,
+            ]);
+        });
+    }
+
+    /**
+     * Move stock of an item to another warehouse, in the item's base unit, as
+     * a single TRANSFER movement (its balance_after is the source's). The
+     * destination row is created when the item was never stocked there.
+     *
+     * @throws ValidationException for the same warehouse or more than is on hand
+     */
+    public function transfer(WarehouseItem $source, Warehouse $destination, float $quantity, ?string $description = null): StockMovement
+    {
+        $quantity = round($quantity, 3);
+        if ($quantity <= 0) {
+            throw new \InvalidArgumentException('A transfer needs a positive quantity.');
+        }
+
+        if ((int) $source->warehouse_id === (int) $destination->id) {
+            throw ValidationException::withMessages([
+                'warehouse' => __('inventory::messages.Same Warehouse'),
+            ]);
+        }
+
+        // Retried on deadlock: two opposite transfers lock the two rows in opposite order.
+        return DB::transaction(function () use ($source, $destination, $quantity, $description): StockMovement {
+            $source = WarehouseItem::query()->lockForUpdate()->findOrFail($source->id);
+
+            if (round((float) $source->quantity - $quantity, 3) < 0) {
+                throw ValidationException::withMessages([
+                    'quantity' => __('inventory::messages.Insufficient Stock'),
+                ]);
+            }
+
+            $target = WarehouseItem::query()
+                ->where('warehouse_id', $destination->id)
+                ->where('item_id', $source->item_id)
+                ->lockForUpdate()
+                ->first()
+                ?? WarehouseItem::query()->create([
+                    'slug' => Utils::generateUniqueSlug('wi '.$destination->slug.' '.$source->item->slug, WarehouseItem::class),
+                    'warehouse_id' => $destination->id,
+                    'item_id' => $source->item_id,
+                    'quantity' => 0,
+                ]);
+
+            $source->decrement('quantity', $quantity);
+            $target->increment('quantity', $quantity);
+            $source->refresh();
+
+            return $this->repository->create([
+                'slug' => Utils::generateUniqueSlug('sm '.$source->slug.' transfer', StockMovement::class),
+                'item_id' => $source->item_id,
+                'warehouse_item_id' => $source->id,
+                'user_id' => auth()->id(),
+                'from_warehouse_id' => $source->warehouse_id,
+                'to_warehouse_id' => $destination->id,
+                'quantity' => $quantity,
+                'balance_after' => (float) $source->quantity,
+                'type' => StockMovementType::TRANSFER->value,
+                'description' => $description,
+            ]);
+        }, 3);
+    }
+
+    /**
      * @param  array{quantity:float,unit_cost:float,total_cost:float}|null  $values
      */
     protected function createMovement(
@@ -236,8 +355,7 @@ class StockMovementService extends BaseService
         PurchaseItem $line,
         WarehouseItem $warehouseItem,
         ?array $values = null,
-    ): StockMovement
-    {
+    ): StockMovement {
         $values ??= $this->movementValues($line);
 
         return $this->repository->create([
@@ -313,19 +431,6 @@ class StockMovementService extends BaseService
     //    public function consume(): StockMovement
     //    {
     //        // decrease warehouse stock
-    //        // create movement
-    //    }
-    //
-    //    public function transfer(): StockMovement
-    //    {
-    //        // decrease source
-    //        // increase destination
-    //        // create movement
-    //    }
-    //
-    //    public function adjust(): StockMovement
-    //    {
-    //        // change stock
     //        // create movement
     //    }
     //
