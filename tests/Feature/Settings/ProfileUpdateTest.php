@@ -1,8 +1,8 @@
 <?php
 
 use Livewire\Livewire;
-use Modules\User\App\Models\User;
 use Modules\User\Livewire\Settings\Profile;
+use Modules\User\Models\User;
 
 test('profile page is displayed', function () {
     $this->actingAs($user = User::factory()->create());
@@ -16,7 +16,8 @@ test('profile information can be updated', function () {
     $this->actingAs($user);
 
     $response = Livewire::test(Profile::class)
-        ->set('name', 'Test User')
+        ->set('first_name', 'Test')
+        ->set('last_name', 'User')
         ->set('email', 'test@example.com')
         ->call('updateProfileInformation');
 
@@ -24,7 +25,8 @@ test('profile information can be updated', function () {
 
     $user->refresh();
 
-    expect($user->name)->toEqual('Test User');
+    expect($user->first_name)->toEqual('Test');
+    expect($user->last_name)->toEqual('User');
     expect($user->email)->toEqual('test@example.com');
     expect($user->email_verified_at)->toBeNull();
 });
@@ -35,7 +37,8 @@ test('email verification status is unchanged when email address is unchanged', f
     $this->actingAs($user);
 
     $response = Livewire::test(Profile::class)
-        ->set('name', 'Test User')
+        ->set('first_name', 'Test')
+        ->set('last_name', 'User')
         ->set('email', $user->email)
         ->call('updateProfileInformation');
 
@@ -45,11 +48,11 @@ test('email verification status is unchanged when email address is unchanged', f
 });
 
 test('user can delete their account', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['password' => 'password']);
 
     $this->actingAs($user);
 
-    $response = Livewire::test('settings.delete-user-form')
+    $response = Livewire::test('user.settings.delete-user-form')
         ->set('password', 'password')
         ->call('deleteUser');
 
@@ -57,7 +60,8 @@ test('user can delete their account', function () {
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
-    expect($user->fresh())->toBeNull();
+    // Users are soft deleted, and fresh() still finds trashed rows.
+    expect($user->fresh()->trashed())->toBeTrue();
     expect(auth()->check())->toBeFalse();
 });
 
@@ -66,7 +70,7 @@ test('correct password must be provided to delete account', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('settings.delete-user-form')
+    $response = Livewire::test('user.settings.delete-user-form')
         ->set('password', 'wrong-password')
         ->call('deleteUser');
 

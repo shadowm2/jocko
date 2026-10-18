@@ -64,10 +64,10 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::loginView(view: 'auth::login');
         Fortify::registerView('auth::register');
-        Fortify::verifyEmailView('livewire.auth.verify-email');
+        Fortify::verifyEmailView('auth::verify-email');
         Fortify::confirmPasswordView('auth::confirm-password');
-        Fortify::resetPasswordView('livewire.auth.reset-password');
-        Fortify::requestPasswordResetLinkView('livewire.auth.forgot-password');
+        Fortify::resetPasswordView('auth::reset-password');
+        Fortify::requestPasswordResetLinkView('auth::forgot-password');
     }
 
     /**
