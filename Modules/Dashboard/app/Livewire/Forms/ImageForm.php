@@ -2,7 +2,6 @@
 
 namespace Modules\Dashboard\Livewire\Forms;
 
-use _PHPStan_02959ca10\Nette\Neon\Exception;
 use Illuminate\Support\Collection;
 use Livewire\Form;
 use Modules\Dashboard\Models\Media;
@@ -38,12 +37,12 @@ class ImageForm extends Form
     }
 
     /**
-     * @throws Exception
+     * @throws \InvalidArgumentException
      */
     public function setPreviousImages(Collection|Media|null $images): void
     {
         if ($images instanceof Collection && $images->isNotEmpty() && $images->first() instanceof Media === false) {
-            throw new Exception('previous images should be an instance of Media');
+            throw new \InvalidArgumentException('previous images should be an instance of Media');
         }
         if ($images instanceof Media) {
             $images = collect([$images]);
