@@ -5,6 +5,9 @@ namespace Modules\Inventory\Services;
 use App\Helpers\Utils;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Validation\ValidationException;
 use Modules\Inventory\Enums\StockMovementType;
 use Modules\Inventory\Models\Purchase;
 use Modules\Inventory\Models\PurchaseItem;
@@ -141,6 +144,91 @@ class StockMovementService extends BaseService
     }
 
     /**
+     * Bring the sale movements of a reference (an order) in line with its
+     * current lines, taking the stock out of the warehouse. Pass no lines to
+     * give everything back, e.g. for a cancelled order.
+     *
+     * Unit cost stays at its default: no cost basis is tracked yet and the
+     * sale price already lives on the reference's own lines.
+     *
+     * @param  SupportCollection<int, Model>  $lines  anything with item_id, quantity, total and unit
+     *
+     * @throws ValidationException when a line asks for more than is on hand
+     */
+    public function syncSale(Model $reference, int $warehouseId, SupportCollection $lines): void
+    {
+        $lines = $lines->keyBy('item_id');
+
+        $movements = StockMovement::query()
+            ->where('reference_type', $reference->getMorphClass())
+            ->where('reference_id', $reference->getKey())
+            ->where('type', StockMovementType::SALE->value)
+            ->get()
+            ->keyBy('item_id');
+
+        foreach ($movements->diffKeys($lines) as $movement) {
+            WarehouseItem::find($movement->warehouse_item_id)?->increment('quantity', $movement->quantity);
+            $movement->delete();
+        }
+
+        foreach ($lines as $itemId => $line) {
+            // Locked so two sales cannot both spend the same stock.
+            $warehouseItem = WarehouseItem::query()
+                ->where('warehouse_id', $warehouseId)
+                ->where('item_id', $itemId)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $warehouseItem) {
+                continue;
+            }
+
+            // Put the old deduction back first, then take the full new quantity.
+            $movement = $movements->get($itemId);
+            if ($movement) {
+                WarehouseItem::find($movement->warehouse_item_id)?->increment('quantity', $movement->quantity);
+                $warehouseItem->refresh();
+            }
+
+            $quantity = $this->movementValues($line)['quantity'];
+
+            if (round($quantity - (float) $warehouseItem->quantity, 3) > 0) {
+                // Keyed like the order form's line inputs.
+                throw ValidationException::withMessages([
+                    "items.{$warehouseItem->slug}.quantity" => __('inventory::messages.Insufficient Stock'),
+                ]);
+            }
+
+            $warehouseItem->decrement('quantity', $quantity);
+
+            $attributes = [
+                'warehouse_item_id' => $warehouseItem->id,
+                'from_warehouse_id' => $warehouseId,
+                'quantity' => $quantity,
+                'balance_after' => (float) $warehouseItem->quantity,
+            ];
+
+            if ($movement) {
+                $movement->update($attributes);
+
+                continue;
+            }
+
+            $this->repository->create([
+                'slug' => Utils::generateUniqueSlug('sm '.$reference->slug.' '.$itemId, StockMovement::class),
+                'item_id' => $itemId,
+                'user_id' => auth()->id(),
+                'to_warehouse_id' => null,
+                'type' => StockMovementType::SALE->value,
+                'reference_type' => $reference->getMorphClass(),
+                'reference_id' => $reference->getKey(),
+                'description' => __('inventory::strings.Sale Stock Out'),
+                ...$attributes,
+            ]);
+        }
+    }
+
+    /**
      * @param  array{quantity:float,unit_cost:float,total_cost:float}|null  $values
      */
     protected function createMovement(
@@ -176,11 +264,11 @@ class StockMovementService extends BaseService
     /**
      * Convert the purchase quantity and price to the item's base unit before
      * applying stock changes. Warehouse item quantities are always stored in
-     * the unit group unit marked as base.
+     * the unit group unit marked as base. Works on purchase and order lines.
      *
      * @return array{quantity:float,unit_cost:float,total_cost:float}
      */
-    private function movementValues(PurchaseItem $line): array
+    private function movementValues(Model $line): array
     {
         $line->loadMissing(['unit', 'item.unitGroup.units']);
 
@@ -192,25 +280,25 @@ class StockMovementService extends BaseService
         }
 
         if ($line->unit_id !== null && ! $line->unit) {
-            throw new \InvalidArgumentException("Purchase item [{$line->id}] has an unavailable unit.");
+            throw new \InvalidArgumentException("Line [{$line->id}] has an unavailable unit.");
         }
 
         $purchaseUnit = $line->unit ?? $baseUnit;
         if ((int) $purchaseUnit->unit_group_id !== (int) $baseUnit->unit_group_id) {
-            throw new \InvalidArgumentException("Purchase item [{$line->id}] uses a unit from another unit group.");
+            throw new \InvalidArgumentException("Line [{$line->id}] uses a unit from another unit group.");
         }
 
         $baseFactor = (float) $baseUnit->conversion_factor;
         $purchaseFactor = (float) $purchaseUnit->conversion_factor;
         if ($baseFactor <= 0 || $purchaseFactor <= 0) {
-            throw new \InvalidArgumentException("Purchase item [{$line->id}] has an invalid unit conversion factor.");
+            throw new \InvalidArgumentException("Line [{$line->id}] has an invalid unit conversion factor.");
         }
 
         $conversionFactor = $purchaseFactor / $baseFactor;
         $purchaseQuantity = (float) $line->quantity;
         $baseQuantity = round($purchaseQuantity * $conversionFactor, 3);
         if ($purchaseQuantity > 0 && $baseQuantity <= 0) {
-            throw new \InvalidArgumentException("Purchase item [{$line->id}] converts to a quantity below warehouse precision.");
+            throw new \InvalidArgumentException("Line [{$line->id}] converts to a quantity below warehouse precision.");
         }
 
         $totalCost = round((float) $line->total, 4);

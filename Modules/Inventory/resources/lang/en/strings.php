@@ -113,5 +113,6 @@ return [
     'In Stock' => 'In stock',
     'No items found.' => 'No items found.',
     'Purchase Stock In' => 'Stock in from purchase order',
+    'Sale Stock Out' => 'Stock out for order',
     'Select Purchase Item Unit' => 'Select the item unit',
 ];

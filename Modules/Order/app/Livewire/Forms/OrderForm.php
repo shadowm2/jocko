@@ -3,7 +3,9 @@
 namespace Modules\Order\Livewire\Forms;
 
 use App\Helpers\Utils;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Form;
 use Modules\Inventory\Services\WarehouseItemService;
 use Modules\Order\Enums\OrderStatus;
@@ -197,13 +199,18 @@ class OrderForm extends Form
 
         $orderService = resolve(OrderService::class);
 
-        if ($this->order) {
-            $orderService->update($this->order, $data);
+        try {
+            if ($this->order) {
+                $orderService->update($this->order, $data);
 
-            return $this->order;
+                return $this->order;
+            }
+
+            return $orderService->create($data);
+        } catch (ValidationException $e) {
+            // Service errors are keyed like the rules above; bind them to this form.
+            throw ValidationException::withMessages(Arr::prependKeysWith($e->errors(), 'form.'));
         }
-
-        return $orderService->create($data);
     }
 
     /** @return array<string, string> */

@@ -11,8 +11,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Car\Models\UserCar;
+use Modules\Inventory\Services\StockMovementService;
 use Modules\Inventory\Services\WarehouseItemService;
 use Modules\Inventory\Services\WarehouseService;
+use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Models\Order;
 use Modules\Order\Models\OrderItem;
 use Modules\Order\Repositories\OrderRepository;
@@ -62,6 +64,7 @@ class OrderService extends BaseService
             /** @var Order $order */
             $order = parent::create($data);
             $this->syncItems($order, $items);
+            $this->syncStock($order);
 
             return $order->refresh();
         });
@@ -82,6 +85,9 @@ class OrderService extends BaseService
             if (is_array($items)) {
                 $this->syncItems($model, $items);
             }
+
+            // Also on a status-only change: cancelling gives the stock back.
+            $this->syncStock($model);
 
             return $updated;
         });
@@ -133,6 +139,19 @@ class OrderService extends BaseService
                 ...$values,
             ]);
         }
+    }
+
+    /**
+     * Active orders hold their lines' stock; a cancelled order holds none.
+     * Throws a ValidationException when a line exceeds what is on hand.
+     */
+    protected function syncStock(Order $order): void
+    {
+        $lines = $order->status === OrderStatus::CANCELLED
+            ? new Collection
+            : $order->items()->with(['unit', 'item.unitGroup.units'])->get();
+
+        resolve(StockMovementService::class)->syncSale($order, $order->warehouse_id, $lines);
     }
 
     /**

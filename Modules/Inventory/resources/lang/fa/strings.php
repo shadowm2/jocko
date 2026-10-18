@@ -113,5 +113,6 @@ return [
     'In Stock' => 'موجودی',
     'No items found.' => 'کالایی یافت نشد.',
     'Purchase Stock In' => 'ورود کالا از سفارش خرید',
+    'Sale Stock Out' => 'خروج کالا بابت سفارش',
     'Select Purchase Item Unit' => 'واحد کالا را انتخاب کنید',
 ];

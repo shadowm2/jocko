@@ -19,4 +19,5 @@ return [
     'Warehouse Item Updated Successfully' => 'Warehouse item updated successfully',
     'Purchase Order Created Successfully' => 'Purchase order created successfully',
     'Purchase Order Updated Successfully' => 'Purchase order updated successfully',
+    'Insufficient Stock' => 'Not enough stock in the warehouse',
 ];

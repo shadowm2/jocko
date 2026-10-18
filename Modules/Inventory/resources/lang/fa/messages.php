@@ -19,4 +19,5 @@ return [
     'Warehouse Item Updated Successfully' => 'کالای انبار با موفقیت ویرایش شد',
     'Purchase Order Created Successfully' => 'سفارش خرید با موفقیت ایجاد شد',
     'Purchase Order Updated Successfully' => 'سفارش خرید با موفقیت ویرایش شد',
+    'Insufficient Stock' => 'موجودی انبار کافی نیست',
 ];
