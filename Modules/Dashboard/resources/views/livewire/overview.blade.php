@@ -97,6 +97,34 @@
         @endforeach
     </div>
 
+    {{-- Trends --}}
+    @if (array_sum($monthSales) + array_sum($monthPurchases) > 0)
+        <div class="grid gap-4 xl:grid-cols-2">
+            <flux:card class="min-w-0 space-y-3">
+                <div>
+                    <flux:heading>{{ __('dashboard::strings.Sales vs Purchases') }}</flux:heading>
+                    <flux:text size="sm">{{ __('dashboard::strings.Last 6 months') }}</flux:text>
+                </div>
+                <x-dashboard::chart.columns
+                    :labels="$monthLabels"
+                    :series="[__('dashboard::strings.Sales') => $monthSales, __('dashboard::strings.Purchases') => $monthPurchases]"
+                />
+            </flux:card>
+
+            <flux:card class="min-w-0 space-y-3">
+                <div>
+                    <flux:heading>{{ __('dashboard::strings.Daily Sales') }}</flux:heading>
+                    <flux:text size="sm">{{ __('dashboard::strings.Last 30 days') }}</flux:text>
+                </div>
+                <x-dashboard::chart.columns
+                    :labels="$dayLabels"
+                    :series="[__('dashboard::strings.Sales') => $daySales]"
+                    :label-every="5"
+                />
+            </flux:card>
+        </div>
+    @endif
+
     {{-- Orders by status --}}
     @if ($orderCount)
         <flux:card class="space-y-3">

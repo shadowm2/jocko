@@ -217,4 +217,11 @@ return [
     'No sales in this period' => 'No sales in this period',
     'No payments in this period' => 'No payments in this period',
     'No outstanding balances' => 'Nothing outstanding',
+    'Sales vs Purchases' => 'Sales vs Purchases',
+    'Daily Sales' => 'Daily Sales',
+    'Sales' => 'Sales',
+    'Purchases' => 'Purchases',
+    'Last 6 months' => 'Last 6 months',
+    'Last 30 days' => 'Last 30 days',
+    'Show as table' => 'Show as table',
 ];
