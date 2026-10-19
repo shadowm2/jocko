@@ -71,6 +71,7 @@ class Reports extends Component
             ->groupBy('purchases.supplier_id')
             ->orderByDesc('spent')
             ->limit(self::LIST_SIZE)
+            ->toBase()
             ->get();
         $suppliers = Supplier::query()->with('user')->findMany($bySupplier->pluck('supplier_id'))->keyBy('id');
 
@@ -93,7 +94,9 @@ class Reports extends Component
                 ->limit(self::LIST_SIZE)
                 ->with('item')
                 ->get(),
-            'bySupplier' => $bySupplier->each(fn (PurchaseItem $row) => $row->setRelation('supplier', $suppliers->get($row->supplier_id))),
+            'bySupplier' => $bySupplier->each(function (\stdClass $row) use ($suppliers): void {
+                $row->supplier = $suppliers->get($row->supplier_id);
+            }),
             'outstandingTotal' => $outstanding->sum('balance'),
             'outstandingCount' => $outstanding->count(),
             'outstanding' => $outstanding->take(self::LIST_SIZE),
