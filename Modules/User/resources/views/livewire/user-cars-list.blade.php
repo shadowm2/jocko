@@ -6,6 +6,14 @@
             'name' => $this->user->first_name . ' ' . $this->user->last_name,
         ])"
     >
-
+        <x-slot name="toolbar">
+            <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">
+                <x-table.filters
+                    :filters="$filterDefinitions"
+                    clear-action="clearFilters"
+                    panel
+                />
+            </x-table.filter-drawer>
+        </x-slot>
     </x-table.data-table>
 </div>

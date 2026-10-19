@@ -9,7 +9,6 @@
 ])
 
 <fieldset
-    wire:loading.attr="disabled"
     wire:loading.class="opacity-60"
     class="w-full space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700"
 >

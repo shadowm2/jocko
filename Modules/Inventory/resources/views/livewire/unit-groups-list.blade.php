@@ -4,6 +4,16 @@
         :$rows
         :title="__('inventory::strings.Unit Groups List')"
     >
+        <x-slot name="toolbar">
+            <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">
+                <x-table.filters
+                    :filters="$filterDefinitions"
+                    clear-action="clearFilters"
+                    panel
+                />
+            </x-table.filter-drawer>
+        </x-slot>
+
         <x-slot name="action">
             <flux:button
                 icon:trailing="plus"

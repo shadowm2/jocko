@@ -4,6 +4,7 @@ return [
     'User' => 'کاربر',
     'Users List' => 'لیست کاربران',
     'Search Users' => 'جستجو در کاربران',
+    'Search User Cars' => 'جستجو بر اساس خودرو، شرکت یا رنگ',
     'Users' => 'کاربران',
     'User :name Cars' => 'لیست خودرو های :name',
     'Save Car' => 'ذخیره خودرو',

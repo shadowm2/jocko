@@ -6,10 +6,13 @@
         row-component="order::components.payment-table-row"
     >
         <x-slot name="toolbar">
-            <x-table.filters
-                :filters="$filterDefinitions"
-                clear-action="clearFilters"
-            />
+            <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">
+                <x-table.filters
+                    :filters="$filterDefinitions"
+                    clear-action="clearFilters"
+                    panel
+                />
+            </x-table.filter-drawer>
         </x-slot>
 
         <x-slot name="action">

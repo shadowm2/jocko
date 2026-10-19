@@ -6,12 +6,34 @@ use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 use Modules\Inventory\Services\WarehouseItemService;
 use Modules\Inventory\Services\WarehouseService;
 
 class WarehouseItemList extends Component
 {
+    use InteractsWithTableFilters;
     use WithPagination;
+
+    private const FILTERS = [
+        'search' => '',
+    ];
+
+    /** @var array<string, mixed> */
+    public array $filters = self::FILTERS;
+
+    protected function defaultTableFilters(): array
+    {
+        return self::FILTERS;
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function filterDefinitions(): array
+    {
+        return [
+            ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('inventory::strings.Search Warehouse Items')],
+        ];
+    }
 
     #[On('active-warehouse-changed')]
     public function onWarehouseSelect(string $warehouse): void {}
@@ -21,7 +43,7 @@ class WarehouseItemList extends Component
         $warehouseService = resolve(WarehouseService::class);
         $warehouseItemService = resolve(WarehouseItemService::class);
         $warehouse = $warehouseService->getActiveWarehouse();
-        $rows = $warehouseItemService->getItemsInWarehouse($warehouse);
+        $rows = $warehouseItemService->getItemsInWarehouse($warehouse, $this->filters);
 
         $columns = [
             [
@@ -48,6 +70,7 @@ class WarehouseItemList extends Component
 
         return view('inventory::livewire.warehouse-items-list', [
             ...compact('columns', 'rows', 'warehouse'),
+            'filterDefinitions' => $this->filterDefinitions(),
         ])
             ->layout('dashboard::layouts.app')
             ->layoutData([

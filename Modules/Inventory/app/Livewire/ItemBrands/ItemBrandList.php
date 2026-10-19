@@ -6,12 +6,36 @@ use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 use Modules\Inventory\Models\Item;
 use Modules\Inventory\Services\ItemBrandService;
 
 class ItemBrandList extends Component
 {
+    use InteractsWithTableFilters;
     use WithPagination;
+
+    private const FILTERS = [
+        'search' => '',
+        'is_active' => [],
+    ];
+
+    /** @var array<string, mixed> */
+    public array $filters = self::FILTERS;
+
+    protected function defaultTableFilters(): array
+    {
+        return self::FILTERS;
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function filterDefinitions(): array
+    {
+        return [
+            ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('inventory::strings.Search Item Brands')],
+            ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('inventory::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
+        ];
+    }
 
     public Item $item;
 
@@ -61,13 +85,11 @@ class ItemBrandList extends Component
             ],
         ];
         $itemService = resolve(ItemBrandService::class);
-        $filters = [
-            'item_id' => $this->item->id,
-        ];
-        $rows = $itemService->getItemBrands($filters);
+        $rows = $itemService->getItemBrands([...$this->filters, 'item_id' => $this->item->id]);
 
         return view('inventory::livewire.item-brands.item-brands-list', [
             ...compact('columns', 'rows'),
+            'filterDefinitions' => $this->filterDefinitions(),
             'item' => $this->item,
         ])
             ->layout('dashboard::layouts.app')

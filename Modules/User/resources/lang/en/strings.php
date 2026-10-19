@@ -3,6 +3,7 @@
 return [
     'User' => 'User',
     'Users List' => 'Users list',
+    'Search User Cars' => 'Search by car, company or color',
     'Users' => 'Users',
     'User :name Cars' => 'Cars of :name',
     'Save Car' => 'Save car',

@@ -7,12 +7,36 @@ use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 use Modules\Inventory\Models\Warehouse;
 use Modules\Inventory\Services\WarehouseService;
 
 class WarehouseList extends Component
 {
+    use InteractsWithTableFilters;
     use WithPagination;
+
+    private const FILTERS = [
+        'search' => '',
+        'is_active' => [],
+    ];
+
+    /** @var array<string, mixed> */
+    public array $filters = self::FILTERS;
+
+    protected function defaultTableFilters(): array
+    {
+        return self::FILTERS;
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function filterDefinitions(): array
+    {
+        return [
+            ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('inventory::strings.Search Warehouses')],
+            ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('inventory::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
+        ];
+    }
 
     public function toggleIsActive($warehouseSlug): void
     {
@@ -23,7 +47,6 @@ class WarehouseList extends Component
             'is_active' => ! $warehouse->is_active,
         ]);
         Flux::toast(__('inventory::messages.Warehouse Updated Successfully'), variant: 'success');
-        $this->reset();
     }
 
     // This triggers a re-render
@@ -69,10 +92,11 @@ class WarehouseList extends Component
                 'component' => 'inventory::warehouse-action-cell',
             ],
         ];
-        $rows = $warehouseService->getWarehouses();
+        $rows = $warehouseService->getWarehouses($this->filters);
 
         return view('inventory::livewire.warehouses-list', [
             ...compact('columns', 'rows', 'activeWarehouse'),
+            'filterDefinitions' => $this->filterDefinitions(),
         ])
             ->layout('dashboard::layouts.app')
             ->layoutData([

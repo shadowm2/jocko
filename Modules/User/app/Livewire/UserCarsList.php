@@ -5,12 +5,34 @@ namespace Modules\User\Livewire;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 use Modules\User\Models\User;
 use Modules\User\Services\UserCarService;
 
 class UserCarsList extends Component
 {
+    use InteractsWithTableFilters;
     use WithPagination;
+
+    private const FILTERS = [
+        'search' => '',
+    ];
+
+    /** @var array<string, mixed> */
+    public array $filters = self::FILTERS;
+
+    protected function defaultTableFilters(): array
+    {
+        return self::FILTERS;
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function filterDefinitions(): array
+    {
+        return [
+            ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('user::strings.Search User Cars')],
+        ];
+    }
 
     public User $user;
 
@@ -35,10 +57,11 @@ class UserCarsList extends Component
                 'component' => 'user::user-car-actions-cell',
             ],
         ];
-        $userCars = $userCarService->getUserCars($this->user->id);
+        $userCars = $userCarService->getUserCars($this->user->id, $this->filters);
 
         return view('user::livewire.user-cars-list', [
             ...compact('columns'),
+            'filterDefinitions' => $this->filterDefinitions(),
             'rows' => $userCars,
         ])
             ->layout('dashboard::layouts.app')

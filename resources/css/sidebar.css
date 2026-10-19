@@ -1,0 +1,79 @@
+/*
+ | Sidebar navigation. Tones live in variables so dark mode is one override,
+ | not a second copy of every rule. Hierarchy: first-level sections are filled
+ | headers, nested groups stay plain, the active item is an accent pill with a
+ | bar, and any group holding it picks up the accent colour.
+ */
+ui-sidebar {
+    min-width: 300px;
+
+    --nav-section-bg: color-mix(in srgb, var(--color-zinc-900) 6%, transparent);
+    --nav-section-bg-hover: color-mix(in srgb, var(--color-zinc-900) 10%, transparent);
+    --nav-section-text: var(--color-zinc-800);
+    --nav-active-bg: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    --nav-active-border: color-mix(in srgb, var(--color-accent) 22%, transparent);
+    --nav-guide: var(--color-zinc-200);
+    --nav-guide-active: color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+.dark ui-sidebar {
+    --nav-section-bg: color-mix(in srgb, white 7%, transparent);
+    --nav-section-bg-hover: color-mix(in srgb, white 11%, transparent);
+    --nav-section-text: white;
+    --nav-active-bg: color-mix(in srgb, var(--color-accent) 18%, transparent);
+    --nav-active-border: color-mix(in srgb, var(--color-accent) 30%, transparent);
+    --nav-guide: color-mix(in srgb, white 12%, transparent);
+}
+
+/* First-level sections (Inventory, Car, ...). */
+ui-sidebar ui-disclosure.first-level > button {
+    background-color: var(--nav-section-bg);
+    color: var(--nav-section-text);
+}
+
+ui-sidebar ui-disclosure.first-level > button:hover {
+    background-color: var(--nav-section-bg-hover);
+}
+
+ui-sidebar ui-disclosure.first-level > button > span {
+    font-weight: 600;
+}
+
+/* Any group holding the current page. */
+ui-sidebar ui-disclosure:has([data-current]) > button {
+    color: var(--color-accent-content);
+}
+
+ui-sidebar ui-disclosure.first-level:has([data-current]) > button {
+    background-color: var(--nav-active-bg);
+}
+
+/* Indent guides, tinted along the path to the current page. */
+ui-sidebar ui-disclosure > div > .absolute {
+    background-color: var(--nav-guide);
+}
+
+ui-sidebar ui-disclosure:has([data-current]) > div > .absolute {
+    background-color: var(--nav-guide-active);
+}
+
+/* Active item. */
+ui-sidebar [data-flux-sidebar-item][data-current] {
+    background-color: var(--nav-active-bg);
+    border-color: var(--nav-active-border);
+    color: var(--color-accent-content);
+}
+
+ui-sidebar [data-flux-sidebar-item][data-current] [data-content] {
+    font-weight: 600;
+}
+
+ui-sidebar [data-flux-sidebar-item][data-current]::before {
+    content: '';
+    position: absolute;
+    inset-block: 7px;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+}

@@ -3,7 +3,7 @@
         <flux:tooltip position="left">
             <flux:button
                 variant="ghost"
-                :href="route('items.update', ['item' => $row->item])"
+                :href="route('items.edit', ['item' => $row->item])"
             >
                 {{ $row->item->name }}
             </flux:button>
@@ -33,7 +33,7 @@
     <x-table.cell>
         <flux:button
             :tooltip="__('inventory::strings.Edit Warehouse Item')"
-            :href="route('warehouses.items.update', ['warehouse' => $row->warehouse, 'warehouseItem' => $row])"
+            :href="route('warehouses.items.edit', ['warehouse' => $row->warehouse, 'warehouseItem' => $row])"
             icon="pencil-square"
             variant="ghost"
         />
