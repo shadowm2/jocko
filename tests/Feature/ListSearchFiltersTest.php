@@ -6,7 +6,6 @@ use Modules\Car\Models\Car;
 use Modules\Car\Models\CarCompany;
 use Modules\Car\Models\Color;
 use Modules\Car\Models\UserCar;
-use Modules\Dashboard\Models\Media;
 use Modules\Inventory\Livewire\ItemBrands\ItemBrandList;
 use Modules\Inventory\Livewire\UnitGroups\UnitGroupList;
 use Modules\Inventory\Livewire\WarehouseItems\WarehouseItemList;
@@ -55,8 +54,6 @@ it('searches warehouses and filters them by active state without losing the filt
 it('searches an items brands by brand, sku, barcode or part number, only for that item', function () {
     $group = UnitGroup::forceCreate(['name' => 'Count', 'slug' => 'count']);
     $item = Item::forceCreate(['name' => 'Oil', 'slug' => 'oil', 'unit_group_id' => $group->id, 'category_id' => 1]);
-    // The page shows the item's first image.
-    Media::forceCreate(['model_type' => $item->getMorphClass(), 'model_id' => $item->id, 'collection' => 'images', 'disk' => 'public', 'path' => 'oil.png', 'original_name' => 'oil.png', 'mime_type' => 'image/png', 'size' => 1, 'order' => 0]);
     $other = Item::forceCreate(['name' => 'Filter', 'slug' => 'filter', 'unit_group_id' => $group->id, 'category_id' => 1]);
     $shell = Brand::forceCreate(['name' => 'Shell', 'slug' => 'shell']);
     $bp = Brand::forceCreate(['name' => 'BP', 'slug' => 'bp']);
