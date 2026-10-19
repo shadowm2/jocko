@@ -223,4 +223,11 @@ return [
     'No sales in this period' => 'در این بازه فروشی ثبت نشده است',
     'No payments in this period' => 'در این بازه پرداختی ثبت نشده است',
     'No outstanding balances' => 'مطالبه ای وجود ندارد',
+    'Sales vs Purchases' => 'فروش و خرید',
+    'Daily Sales' => 'فروش روزانه',
+    'Sales' => 'فروش',
+    'Purchases' => 'خرید',
+    'Last 6 months' => '۶ ماه گذشته',
+    'Last 30 days' => '۳۰ روز گذشته',
+    'Show as table' => 'نمایش به صورت جدول',
 ];
