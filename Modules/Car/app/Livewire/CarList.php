@@ -6,22 +6,28 @@ use App\Livewire\BaseComponent;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Locked;
 use Livewire\WithPagination;
-use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 use Modules\Car\Services\CarCompanyService;
 use Modules\Car\Services\CarService;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 
 class CarList extends BaseComponent
 {
-    use WithPagination;
     use InteractsWithTableFilters;
+    use WithPagination;
 
     public array $filters = ['search' => '', 'car_company_id' => ''];
+
     public string $sortBy = 'name';
+
     public string $sortDirection = 'asc';
+
     #[Locked]
     public array $companyOptions = [];
 
-    protected function defaultTableFilters(): array { return ['search' => '', 'car_company_id' => '']; }
+    protected function defaultTableFilters(): array
+    {
+        return ['search' => '', 'car_company_id' => ''];
+    }
 
     public function mount(CarCompanyService $companyService): void
     {
@@ -36,7 +42,10 @@ class CarList extends BaseComponent
         ];
     }
 
-    private function sortOptions(): array { return ['name' => __('car::strings.Car Name'), 'company' => __('car::strings.Car Company')]; }
+    private function sortOptions(): array
+    {
+        return ['name' => __('car::strings.Car Name'), 'company' => __('car::strings.Car Company')];
+    }
 
     public function render(CarService $carService): View
     {

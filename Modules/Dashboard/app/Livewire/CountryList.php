@@ -6,23 +6,38 @@ use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 use Modules\Dashboard\Models\Country;
 use Modules\Dashboard\Services\CountryService;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 
 class CountryList extends Component
 {
-    use WithPagination;
     use InteractsWithTableFilters;
+    use WithPagination;
+
     public array $filters = ['search' => '', 'is_active' => []];
+
     public string $sortBy = 'name';
+
     public string $sortDirection = 'asc';
-    protected function defaultTableFilters(): array { return ['search' => '', 'is_active' => []]; }
-    private function filterDefinitions(): array { return [
-        ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('dashboard::strings.Search Countries')],
-        ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('dashboard::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
-    ]; }
-    private function sortOptions(): array { return ['name' => __('dashboard::attributes.Country Name'), 'code' => __('dashboard::attributes.Country Code'), 'is_active' => __('dashboard::attributes.Is Active')]; }
+
+    protected function defaultTableFilters(): array
+    {
+        return ['search' => '', 'is_active' => []];
+    }
+
+    private function filterDefinitions(): array
+    {
+        return [
+            ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('dashboard::strings.Search Countries')],
+            ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('dashboard::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
+        ];
+    }
+
+    private function sortOptions(): array
+    {
+        return ['name' => __('dashboard::attributes.Country Name'), 'code' => __('dashboard::attributes.Country Code'), 'is_active' => __('dashboard::attributes.Is Active')];
+    }
 
     public function toggleIsActive($countryCode): void
     {

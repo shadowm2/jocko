@@ -8,9 +8,8 @@ $pdo = new PDO(
 
 $start = hrtime(true);
 $pdo->exec('DROP TABLE IF EXISTS bench_php');
-echo "DROP: " . ((hrtime(true) - $start) / 1e6) . " ms\n";
+echo 'DROP: '.((hrtime(true) - $start) / 1e6)." ms\n";
 
 $start = hrtime(true);
 $pdo->exec('CREATE TABLE bench_php (id BIGINT PRIMARY KEY AUTO_INCREMENT)');
-echo "CREATE: " . ((hrtime(true) - $start) / 1e6) . " ms\n";
-
+echo 'CREATE: '.((hrtime(true) - $start) / 1e6)." ms\n";

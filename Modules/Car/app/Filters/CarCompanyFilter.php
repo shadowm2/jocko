@@ -3,6 +3,7 @@
 namespace Modules\Car\Filters;
 
 use App\Filters\BaseFilter;
+
 class CarCompanyFilter extends BaseFilter
 {
     protected function filter(): void

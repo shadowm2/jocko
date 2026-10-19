@@ -7,30 +7,42 @@ use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Dashboard\Enums\CategoryType;
-use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 use Modules\Dashboard\Models\Category;
 use Modules\Dashboard\Models\Country;
 use Modules\Dashboard\Services\CategoryService;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 
 class CategoryList extends Component
 {
-    use WithPagination;
     use InteractsWithTableFilters;
+    use WithPagination;
 
     public array $filters = ['search' => '', 'type' => '', 'is_active' => []];
+
     public string $sortBy = 'name';
+
     public string $sortDirection = 'asc';
-    protected function defaultTableFilters(): array { return ['search' => '', 'type' => '', 'is_active' => []]; }
+
+    protected function defaultTableFilters(): array
+    {
+        return ['search' => '', 'type' => '', 'is_active' => []];
+    }
+
     private function filterDefinitions(): array
     {
         $types = collect(CategoryType::cases())->mapWithKeys(fn ($type) => [$type->value => __('dashboard::strings.category_types.'.$type->value)])->all();
+
         return [
             ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('dashboard::strings.Search Categories')],
             ['name' => 'type', 'type' => 'select', 'label' => __('dashboard::attributes.Category Type'), 'placeholder' => __('strings.All'), 'options' => $types],
             ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('dashboard::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
         ];
     }
-    private function sortOptions(): array { return ['name' => __('dashboard::attributes.Category Name')]; }
+
+    private function sortOptions(): array
+    {
+        return ['name' => __('dashboard::attributes.Category Name')];
+    }
 
     public ?Category $selectedCategory = null;
 

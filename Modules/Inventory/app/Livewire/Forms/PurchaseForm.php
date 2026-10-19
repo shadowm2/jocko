@@ -4,8 +4,8 @@ namespace Modules\Inventory\Livewire\Forms;
 
 use App\Helpers\Utils;
 use App\Rules\JalaliDate;
-use Flux\Flux;
 use Exception;
+use Flux\Flux;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 use Modules\Inventory\Enums\PurchaseStatus;

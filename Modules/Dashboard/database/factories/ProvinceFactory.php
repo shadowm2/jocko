@@ -19,4 +19,3 @@ class ProvinceFactory extends Factory
         return [];
     }
 }
-

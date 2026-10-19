@@ -4,30 +4,51 @@ namespace Modules\Dashboard\Livewire;
 
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
-use Livewire\Component;
 use Livewire\Attributes\Locked;
+use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Dashboard\Models\Province;
-use Modules\Dashboard\Services\ProvinceService;
 use Modules\Dashboard\Services\CountryService;
+use Modules\Dashboard\Services\ProvinceService;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 
 class ProvinceList extends Component
 {
-    use WithPagination;
     use InteractsWithTableFilters;
+    use WithPagination;
+
     public array $filters = ['search' => '', 'country_id' => '', 'is_active' => []];
+
     public string $sortBy = 'name';
+
     public string $sortDirection = 'asc';
-    #[Locked] public array $countryOptions = [];
-    protected function defaultTableFilters(): array { return ['search' => '', 'country_id' => '', 'is_active' => []]; }
-    public function mount(CountryService $service): void { $this->countryOptions = $service->getCountries([], false)->mapWithKeys(fn ($c) => [$c->id => $c->name])->all(); }
-    private function filterDefinitions(): array { return [
-        ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('dashboard::strings.Search Provinces')],
-        ['name' => 'country_id', 'type' => 'select', 'label' => __('dashboard::attributes.Province Country'), 'placeholder' => __('strings.All'), 'options' => $this->countryOptions],
-        ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('dashboard::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
-    ]; }
-    private function sortOptions(): array { return ['name' => __('dashboard::attributes.Province Name'), 'country' => __('dashboard::attributes.Province Country'), 'is_active' => __('dashboard::attributes.Is Active')]; }
+
+    #[Locked]
+    public array $countryOptions = [];
+
+    protected function defaultTableFilters(): array
+    {
+        return ['search' => '', 'country_id' => '', 'is_active' => []];
+    }
+
+    public function mount(CountryService $service): void
+    {
+        $this->countryOptions = $service->getCountries([], false)->mapWithKeys(fn ($c) => [$c->id => $c->name])->all();
+    }
+
+    private function filterDefinitions(): array
+    {
+        return [
+            ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('dashboard::strings.Search Provinces')],
+            ['name' => 'country_id', 'type' => 'select', 'label' => __('dashboard::attributes.Province Country'), 'placeholder' => __('strings.All'), 'options' => $this->countryOptions],
+            ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('dashboard::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
+        ];
+    }
+
+    private function sortOptions(): array
+    {
+        return ['name' => __('dashboard::attributes.Province Name'), 'country' => __('dashboard::attributes.Province Country'), 'is_active' => __('dashboard::attributes.Is Active')];
+    }
 
     public function toggleIsActive($provinceSlug): void
     {

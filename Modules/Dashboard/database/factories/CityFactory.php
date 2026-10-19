@@ -19,4 +19,3 @@ class CityFactory extends Factory
         return [];
     }
 }
-

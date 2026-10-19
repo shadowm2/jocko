@@ -14,8 +14,8 @@ use Modules\Inventory\Services\ItemService;
 
 class ItemList extends Component
 {
-    use WithPagination;
     use InteractsWithTableFilters;
+    use WithPagination;
 
     /** @var array{search:string,category_id:string,is_active:array<int,string>} */
     public array $filters = [
