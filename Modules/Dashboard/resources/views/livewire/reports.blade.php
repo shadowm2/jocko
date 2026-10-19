@@ -100,6 +100,25 @@
         </flux:card>
     </div>
 
+    {{-- Purchases by supplier --}}
+    <flux:card class="space-y-3">
+        <flux:heading>{{ __('dashboard::strings.Purchases by Supplier') }}</flux:heading>
+
+        @forelse ($bySupplier as $row)
+            <div class="flex items-center justify-between gap-3 rounded-lg px-2 py-2">
+                <div class="min-w-0">
+                    <div class="truncate font-medium">{{ $row->supplier?->user->fullName() }}</div>
+                    <flux:text size="sm">
+                        {{ __('dashboard::strings.Purchases count', ['count' => Utils::pDigits((string) $row->purchases)]) }}
+                    </flux:text>
+                </div>
+                <span class="shrink-0 tabular-nums text-sm">{{ $money((float) $row->spent) }}</span>
+            </div>
+        @empty
+            <flux:text class="py-8 text-center">{{ __('dashboard::strings.No purchases in this period') }}</flux:text>
+        @endforelse
+    </flux:card>
+
     {{-- Outstanding --}}
     <flux:card class="space-y-3">
         <flux:heading>{{ __('dashboard::strings.Outstanding Orders') }}</flux:heading>
