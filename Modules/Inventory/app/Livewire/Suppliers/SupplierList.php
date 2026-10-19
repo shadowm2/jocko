@@ -14,8 +14,8 @@ use Modules\Inventory\Services\SupplierService;
 
 class SupplierList extends Component
 {
-    use WithPagination;
     use InteractsWithTableFilters;
+    use WithPagination;
 
     /** @var array{search:string,city_id:string,is_active:array<int,string>} */
     public array $filters = [

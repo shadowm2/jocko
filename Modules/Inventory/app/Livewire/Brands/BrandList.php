@@ -12,8 +12,8 @@ use Modules\Inventory\Models\Brand;
 
 class BrandList extends Component
 {
-    use WithPagination;
     use InteractsWithTableFilters;
+    use WithPagination;
 
     /** @var array{search:string,is_active:array<int,string>} */
     public array $filters = [

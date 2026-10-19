@@ -16,10 +16,8 @@ class ItemFilter extends BaseFilter
             $this->builder->where(function (Builder $query) use ($search): void {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhereHas('category', fn (Builder $categoryQuery) =>
-                        $categoryQuery->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('unitGroup', fn (Builder $unitGroupQuery) =>
-                        $unitGroupQuery->where('name', 'like', "%{$search}%"));
+                    ->orWhereHas('category', fn (Builder $categoryQuery) => $categoryQuery->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('unitGroup', fn (Builder $unitGroupQuery) => $unitGroupQuery->where('name', 'like', "%{$search}%"));
             });
         }
 

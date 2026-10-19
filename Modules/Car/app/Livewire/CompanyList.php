@@ -5,21 +5,34 @@ namespace Modules\Car\Livewire;
 use App\Livewire\BaseComponent;
 use Illuminate\Contracts\View\View;
 use Livewire\WithPagination;
-use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 use Modules\Car\Services\CarCompanyService;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 
 class CompanyList extends BaseComponent
 {
-    use WithPagination;
     use InteractsWithTableFilters;
+    use WithPagination;
 
     public array $filters = ['search' => ''];
+
     public string $sortBy = 'name';
+
     public string $sortDirection = 'asc';
 
-    protected function defaultTableFilters(): array { return ['search' => '']; }
-    private function filterDefinitions(): array { return [['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('car::strings.Search Car Companies')]]; }
-    private function sortOptions(): array { return ['name' => __('car::strings.Car Company Name'), 'cars_count' => __('car::strings.Cars Count')]; }
+    protected function defaultTableFilters(): array
+    {
+        return ['search' => ''];
+    }
+
+    private function filterDefinitions(): array
+    {
+        return [['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('car::strings.Search Car Companies')]];
+    }
+
+    private function sortOptions(): array
+    {
+        return ['name' => __('car::strings.Car Company Name'), 'cars_count' => __('car::strings.Cars Count')];
+    }
 
     public function render(CarCompanyService $companyService): View
     {

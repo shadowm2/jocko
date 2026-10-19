@@ -20,8 +20,7 @@ class SupplierFilter extends BaseFilter
                         $userQuery->where('first_name', 'like', "%{$search}%")
                             ->orWhere('last_name', 'like', "%{$search}%");
                     })
-                    ->orWhereHas('city', fn (Builder $cityQuery) =>
-                        $cityQuery->where('name', 'like', "%{$search}%"));
+                    ->orWhereHas('city', fn (Builder $cityQuery) => $cityQuery->where('name', 'like', "%{$search}%"));
             });
         }
 

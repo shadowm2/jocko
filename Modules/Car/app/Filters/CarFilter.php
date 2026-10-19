@@ -8,8 +8,6 @@ use Modules\Car\Models\CarCompany;
 
 class CarFilter extends BaseFilter
 {
-
-
     protected function filter(): void
     {
         $this->where(
