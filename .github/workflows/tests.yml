@@ -41,4 +41,9 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run browser tests
-        run: composer test:browser
+        timeout-minutes: 5
+        # Playwright's server outlives the tests; keeping the output in a file stops it holding this step open.
+        run: |
+          composer test:browser > browser.log 2>&1 < /dev/null || status=$?
+          cat browser.log
+          exit "${status:-0}"
