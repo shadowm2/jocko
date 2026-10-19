@@ -6,10 +6,13 @@
         row-component="inventory::components.low-stock-row"
     >
         <x-slot name="toolbar">
-            <x-table.filters
-                :filters="$filterDefinitions"
-                clear-action="clearFilters"
-            />
+            <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">
+                <x-table.filters
+                    :filters="$filterDefinitions"
+                    clear-action="clearFilters"
+                    panel
+                />
+            </x-table.filter-drawer>
         </x-slot>
     </x-table.data-table>
 </div>
