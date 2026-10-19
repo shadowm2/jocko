@@ -30,3 +30,33 @@ test('the sidebar opens every group above the current page', function (string $r
     'payments.index',
     'payments.create',
 ]);
+
+test('the sidebar marks only the current page', function (string $route) {
+    $this->actingAs(User::factory()->create());
+
+    $html = $this->get(route($route))->getContent();
+    preg_match_all('/<a href="([^"]+)" data-current="data-current"/', $html, $current);
+
+    expect(array_unique($current[1]))->toBe([route($route)]);
+})->with(['dashboard', 'items.index', 'warehouses.items.low-stock', 'payments.create', 'system-settings.edit']);
+
+// Blade keeps the first of two identical attributes, so a leftover one is dead code.
+test('no sidebar group declares its heading twice', function () {
+    $view = file_get_contents(base_path('Modules/Dashboard/resources/views/components/layouts/sidebar.blade.php'));
+    preg_match_all('/<flux:sidebar\.group\b.*?\n\s*>/s', $view, $groups);
+
+    expect($groups[0])->not->toBeEmpty();
+
+    foreach ($groups[0] as $tag) {
+        expect(substr_count($tag, ':heading='))->toBeLessThanOrEqual(1);
+    }
+});
+
+test('the sidebar styles are imported by the app stylesheet', function () {
+    $app = file_get_contents(resource_path('css/app.css'));
+    $sidebar = file_get_contents(resource_path('css/sidebar.css'));
+
+    expect($app)->toContain("@import './sidebar.css'")
+        ->and($sidebar)->toContain('[data-current]')
+        ->toContain('.dark ui-sidebar');
+});
