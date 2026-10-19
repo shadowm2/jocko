@@ -100,7 +100,6 @@
                     icon="circle-stack"
                     :heading="__('dashboard::strings.Inventory & Supply')"
                     class="grid first-level"
-                    :heading="__('dashboard::strings.Inventory')"
                     :expanded="request()->routeIs(['brands.*', 'items.*', 'suppliers.*', 'units.*','purchases.*', 'warehouses.*', 'stock-movements.*'])"
                 >
 
