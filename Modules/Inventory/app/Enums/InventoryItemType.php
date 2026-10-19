@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Inventory\app\Enums;
+namespace Modules\Inventory\Enums;
 
 enum InventoryItemType: string
 {

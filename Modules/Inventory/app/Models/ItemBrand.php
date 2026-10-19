@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Concerns\AsPivot;
-use Modules\User\Database\Factories\ItemBrandFactory;
+use Modules\Inventory\Database\Factories\ItemBrandFactory;
 
 // use Modules\Inventory\Database\Factories\ItemBrandFactory;
 

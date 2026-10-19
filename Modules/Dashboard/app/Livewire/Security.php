@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Dashboard\app\Livewire;
+namespace Modules\Dashboard\Livewire;
 
 use Flux\Flux;
 use Illuminate\Auth\AuthenticationException;
