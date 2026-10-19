@@ -1,7 +1,8 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 @import './sidebar.css';
-
+@import './datepicker.css';
+@import './forms.css';
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -82,43 +83,4 @@
         --color-accent-content: var(--color-blue-400);
         --color-accent-foreground: var(--color-white);
     }
-}
-
-
-div.datepicker-container > * {
-    font-family: var(--font-sans), serif !important;
-    transform: scale(1.5) !important;
-    transform-origin: top left !important;
-}
-
-.datepicker-container:not(.pwt-hide) {
-    display: block !important;
-    opacity: 1 !important;
-    transform: translateY(0) scale(1) !important;
-    transition:
-        opacity .2s ease,
-        transform .2s ease !important;
-}
-
-.datepicker-container.pwt-hide {
-    display: block !important;
-    opacity: 0 !important;
-    transform: translateY(-10px) scale(.95) !important;
-    transition:
-        opacity .2s ease,
-        transform .2s ease !important;
-    pointer-events: none !important;
-}
-
-
-[data-flux-field]:has([data-flux-switch]):has([data-flux-label]) {
-    display: flex;
-    flex-direction: row;
-    gap: 0.75rem;
-}
-
-[data-flux-field]:has([required]) [data-flux-label]::after {
-    content: '✱';
-    @apply ms-1 inline-flex leading-none text-red-500;
-    font-size: 0.5rem;
 }
