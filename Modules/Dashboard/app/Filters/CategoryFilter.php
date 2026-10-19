@@ -17,10 +17,7 @@ class CategoryFilter extends BaseFilter
                     ->orWhere('description', 'like', "%{$search}%");
             });
         }
-        $activeValues = array_values(array_filter((array) ($this->filters['is_active'] ?? []), static fn ($value) => in_array((string) $value, ['0', '1'], true)));
-        if (count($activeValues) === 1) {
-            $this->builder->where('is_active', (bool) $activeValues[0]);
-        }
+        $this->whereCheckboxes('is_active');
 
         if (isset($this->filters['type']) && $this->filters['type'] !== '') {
             if (! is_iterable($this->filters['type'])) {

@@ -17,10 +17,7 @@ class CityFilter extends BaseFilter
                     ->orWhereHas('province', fn (Builder $province) => $province->where('name', 'like', "%{$search}%"));
             });
         }
-        $activeValues = array_values(array_filter((array) ($this->filters['is_active'] ?? []), static fn ($value) => in_array((string) $value, ['0', '1'], true)));
-        if (count($activeValues) === 1) {
-            $this->builder->where('is_active', (bool) $activeValues[0]);
-        }
+        $this->whereCheckboxes('is_active');
         if (isset($this->filters['province']) && is_string($this->filters['province']) && $this->filters['province'] !== '') {
             $this->builder->whereHas('province', function ($query) {
                 $query->where('slug', $this->filters['province']);
