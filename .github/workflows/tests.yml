@@ -44,7 +44,7 @@ jobs:
         timeout-minutes: 5
         # Playwright's server outlives the tests; keeping the output in a file stops it holding this step open.
         run: |
-          timeout -s KILL 200 vendor/bin/pest tests/Browser --stop-on-failure --no-ansi > browser.log 2>&1 < /dev/null || status=$?
+          timeout -s KILL 200 vendor/bin/pest tests/Browser --stop-on-failure > browser.log 2>&1 < /dev/null || status=$?
           cat browser.log
           ps -eo pid,etime,args | grep -E 'playwright|chrom|pest' | grep -v grep | cut -c1-200 || true
           ls ~/.cache/ms-playwright
