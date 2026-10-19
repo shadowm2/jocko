@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\User\Database\Factories;
+namespace Modules\Inventory\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Inventory\Models\StockMovement;

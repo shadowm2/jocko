@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
-use Modules\Dashboard\app\Livewire\Security;
+use Modules\Dashboard\Livewire\Security;
 use Modules\User\Models\User;
 
 beforeEach(function () {});

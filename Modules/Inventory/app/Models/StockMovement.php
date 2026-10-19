@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Inventory\Database\Factories\StockMovementFactory;
 use Modules\Inventory\Enums\StockMovementType;
-use Modules\User\Database\Factories\StockMovementFactory;
 use Modules\User\Models\User;
 
 // use Modules\Inventory\Database\Factories\StockMovementFactory;

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Dashboard\app\Livewire\Security;
+use Modules\Dashboard\Livewire\Security;
 use Modules\User\Livewire\Settings\Appearance;
 use Modules\User\Livewire\Settings\Profile;
 

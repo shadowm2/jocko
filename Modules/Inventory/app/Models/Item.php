@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Dashboard\Models\Category;
 use Modules\Dashboard\Models\Media;
-use Modules\User\Database\Factories\ItemFactory;
+use Modules\Inventory\Database\Factories\ItemFactory;
 
 /**
  * @property int $id
