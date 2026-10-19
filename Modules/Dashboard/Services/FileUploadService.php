@@ -30,7 +30,7 @@ class FileUploadService
 
         $mediaData = [
             'model_type' => get_class($model),
-            'model_id' => $model->id,
+            'model_id' => $model->getKey(),
             'collection' => $collection,
             'disk' => $disk,
             'original_name' => $file->getClientOriginalName(),

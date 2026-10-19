@@ -42,6 +42,10 @@ class UnitService extends BaseService
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }
 
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, Unit>|Collection<int, Unit>
+     */
     public function getBasicUnits(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
         $filters['is_base'] = true;

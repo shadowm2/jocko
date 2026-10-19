@@ -18,6 +18,7 @@ trait ManagesOrderItems
         $this->form->warehouse = $warehouse ?? '';
     }
 
+    /** @param array<int, string> $slugs */
     #[On('warehouse-items-selected')]
     public function handleItemsSelected(array $slugs): void
     {

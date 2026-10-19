@@ -3,12 +3,14 @@
 namespace Modules\User\Livewire\Settings;
 
 use Flux\Flux;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Modules\Auth\Concerns\ProfileValidationRules;
+use Modules\User\Models\User;
 
 class Profile extends Component
 {
@@ -27,10 +29,12 @@ class Profile extends Component
      */
     public function mount(): void
     {
-        $this->first_name = Auth::user()->first_name;
-        $this->last_name = Auth::user()->last_name;
-        $this->email = Auth::user()->email;
-        $this->mobile = Auth::user()->mobile;
+        $user = $this->user();
+
+        $this->first_name = $user->first_name;
+        $this->last_name = $user->last_name;
+        $this->email = $user->email;
+        $this->mobile = $user->mobile ?? '';
     }
 
     /**
@@ -38,7 +42,7 @@ class Profile extends Component
      */
     public function updateProfileInformation(): void
     {
-        $user = Auth::user();
+        $user = $this->user();
 
         $validated = $this->validate($this->profileRules($user->id));
 
@@ -58,7 +62,7 @@ class Profile extends Component
      */
     public function resendVerificationNotification(): void
     {
-        $user = Auth::user();
+        $user = $this->user();
 
         if ($user->hasVerifiedEmail()) {
             $this->redirectIntended(default: route('dashboard', absolute: false));
@@ -74,7 +78,7 @@ class Profile extends Component
     #[Computed]
     public function hasUnverifiedEmail(): bool
     {
-        $user = Auth::user();
+        $user = $this->user();
 
         return ! in_array('MustVerifyEmail', class_uses_recursive($user)) && ! $user->hasVerifiedEmail();
     }
@@ -82,9 +86,14 @@ class Profile extends Component
     #[Computed]
     public function showDeleteUser(): bool
     {
-        $user = Auth::user();
+        $user = $this->user();
 
         return ! $user instanceof MustVerifyEmail || $user->hasVerifiedEmail();
+    }
+
+    private function user(): User
+    {
+        return Auth::user() ?? throw new AuthenticationException;
     }
 
     public function render(): View

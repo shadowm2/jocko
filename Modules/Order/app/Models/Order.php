@@ -28,6 +28,7 @@ use Modules\User\Models\User;
  * @property ?string $description
  * @property-read ?float $items_sum_total
  * @property-read ?float $payments_sum_amount
+ * @property-read Warehouse $warehouse
  */
 #[Fillable(['slug', 'user_id', 'user_car_id', 'warehouse_id', 'order_number', 'status', 'description'])]
 class Order extends BaseModel

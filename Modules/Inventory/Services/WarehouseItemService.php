@@ -41,8 +41,8 @@ class WarehouseItemService extends BaseService
     public function create(array $data): WarehouseItem
     {
         $data = $this->interpretData($data);
-        $item = resolve(ItemService::class)->findByKey($data['item']);
-        $warehouse = resolve(WarehouseService::class)->findByKey($data['warehouse']);
+        $item = resolve(ItemService::class)->findByKeyOrFail($data['item']);
+        $warehouse = resolve(WarehouseService::class)->findByKeyOrFail($data['warehouse']);
         $quantity = (float) ($data['quantity'] ?? 0);
         unset($data['quantity']);
 
@@ -112,13 +112,17 @@ class WarehouseItemService extends BaseService
         return parent::interpretData($data);
     }
 
-    public function getItemsInWarehouse(Warehouse|string|null $warehouse, array $filters = [], $paginate = false): Collection|LengthAwarePaginator
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return Collection<int, WarehouseItem>|LengthAwarePaginator<int, WarehouseItem>
+     */
+    public function getItemsInWarehouse(Warehouse|string|null $warehouse, array $filters = [], bool $paginate = false): Collection|LengthAwarePaginator
     {
         if ($warehouse === null) {
             return $paginate ? new LengthAwarePaginator([], 0, 1) : new Collection;
         }
         if (is_string($warehouse)) {
-            $warehouse = resolve(WarehouseService::class)->findByKey($warehouse);
+            $warehouse = resolve(WarehouseService::class)->findByKeyOrFail($warehouse);
         }
         $filters['warehouse_id'] = $warehouse->id;
 

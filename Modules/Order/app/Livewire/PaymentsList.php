@@ -21,7 +21,7 @@ class PaymentsList extends Component
         'paid_to' => '',
     ];
 
-    /** @var array{search:string,method:string,paid_from:string,paid_to:string} */
+    /** @var array<string, mixed> */
     public array $filters = self::FILTERS;
 
     protected function defaultTableFilters(): array

@@ -54,7 +54,7 @@ class SupplierFactory extends Factory
         ];
 
         $areaCode = $areaCodes[array_rand($areaCodes)];
-        $number = rand(1000000, 9999999); // 7 digits
+        $number = (string) rand(1000000, 9999999); // 7 digits
         $formatted = sprintf('%s-%s-%s',
             $areaCode,
             substr($number, 0, 3),

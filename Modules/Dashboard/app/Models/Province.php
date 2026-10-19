@@ -14,10 +14,14 @@ use Modules\Dashboard\Database\Factories\ProvinceFactory;
  * @property string $slug
  * @property bool $is_active
  * @property int $country_id
+ * @property-read Country $country
+ *
+ * @extends BaseModel<Province>
  */
 #[Fillable(['name', 'country_id', 'slug', 'is_active'])]
 class Province extends BaseModel
 {
+    /** @use HasFactory<ProvinceFactory> */
     use HasFactory;
 
     /**

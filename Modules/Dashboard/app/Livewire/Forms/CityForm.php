@@ -58,8 +58,8 @@ class CityForm extends Form
     {
         $this->id = $city->id;
         $this->name = $city->name;
-        $this->country = $city->province?->country?->code;
-        $this->province = $city->province?->slug;
+        $this->country = $city->province->country->code;
+        $this->province = $city->province->slug;
         $this->is_active = $city->is_active;
     }
 

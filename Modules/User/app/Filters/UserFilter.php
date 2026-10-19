@@ -5,7 +5,9 @@ namespace Modules\User\Filters;
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\User\Enums\UserType;
+use Modules\User\Models\User;
 
+/** @extends BaseFilter<User> */
 class UserFilter extends BaseFilter
 {
     protected function filter(): void

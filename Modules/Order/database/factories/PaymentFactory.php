@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Modules\Order\Enums\PaymentMethod;
 use Modules\Order\Models\Payment;
 
+/** @extends Factory<Payment> */
 class PaymentFactory extends Factory
 {
     /**

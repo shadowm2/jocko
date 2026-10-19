@@ -10,7 +10,7 @@ use Modules\Car\Models\Color;
 use Modules\Car\Repositories\ColorRepository;
 
 /**
- * @extends BaseService<Color>
+ * @extends BaseService<Color, ColorRepository>
  */
 class ColorService extends BaseService
 {
@@ -21,6 +21,7 @@ class ColorService extends BaseService
     }
 
     /**
+     * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, Color>|Collection<int, Color>
      */
     public function getColors(array|bool $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
@@ -37,7 +38,7 @@ class ColorService extends BaseService
         $query = $this->repository->withRelations();
 
         return $paginate ?
-            $query->paginate() : $query->get();
+            $query->paginate() : $query->all();
     }
 
     public function create(array $data): Color

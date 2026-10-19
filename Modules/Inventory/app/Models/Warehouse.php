@@ -13,7 +13,7 @@ use Modules\Inventory\Database\Factories\WarehouseFactory;
 /**
  * @extends BaseModel<Warehouse>
  *
- * @property string $id
+ * @property int $id
  * @property string $name
  * @property string $slug
  * @property string $description
@@ -35,6 +35,7 @@ class Warehouse extends BaseModel
         return WarehouseFactory::new();
     }
 
+    /** @return HasMany<WarehouseItem, $this> */
     public function warehouseItems(): HasMany
     {
         return $this->hasMany(WarehouseItem::class);

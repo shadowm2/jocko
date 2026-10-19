@@ -5,6 +5,7 @@ namespace Modules\User\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Inventory\Models\StockMovement;
 
+/** @extends Factory<StockMovement> */
 class StockMovementFactory extends Factory
 {
     /**

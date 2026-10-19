@@ -55,7 +55,7 @@ class SmsService
      */
     public function lookup(string $to, string $template, string|array $tokens): array
     {
-        $tokens = array_values((array) $tokens);
+        $tokens = (array) $tokens;
 
         if (count($tokens) > 3) {
             throw new InvalidArgumentException('A Kavenegar lookup template takes at most 3 tokens.');
@@ -94,7 +94,10 @@ class SmsService
         try {
             // Through the container so tests can swap in a fake. The SDK
             // defaults to not verifying TLS, which is wrong for an API key.
-            return Arr::wrap($request(app()->makeWith(KavenegarApi::class, ['apiKey' => $key, 'sslVerify' => true])));
+            /** @var list<SendResult> $results the SDK is untyped */
+            $results = Arr::wrap($request(app()->makeWith(KavenegarApi::class, ['apiKey' => $key, 'sslVerify' => true])));
+
+            return $results;
         } catch (BaseRuntimeException $e) {
             Log::warning("SMS failed ({$action}): {$e->getMessage()}", ['to' => $to, 'code' => $e->getCode()]);
 

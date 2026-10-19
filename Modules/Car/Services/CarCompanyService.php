@@ -11,7 +11,7 @@ use Modules\Car\Models\CarCompany;
 use Modules\Car\Repositories\CarCompanyRepository;
 
 /**
- * @extends BaseService<CarCompany>
+ * @extends BaseService<CarCompany, CarCompanyRepository>
  */
 class CarCompanyService extends BaseService
 {
@@ -22,6 +22,7 @@ class CarCompanyService extends BaseService
     }
 
     /**
+     * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, CarCompany>|Collection<int, CarCompany>
      */
     public function getCompanies(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
@@ -51,7 +52,7 @@ class CarCompanyService extends BaseService
     public function update(Model|int $model, array $data): bool
     {
         if ($model instanceof CarCompany === false) {
-            $model = self::find($model);
+            $model = $this->findOrFail($model);
         }
         $data = $this->interpretData($data);
         $this->handleMedia($model, $data, imagesRelation: 'logo');

@@ -13,11 +13,6 @@ class CategoryCreate extends Component
 {
     public CategoryForm $form;
 
-    public function mount(): void
-    {
-        $this->form->country = '';
-    }
-
     public function save(): void
     {
         $this->form->save();

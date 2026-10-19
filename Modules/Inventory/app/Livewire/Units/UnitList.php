@@ -8,6 +8,7 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 use Modules\Inventory\Models\Unit;
 use Modules\Inventory\Services\UnitGroupService;
 use Modules\Inventory\Services\UnitService;
@@ -15,9 +16,10 @@ use Modules\Inventory\Services\UnitService;
 class UnitList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
-    /** @var array{search:string,unit_group_id:string,is_active:array<int,string>,is_base:array<int,string>} */
+    /** @var array<string, mixed> */
     public array $filters = [
         'search' => '',
         'unit_group_id' => '',

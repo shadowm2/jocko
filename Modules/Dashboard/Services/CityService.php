@@ -24,7 +24,7 @@ class CityService extends BaseService
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return LengthAwarePaginator<int, City>|Collection<int, City>
+     * @return ($paginate is true ? LengthAwarePaginator<int, City> : Collection<int, City>)
      */
     public function getCities(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {

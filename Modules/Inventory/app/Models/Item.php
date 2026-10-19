@@ -16,6 +16,8 @@ use Modules\User\Database\Factories\ItemFactory;
  * @property int $id
  * @property string $name
  * @property string $slug
+ * @property-read Category $category
+ * @property-read UnitGroup $unitGroup
  *
  * @extends BaseModel<Item>
  */
@@ -32,21 +34,25 @@ class Item extends BaseModel
         return ItemFactory::new();
     }
 
+    /** @return BelongsTo<UnitGroup, $this> */
     public function unitGroup(): BelongsTo
     {
         return $this->belongsTo(UnitGroup::class);
     }
 
+    /** @return BelongsTo<Category, $this> */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
+    /** @return MorphMany<Media, $this> */
     public function images(): MorphMany
     {
         return $this->morphMany(Media::class, 'model');
     }
 
+    /** @return HasManyThrough<Brand, ItemBrand, $this> */
     public function brands(): HasManyThrough
     {
         return $this->hasManyThrough(Brand::class, ItemBrand::class, 'item_id', 'id', 'id', 'brand_id');

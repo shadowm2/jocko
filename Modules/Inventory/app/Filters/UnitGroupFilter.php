@@ -3,7 +3,9 @@
 namespace Modules\Inventory\Filters;
 
 use App\Filters\BaseFilter;
+use Modules\Inventory\Models\UnitGroup;
 
+/** @extends BaseFilter<UnitGroup> */
 class UnitGroupFilter extends BaseFilter
 {
     protected function filter(): void

@@ -6,6 +6,7 @@ use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Dashboard\Models\Category;
 
+/** @extends Factory<Category> */
 class CategoryFactory extends Factory
 {
     /**
@@ -18,6 +19,7 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
+        /** @var string $name */
         $name = $this->faker->unique()->words(2, true);
 
         return [

@@ -6,7 +6,9 @@ use App\Filters\BaseFilter;
 use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Inventory\Enums\PurchaseStatus;
+use Modules\Inventory\Models\Purchase;
 
+/** @extends BaseFilter<Purchase> */
 class PurchaseFilter extends BaseFilter
 {
     protected function filter(): void
@@ -26,7 +28,7 @@ class PurchaseFilter extends BaseFilter
             (array) ($this->filters['statuses'] ?? []),
             fn (mixed $status): bool => is_string($status)
                 && PurchaseStatus::tryFrom($status) !== null
-                && PurchaseStatus::tryFrom($status)?->isDisplayOnly() === false,
+                && PurchaseStatus::tryFrom($status)->isDisplayOnly() === false,
         ));
         if ($statuses !== []) {
             $this->builder->whereIn('status', $statuses);

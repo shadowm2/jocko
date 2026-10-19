@@ -6,6 +6,7 @@ use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Inventory\Models\Warehouse;
 
+/** @extends Factory<Warehouse> */
 class WarehouseFactory extends Factory
 {
     /**

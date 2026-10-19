@@ -9,15 +9,17 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Dashboard\Services\CityService;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 use Modules\Inventory\Models\Supplier;
 use Modules\Inventory\Services\SupplierService;
 
 class SupplierList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
-    /** @var array{search:string,city_id:string,is_active:array<int,string>} */
+    /** @var array<string, mixed> */
     public array $filters = [
         'search' => '',
         'city_id' => '',

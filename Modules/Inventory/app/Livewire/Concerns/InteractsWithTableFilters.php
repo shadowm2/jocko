@@ -16,17 +16,6 @@ trait InteractsWithTableFilters
         $this->resetPage();
     }
 
-    public function updatedSortBy(): void
-    {
-        $this->resetPage();
-    }
-
-    public function toggleSortDirection(): void
-    {
-        $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        $this->resetPage();
-    }
-
     public function clearFilters(): void
     {
         $this->filters = $this->defaultTableFilters();
@@ -43,15 +32,5 @@ trait InteractsWithTableFilters
 
         $this->filters[$name] = $defaults[$name];
         $this->resetPage();
-    }
-
-    private function filterDefinitions()
-    {
-        return [];
-    }
-
-    private function sortOptions()
-    {
-        return [];
     }
 }

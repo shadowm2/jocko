@@ -20,7 +20,8 @@ use Morilog\Jalali\Jalalian;
  * @property PaymentMethod $method
  * @property \Illuminate\Support\Carbon $paid_at
  * @property ?string $description
- * @property-read ?Jalalian $paid_at_jalali
+ * @property-read Jalalian $paid_at_jalali
+ * @property-read Order $order
  */
 #[Fillable(['slug', 'order_id', 'amount', 'method', 'paid_at', 'description'])]
 class Payment extends BaseModel
@@ -48,8 +49,9 @@ class Payment extends BaseModel
         return $this->belongsTo(Order::class);
     }
 
+    /** @return Attribute<Jalalian, never> */
     public function paidAtJalali(): Attribute
     {
-        return Attribute::get(fn () => $this->paid_at ? Jalalian::fromDateTime($this->paid_at) : null);
+        return Attribute::get(fn () => Jalalian::fromDateTime($this->paid_at));
     }
 }

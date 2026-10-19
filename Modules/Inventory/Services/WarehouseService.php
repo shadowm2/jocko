@@ -7,7 +7,6 @@ use App\Services\BaseService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Modules\Inventory\Models\Item;
 use Modules\Inventory\Models\Warehouse;
 use Modules\Inventory\Repositories\WarehouseRepository;
 
@@ -24,7 +23,7 @@ class WarehouseService extends BaseService
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return LengthAwarePaginator<int, Item>|Collection<int, Warehouse>
+     * @return ($paginate is true ? LengthAwarePaginator<int, Warehouse> : Collection<int, Warehouse>)
      */
     public function getWarehouses(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
@@ -47,29 +46,26 @@ class WarehouseService extends BaseService
     public function getActiveWarehouse(): ?Warehouse
     {
         $cacheKey = 'active_warehouses';
-        if (Cache::has($cacheKey)) {
-            $activeWarehouseId = Cache::get($cacheKey);
-
+        $activeWarehouseId = Cache::get($cacheKey);
+        if (is_int($activeWarehouseId)) {
             return Warehouse::find($activeWarehouseId);
-        } else {
-            $activeWarehouse = Warehouse::withCount('warehouseItems')
-                ->orderByDesc('warehouse_items_count')
-                ->orderBy('created_at')
-                ->first();
-            if ($activeWarehouse) {
-                Cache::set($cacheKey, $activeWarehouse->id, 3600);
-
-                return $activeWarehouse;
-            } else {
-                return null;
-            }
         }
+
+        $activeWarehouse = Warehouse::withCount('warehouseItems')
+            ->orderByDesc('warehouse_items_count')
+            ->orderBy('created_at')
+            ->first();
+        if ($activeWarehouse) {
+            Cache::set($cacheKey, $activeWarehouse->id, 3600);
+        }
+
+        return $activeWarehouse;
     }
 
     public function setActiveWarehouse(Warehouse|string $warehouse): bool
     {
         if (is_string($warehouse)) {
-            $warehouse = $this->findByKey($warehouse);
+            $warehouse = $this->findByKeyOrFail($warehouse);
         }
         $cacheKey = 'active_warehouses';
 

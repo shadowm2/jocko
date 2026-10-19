@@ -7,6 +7,7 @@ use Modules\Car\Models\Color;
 use Modules\Car\Models\UserCar;
 use Morilog\Jalali\Jalalian;
 
+/** @extends Factory<UserCar> */
 class UserCarFactory extends Factory
 {
     /**

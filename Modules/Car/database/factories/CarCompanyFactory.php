@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Car\Models\Car;
 use Modules\Car\Models\CarCompany;
 
+/** @extends Factory<CarCompany> */
 class CarCompanyFactory extends Factory
 {
     /**

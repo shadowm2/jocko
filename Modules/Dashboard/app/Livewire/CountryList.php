@@ -9,12 +9,15 @@ use Livewire\WithPagination;
 use Modules\Dashboard\Models\Country;
 use Modules\Dashboard\Services\CountryService;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 
 class CountryList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
+    /** @var array<string, mixed> */
     public array $filters = ['search' => '', 'is_active' => []];
 
     public string $sortBy = 'name';
@@ -26,6 +29,7 @@ class CountryList extends Component
         return ['search' => '', 'is_active' => []];
     }
 
+    /** @return array<int, array<string, mixed>> */
     private function filterDefinitions(): array
     {
         return [
@@ -34,11 +38,13 @@ class CountryList extends Component
         ];
     }
 
+    /** @return array<string, string> */
     private function sortOptions(): array
     {
         return ['name' => __('dashboard::attributes.Country Name'), 'code' => __('dashboard::attributes.Country Code'), 'is_active' => __('dashboard::attributes.Is Active')];
     }
 
+    /** @param string $countryCode */
     public function toggleIsActive($countryCode): void
     {
         $countryService = resolve(CountryService::class);

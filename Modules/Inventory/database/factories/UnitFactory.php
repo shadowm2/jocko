@@ -3,13 +3,15 @@
 namespace Modules\Inventory\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Inventory\Models\Unit;
 
+/** @extends Factory<Unit> */
 class UnitFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      */
-    protected $model = \Modules\Inventory\Models\Unit::class;
+    protected $model = Unit::class;
 
     /**
      * Define the model's default state.

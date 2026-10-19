@@ -16,11 +16,12 @@ use Modules\Dashboard\Database\Factories\CityFactory;
  * @property string $slug
  * @property int $province_id
  * @property bool $is_active
+ * @property-read Province $province
  */
 #[Fillable(['name', 'slug', 'province_id', 'is_active'])]
 class City extends BaseModel
 {
-    /** @extends HasFactory<CityFactory> */
+    /** @use HasFactory<CityFactory> */
     use HasFactory;
 
     protected static function newFactory(): CityFactory

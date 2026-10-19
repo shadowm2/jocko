@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @template TModel of Model
+ *
+ * @property CarbonImmutable $created_at
+ * @property CarbonImmutable $updated_at
  *
  * @mixin Builder<TModel>
  */

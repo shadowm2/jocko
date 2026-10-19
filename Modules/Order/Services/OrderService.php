@@ -56,7 +56,7 @@ class OrderService extends BaseService
         /** @var UserCar $userCar */
         $userCar = resolve(UserCarService::class)->find($data['user_car_id']);
 
-        $data['slug'] ??= Utils::generateUniqueSlug($user->initials().' '.$userCar->car?->name, Order::class);
+        $data['slug'] ??= Utils::generateUniqueSlug($user->initials().' '.$userCar->car->name, Order::class);
         $data['order_number'] ??= Order::nextNumber();
         $items = Arr::pull($data, 'items', []);
 
@@ -147,6 +147,7 @@ class OrderService extends BaseService
      */
     protected function syncStock(Order $order): void
     {
+        /** @var Collection<int, OrderItem> $lines */
         $lines = $order->status === OrderStatus::CANCELLED
             ? new Collection
             : $order->items()->with(['unit', 'item.unitGroup.units'])->get();
@@ -175,7 +176,7 @@ class OrderService extends BaseService
     protected function interpretData(array $data): array
     {
         if (! empty($data['warehouse'])) {
-            $data['warehouse_id'] = resolve(WarehouseService::class)->findByKey($data['warehouse'])->id;
+            $data['warehouse_id'] = resolve(WarehouseService::class)->findByKeyOrFail($data['warehouse'])->id;
         }
         unset($data['warehouse']);
 

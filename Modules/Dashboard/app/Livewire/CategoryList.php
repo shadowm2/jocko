@@ -8,15 +8,17 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Dashboard\Enums\CategoryType;
 use Modules\Dashboard\Models\Category;
-use Modules\Dashboard\Models\Country;
 use Modules\Dashboard\Services\CategoryService;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 
 class CategoryList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
+    /** @var array<string, mixed> */
     public array $filters = ['search' => '', 'type' => '', 'is_active' => []];
 
     public string $sortBy = 'name';
@@ -28,6 +30,7 @@ class CategoryList extends Component
         return ['search' => '', 'type' => '', 'is_active' => []];
     }
 
+    /** @return array<int, array<string, mixed>> */
     private function filterDefinitions(): array
     {
         $types = collect(CategoryType::cases())->mapWithKeys(fn ($type) => [$type->value => __('dashboard::strings.category_types.'.$type->value)])->all();
@@ -39,6 +42,7 @@ class CategoryList extends Component
         ];
     }
 
+    /** @return array<string, string> */
     private function sortOptions(): array
     {
         return ['name' => __('dashboard::attributes.Category Name')];
@@ -46,13 +50,12 @@ class CategoryList extends Component
 
     public ?Category $selectedCategory = null;
 
-    public function toggleIsActive($categorySlug): void
+    public function toggleIsActive(string $categorySlug): void
     {
         $categoryService = resolve(CategoryService::class);
-        /** @var Country $country */
-        $country = $categoryService->findByKey($categorySlug);
-        $categoryService->update($country, [
-            'is_active' => ! $country->is_active,
+        $category = $categoryService->findByKeyOrFail($categorySlug);
+        $categoryService->update($category, [
+            'is_active' => ! $category->is_active,
         ]);
         Flux::toast(__('dashboard::messages.Category Updated Successfully'), variant: 'success');
         $this->resetPage();

@@ -26,7 +26,7 @@ class OtpService
      * Text a login code to the admin with this mobile.
      *
      * @throws ValidationException when requested too often or no admin has this mobile
-     * @throws SmsException when the SMS could not be sent
+     * @throws SmsException|\Random\RandomException when the SMS could not be sent
      */
     public function send(string $mobile): void
     {
@@ -51,8 +51,8 @@ class OtpService
             $template = config('services.kavenegar.otp_template');
 
             $template
-                ? Sms::lookup($user->mobile, $template, $code)
-                : Sms::send($user->mobile, __('auth::strings.Your login code is :code', ['code' => $code]));
+                ? Sms::lookup($mobile, $template, $code)
+                : Sms::send($mobile, __('auth::strings.Your login code is :code', ['code' => $code]));
         } catch (SmsException $e) {
             $this->burn($user);
 

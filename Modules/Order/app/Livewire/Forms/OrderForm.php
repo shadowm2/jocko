@@ -7,6 +7,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Form;
+use Modules\Inventory\Models\Unit;
+use Modules\Inventory\Models\WarehouseItem;
 use Modules\Inventory\Services\WarehouseItemService;
 use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Models\Order;
@@ -145,7 +147,10 @@ class OrderForm extends Form
         $this->selected = [];
         $this->items = [];
         foreach ($warehouseItems as $warehouseItem) {
-            $line = $lines[$warehouseItem->item_id];
+            $line = $lines->get($warehouseItem->item_id);
+            if ($line === null) {
+                continue;
+            }
             $this->selected[] = $warehouseItem->slug;
             $this->items[$warehouseItem->slug] = [
                 'quantity' => (float) $line->quantity,
@@ -171,13 +176,13 @@ class OrderForm extends Form
 
         return resolve(WarehouseItemService::class)
             ->getWarehouseItems(['whereIn' => ['slug', array_values($this->selected)]], paginate: false)
-            ->mapWithKeys(static fn ($warehouseItem) => [
+            ->mapWithKeys(static fn (WarehouseItem $warehouseItem) => [
                 $warehouseItem->slug => [
                     'name' => $warehouseItem->item->name,
                     'quantity' => (float) $warehouseItem->quantity,
                     'units' => $warehouseItem->item->unitGroup->units
                         ->where('is_active', true)
-                        ->map(fn ($unit) => ['id' => $unit->id, 'name' => $unit->name, 'symbol' => $unit->symbol])
+                        ->map(fn (Unit $unit) => ['id' => $unit->id, 'name' => $unit->name, 'symbol' => $unit->symbol])
                         ->values()
                         ->all(),
                 ],

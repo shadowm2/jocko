@@ -4,7 +4,9 @@ namespace Modules\Inventory\Filters;
 
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Inventory\Models\Unit;
 
+/** @extends BaseFilter<Unit> */
 class UnitFilter extends BaseFilter
 {
     protected function filter(): void

@@ -8,6 +8,7 @@ use Modules\Dashboard\Models\Category;
 use Modules\Inventory\Models\Item;
 use Modules\Inventory\Models\UnitGroup;
 
+/** @extends Factory<Item> */
 class ItemFactory extends Factory
 {
     /**
@@ -20,6 +21,7 @@ class ItemFactory extends Factory
      */
     public function definition(): array
     {
+        /** @var string $name */
         $name = $this->faker->unique()->words(3, true);
 
         return [

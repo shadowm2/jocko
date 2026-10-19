@@ -8,14 +8,16 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Dashboard\Services\BrandService;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 use Modules\Inventory\Models\Brand;
 
 class BrandList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
-    /** @var array{search:string,is_active:array<int,string>} */
+    /** @var array<string, mixed> */
     public array $filters = [
         'search' => '',
         'is_active' => [],

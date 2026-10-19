@@ -5,7 +5,9 @@ namespace Modules\Inventory\Filters;
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Inventory\Enums\StockMovementType;
+use Modules\Inventory\Models\StockMovement;
 
+/** @extends BaseFilter<StockMovement> */
 class StockMovementFilter extends BaseFilter
 {
     protected function filter(): void

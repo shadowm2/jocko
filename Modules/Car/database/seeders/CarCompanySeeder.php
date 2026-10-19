@@ -112,10 +112,10 @@ class CarCompanySeeder extends Seeder
             ]);
 
             $imagesPath = database_path('seeders/data/images/companies/');
-            $files = scandir($imagesPath);
+            $files = scandir($imagesPath) ?: [];
 
             $files = collect($files)->filter(function ($fileName) use ($carCompany) {
-                $companyFileName = preg_replace('/ [&]/', '', $carCompany->slug);
+                $companyFileName = str_replace(' &', '', $carCompany->slug);
                 $companyFileName = basename(strtolower(
                     str_replace(' ', '-', $companyFileName)
                 ));
@@ -126,13 +126,13 @@ class CarCompanySeeder extends Seeder
                 return $matches > 0;
             });
             if ($files->isEmpty()) {
-                $companyFileName = preg_replace('/ [&]/', '', $carCompany->slug);
+                $companyFileName = str_replace(' &', '', $carCompany->slug);
                 $companyFileName = basename(strtolower(
                     str_replace(' ', '-', $companyFileName)
                 ));
                 dd('wtf', $carCompany->name, $companyFileName);
             }
-            $path = $files->first();
+            $path = $files->firstOrFail();
             $destPath = Storage::disk('public')->path('car/companies');
             if (! file_exists($destPath)) {
                 mkdir($destPath, 0777, true);

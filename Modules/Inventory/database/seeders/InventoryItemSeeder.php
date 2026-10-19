@@ -106,7 +106,7 @@ class InventoryItemSeeder extends Seeder
                 'disk' => 'public',
                 'mime_type' => MimeTypes::getDefault()->guessMimeType($imageSrc),
                 'original_name' => $image,
-                'size' => getimagesize($imageSrc)[0],
+                'size' => filesize($imageSrc),
             ]);
         }
     }
@@ -547,6 +547,7 @@ class InventoryItemSeeder extends Seeder
         }
     }
 
+    /** @param array<string, mixed> $data */
     private function walkCategory(array $data, Category $parent): void
     {
 

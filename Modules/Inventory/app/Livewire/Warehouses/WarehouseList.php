@@ -8,7 +8,6 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
-use Modules\Inventory\Models\Warehouse;
 use Modules\Inventory\Services\WarehouseService;
 
 class WarehouseList extends Component
@@ -38,11 +37,11 @@ class WarehouseList extends Component
         ];
     }
 
+    /** @param string $warehouseSlug */
     public function toggleIsActive($warehouseSlug): void
     {
         $warehouseService = resolve(WarehouseService::class);
-        /** @var Warehouse $country */
-        $warehouse = $warehouseService->findByKey($warehouseSlug);
+        $warehouse = $warehouseService->findByKeyOrFail($warehouseSlug);
         $warehouseService->update($warehouse, [
             'is_active' => ! $warehouse->is_active,
         ]);
@@ -50,13 +49,15 @@ class WarehouseList extends Component
     }
 
     // This triggers a re-render
+    /** @param string|null $warehouse */
     #[On('active-warehouse-changed')]
-    public function activeWarehouseChanged($warehouse) {}
+    public function activeWarehouseChanged($warehouse): void {}
 
+    /** @param string $slug */
     public function changeActiveWarehouse($slug): void
     {
         $warehouseService = resolve(WarehouseService::class);
-        $warehouse = $warehouseService->findByKey($slug);
+        $warehouse = $warehouseService->findByKeyOrFail($slug);
         $warehouseService->setActiveWarehouse($warehouse);
     }
 

@@ -4,7 +4,6 @@ namespace Modules\User\Livewire\UserCar;
 
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Modules\Car\Models\UserCar;
 use Modules\Car\Services\CarCompanyService;
@@ -36,10 +35,9 @@ class UserCarEdit extends Component
         CarCompanyService $carCompanyService,
         CarService $carService
     ): View {
-        $user = Auth::user();
         $companies = $carCompanyService->getCompanies();
         $filters = [
-            'car_company_id' => $this->userCar->car_company_id,
+            'car_company_id' => $this->userCar->car->car_company_id,
         ];
         $cars = $carService->getCars($filters, false);
 
@@ -48,7 +46,7 @@ class UserCarEdit extends Component
         ])
             ->layout('dashboard::layouts.app')
             ->layoutData([
-                'title' => __('user::strings.User :name Cars', ['name' => $user->last_name]),
+                'title' => __('user::strings.User :name Cars', ['name' => $this->user->last_name]),
             ]);
     }
 }

@@ -22,7 +22,7 @@ class CountryService extends BaseService
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return LengthAwarePaginator<int, Country>|Collection<int, Country>
+     * @return ($paginate is true ? LengthAwarePaginator<int, Country> : Collection<int, Country>)
      */
     public function getCountries(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {

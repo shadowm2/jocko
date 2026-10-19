@@ -16,10 +16,14 @@ use Modules\User\Enums\UserType;
 
 /**
  * @property int $id
- * @property string $type
+ * @property string $slug
+ * @property UserType $type
  * @property string $first_name
  * @property string $last_name
  * @property string $email
+ * @property string|null $mobile
+ * @property string|null $otp_code
+ * @property Carbon|null $otp_issued_at
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
@@ -54,10 +58,10 @@ class User extends BaseAuthenticatableModel
     }
 
     /**
-     * @param  null|Builder<User>  $query
+     * @param  Builder<User>  $query
      */
     #[Scope]
-    protected function admin(?Builder $query): void
+    protected function admin(Builder $query): void
     {
         $query->where('type', UserType::Admin);
     }

@@ -177,9 +177,9 @@ class BrandSeeder extends Seeder
             ], $data->toArray());
 
             $srcPath = database_path('seeders/data/images/brands/');
-            $files = scandir($srcPath, SCANDIR_SORT_DESCENDING);
+            $files = scandir($srcPath, SCANDIR_SORT_DESCENDING) ?: [];
             $files = collect($files)->filter(function ($fileName) use ($brand) {
-                $brandFileName = preg_replace('/ [&]/', '', $brand->slug);
+                $brandFileName = str_replace(' &', '', $brand->slug);
                 $brandFileName = basename(strtolower(
                     str_replace(' ', '-', $brandFileName)
                 ));
@@ -190,13 +190,13 @@ class BrandSeeder extends Seeder
                 return $matches > 0;
             });
             if ($files->isEmpty()) {
-                $brandFileName = preg_replace('/ [&]/', '', $brand->slug);
+                $brandFileName = str_replace(' &', '', $brand->slug);
                 $brandFileName = basename(strtolower(
                     str_replace(' ', '-', $brandFileName)
                 ));
                 dd('wtf no image for brand '.$brandFileName.' at this path: '.$srcPath);
             }
-            $name = $files->first();
+            $name = $files->firstOrFail();
             $path = "inventory/brands/$name";
             Storage::disk('public')->makeDirectory('inventory/brands');
             copy("$srcPath/$name", Storage::disk('public')->path('inventory/brands/'.$name));

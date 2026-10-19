@@ -11,5 +11,6 @@ use Modules\Car\Repositories\CarRepository;
  */
 interface CarRepositoryInterface extends BaseRepositoryInterface
 {
+    /** @param array<string, mixed> $filters */
     public function filtered(array $filters): CarRepository;
 }

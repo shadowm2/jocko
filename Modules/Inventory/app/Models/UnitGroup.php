@@ -14,13 +14,13 @@ use Modules\Inventory\Database\Factories\UnitGroupFactory;
  *
  * @property int $id
  * @property string $name
+ * @property string $slug
  */
 #[Fillable(['name', 'slug'])]
 class UnitGroup extends BaseModel
 {
     /**
      * @use HasFactory<UnitGroupFactory>
-     * @use SoftDeletes
      */
     use HasFactory, SoftDeletes;
 

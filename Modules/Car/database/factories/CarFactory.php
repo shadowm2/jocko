@@ -6,6 +6,7 @@ use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Car\Models\Car;
 
+/** @extends Factory<Car> */
 class CarFactory extends Factory
 {
     /**

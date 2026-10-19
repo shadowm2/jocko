@@ -37,9 +37,10 @@ class ItemBrandService extends BaseService
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }
 
+    /** @param array<string, mixed> $data */
     public function createForItem(array $data, Item $item): ItemBrand
     {
-        $brand = resolve(BrandService::class)->findByKey($data['brand']);
+        $brand = resolve(BrandService::class)->findByKeyOrFail($data['brand']);
         $data['slug'] ??= Utils::generateUniqueSlug($item->name.' '.$brand->name, ItemBrand::class);
         $data['item_id'] = $item->id;
 
@@ -55,7 +56,7 @@ class ItemBrandService extends BaseService
     {
         $brandService = resolve(BrandService::class);
         if (! empty($data['brand'])) {
-            $brand = $brandService->findByKey($data['brand']);
+            $brand = $brandService->findByKeyOrFail($data['brand']);
             $data['brand_id'] = $brand->id;
         }
 

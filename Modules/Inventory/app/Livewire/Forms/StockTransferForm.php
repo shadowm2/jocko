@@ -39,8 +39,8 @@ class StockTransferForm extends Form
         try {
             // ponytail: base unit only; add a unit picker when moving cartons matters.
             resolve(StockMovementService::class)->transfer(
-                resolve(WarehouseItemService::class)->findByKey($data['warehouse_item']),
-                resolve(WarehouseService::class)->findByKey($data['warehouse']),
+                resolve(WarehouseItemService::class)->findByKeyOrFail($data['warehouse_item']),
+                resolve(WarehouseService::class)->findByKeyOrFail($data['warehouse']),
                 (float) $data['quantity'],
                 $data['description'] ?: null,
             );

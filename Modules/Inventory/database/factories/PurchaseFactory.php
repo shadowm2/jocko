@@ -9,6 +9,7 @@ use Modules\Inventory\Models\Purchase;
 use Modules\Inventory\Models\Supplier;
 use Modules\Inventory\Models\Warehouse;
 
+/** @extends Factory<Purchase> */
 class PurchaseFactory extends Factory
 {
     /**

@@ -19,6 +19,7 @@ use Modules\Inventory\Models\Unit;
 use Modules\Inventory\Models\Warehouse;
 use Modules\Inventory\Models\WarehouseItem;
 use Modules\Inventory\Repositories\StockMovementRepository;
+use Modules\Order\Models\OrderItem;
 
 /**
  * @extends BaseService<StockMovement, StockMovementRepository>
@@ -84,6 +85,8 @@ class StockMovementService extends BaseService
      * - new lines get a fresh movement,
      * - removed lines have their effect reverted and their movement
      *   soft deleted.
+     *
+     * @return Collection<int, StockMovement>
      */
     public function syncPurchase(Purchase $purchase): Collection
     {
@@ -105,7 +108,7 @@ class StockMovementService extends BaseService
             }
 
             WarehouseItem::find($movement->warehouse_item_id)
-                ?->decrement('quantity', $movement->quantity);
+                ?->decrement('quantity', (float) $movement->quantity);
 
             $movement->delete();
         }
@@ -137,7 +140,7 @@ class StockMovementService extends BaseService
             // recorded; revert the old one before applying the new delta.
             if ((int) $movement->warehouse_item_id !== (int) $warehouseItem->id) {
                 WarehouseItem::find($movement->warehouse_item_id)
-                    ?->decrement('quantity', $movement->quantity);
+                    ?->decrement('quantity', (float) $movement->quantity);
                 $warehouseItem->increment('quantity', $values['quantity']);
             } else {
                 $warehouseItem->increment('quantity', $values['quantity'] - (float) $movement->quantity);
@@ -168,7 +171,7 @@ class StockMovementService extends BaseService
      * Unit cost stays at its default: no cost basis is tracked yet and the
      * sale price already lives on the reference's own lines.
      *
-     * @param  SupportCollection<int, Model>  $lines  anything with item_id, quantity, total and unit
+     * @param  SupportCollection<int, OrderItem>  $lines
      *
      * @throws ValidationException when a line asks for more than is on hand
      */
@@ -184,7 +187,7 @@ class StockMovementService extends BaseService
             ->keyBy('item_id');
 
         foreach ($movements->diffKeys($lines) as $movement) {
-            WarehouseItem::find($movement->warehouse_item_id)?->increment('quantity', $movement->quantity);
+            WarehouseItem::find($movement->warehouse_item_id)?->increment('quantity', (float) $movement->quantity);
             $movement->delete();
         }
 
@@ -204,7 +207,7 @@ class StockMovementService extends BaseService
             $before = (float) $warehouseItem->quantity;
             $movement = $movements->get($itemId);
             if ($movement) {
-                WarehouseItem::find($movement->warehouse_item_id)?->increment('quantity', $movement->quantity);
+                WarehouseItem::find($movement->warehouse_item_id)?->increment('quantity', (float) $movement->quantity);
                 $warehouseItem->refresh();
             }
 
@@ -234,7 +237,7 @@ class StockMovementService extends BaseService
             }
 
             $this->repository->create([
-                'slug' => Utils::generateUniqueSlug('sm '.$reference->slug.' '.$itemId, StockMovement::class),
+                'slug' => Utils::generateUniqueSlug('sm '.$reference->getRouteKey().' '.$itemId, StockMovement::class),
                 'item_id' => $itemId,
                 'user_id' => auth()->id(),
                 'to_warehouse_id' => null,
@@ -408,11 +411,11 @@ class StockMovementService extends BaseService
      *
      * @return array{quantity:float,unit_cost:float,total_cost:float}
      */
-    private function movementValues(Model $line): array
+    private function movementValues(PurchaseItem|OrderItem $line): array
     {
         $line->loadMissing(['unit', 'item.unitGroup.units']);
 
-        $baseUnit = $line->item->unitGroup?->units
+        $baseUnit = $line->item->unitGroup->units
             ->first(fn (Unit $unit): bool => (bool) $unit->is_base);
 
         if (! $baseUnit) {

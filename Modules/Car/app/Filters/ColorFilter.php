@@ -3,7 +3,9 @@
 namespace Modules\Car\Filters;
 
 use App\Filters\BaseFilter;
+use Modules\Car\Models\Color;
 
+/** @extends BaseFilter<Color> */
 class ColorFilter extends BaseFilter
 {
     protected function filter(): void

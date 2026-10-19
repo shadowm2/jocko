@@ -11,12 +11,13 @@ use Modules\Inventory\Database\Factories\UnitFactory;
 /**
  * @extends BaseModel<Unit>
  *
- * @property $name
- * @property $symbol
- * @property $unit_group_id
- * @property $conversion_factor
- * @property $is_base
- * @property $is_active
+ * @property string $name
+ * @property string $symbol
+ * @property int $unit_group_id
+ * @property float $conversion_factor
+ * @property bool $is_base
+ * @property bool $is_active
+ * @property-read UnitGroup $unitGroup
  */
 #[Fillable(['name', 'slug', 'symbol', 'unit_group_id', 'conversion_factor', 'is_base', 'is_active'])]
 class Unit extends BaseModel
@@ -31,6 +32,7 @@ class Unit extends BaseModel
         return UnitFactory::new();
     }
 
+    /** @return BelongsTo<UnitGroup, $this> */
     public function unitGroup(): BelongsTo
     {
         return $this->belongsTo(UnitGroup::class);

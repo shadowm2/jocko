@@ -14,7 +14,7 @@ class LowStockList extends Component
     use InteractsWithTableFilters;
     use WithPagination;
 
-    /** @var array{search:string,warehouse_id:string} */
+    /** @var array<string, mixed> */
     public array $filters = [
         'search' => '',
         'warehouse_id' => '',
