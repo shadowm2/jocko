@@ -7,12 +7,14 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 use Modules\Inventory\Services\WarehouseItemService;
 use Modules\Inventory\Services\WarehouseService;
 
 class WarehouseItemList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
     private const FILTERS = [
@@ -21,6 +23,10 @@ class WarehouseItemList extends Component
 
     /** @var array<string, mixed> */
     public array $filters = self::FILTERS;
+
+    public string $sortBy = 'item';
+
+    public string $sortDirection = 'asc';
 
     protected function defaultTableFilters(): array
     {
@@ -35,6 +41,12 @@ class WarehouseItemList extends Component
         ];
     }
 
+    /** @return array<string, string> */
+    private function sortOptions(): array
+    {
+        return ['item' => __('inventory::attributes.Item Name'), 'quantity' => __('inventory::attributes.Warehouse Item Quantity')];
+    }
+
     #[On('active-warehouse-changed')]
     public function onWarehouseSelect(string $warehouse): void {}
 
@@ -43,7 +55,7 @@ class WarehouseItemList extends Component
         $warehouseService = resolve(WarehouseService::class);
         $warehouseItemService = resolve(WarehouseItemService::class);
         $warehouse = $warehouseService->getActiveWarehouse();
-        $rows = $warehouseItemService->getItemsInWarehouse($warehouse, $this->filters);
+        $rows = $warehouseItemService->getItemsInWarehouse($warehouse, [...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);
 
         $columns = [
             [
@@ -71,6 +83,7 @@ class WarehouseItemList extends Component
         return view('inventory::livewire.warehouse-items-list', [
             ...compact('columns', 'rows', 'warehouse'),
             'filterDefinitions' => $this->filterDefinitions(),
+            'sortOptions' => $this->sortOptions(),
         ])
             ->layout('dashboard::layouts.app')
             ->layoutData([

@@ -34,6 +34,7 @@ return [
     'Item Brand Sale Price' => 'Sale price',
     'Warehouse Name' => 'Warehouse name',
     'Warehouse Description' => 'Warehouse description',
+    'Warehouse Items Count' => 'Items in warehouse',
     'Warehouse Item Quantity' => 'Quantity',
     'Warehouse Item' => 'Warehouse item',
     'Purchase Status' => 'Status',

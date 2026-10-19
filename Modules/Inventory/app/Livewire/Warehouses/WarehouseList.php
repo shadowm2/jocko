@@ -8,11 +8,13 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 use Modules\Inventory\Services\WarehouseService;
 
 class WarehouseList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
     private const FILTERS = [
@@ -22,6 +24,10 @@ class WarehouseList extends Component
 
     /** @var array<string, mixed> */
     public array $filters = self::FILTERS;
+
+    public string $sortBy = 'warehouse_items_count';
+
+    public string $sortDirection = 'desc';
 
     protected function defaultTableFilters(): array
     {
@@ -35,6 +41,12 @@ class WarehouseList extends Component
             ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('inventory::strings.Search Warehouses')],
             ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('inventory::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
         ];
+    }
+
+    /** @return array<string, string> */
+    private function sortOptions(): array
+    {
+        return ['name' => __('inventory::attributes.Warehouse Name'), 'warehouse_items_count' => __('inventory::attributes.Warehouse Items Count')];
     }
 
     /** @param string $warehouseSlug */
@@ -79,7 +91,7 @@ class WarehouseList extends Component
                 'maxlength' => 15,
             ],
             [
-                'label' => __('inventory::attributes.Warehouse Description'),
+                'label' => __('inventory::attributes.Warehouse Items Count'),
                 'key' => 'warehouse_items_count',
             ],
             [
@@ -93,11 +105,12 @@ class WarehouseList extends Component
                 'component' => 'inventory::warehouse-action-cell',
             ],
         ];
-        $rows = $warehouseService->getWarehouses($this->filters);
+        $rows = $warehouseService->getWarehouses([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);
 
         return view('inventory::livewire.warehouses-list', [
             ...compact('columns', 'rows', 'activeWarehouse'),
             'filterDefinitions' => $this->filterDefinitions(),
+            'sortOptions' => $this->sortOptions(),
         ])
             ->layout('dashboard::layouts.app')
             ->layoutData([

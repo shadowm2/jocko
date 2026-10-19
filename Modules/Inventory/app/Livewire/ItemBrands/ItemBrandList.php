@@ -7,12 +7,14 @@ use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 use Modules\Inventory\Models\Item;
 use Modules\Inventory\Services\ItemBrandService;
 
 class ItemBrandList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
     private const FILTERS = [
@@ -22,6 +24,10 @@ class ItemBrandList extends Component
 
     /** @var array<string, mixed> */
     public array $filters = self::FILTERS;
+
+    public string $sortBy = 'brand';
+
+    public string $sortDirection = 'asc';
 
     protected function defaultTableFilters(): array
     {
@@ -35,6 +41,12 @@ class ItemBrandList extends Component
             ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('inventory::strings.Search Item Brands')],
             ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('inventory::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
         ];
+    }
+
+    /** @return array<string, string> */
+    private function sortOptions(): array
+    {
+        return ['brand' => __('inventory::attributes.Item Brand Brand'), 'sku' => __('inventory::attributes.Item Brand SKU'), 'purchase_price' => __('inventory::attributes.Item Brand Purchase Price'), 'sale_price' => __('inventory::attributes.Item Brand Sale Price')];
     }
 
     public Item $item;
@@ -84,11 +96,12 @@ class ItemBrandList extends Component
             ],
         ];
         $itemService = resolve(ItemBrandService::class);
-        $rows = $itemService->getItemBrands([...$this->filters, 'item_id' => $this->item->id]);
+        $rows = $itemService->getItemBrands([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection, 'item_id' => $this->item->id]);
 
         return view('inventory::livewire.item-brands.item-brands-list', [
             ...compact('columns', 'rows'),
             'filterDefinitions' => $this->filterDefinitions(),
+            'sortOptions' => $this->sortOptions(),
             'item' => $this->item,
         ])
             ->layout('dashboard::layouts.app')

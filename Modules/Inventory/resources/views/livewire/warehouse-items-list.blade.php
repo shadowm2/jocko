@@ -10,6 +10,9 @@
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">
                 <x-table.filters
                     :filters="$filterDefinitions"
+                    :sort-options="$sortOptions"
+                    :sort-by="$sortBy"
+                    :sort-direction="$sortDirection"
                     clear-action="clearFilters"
                     panel
                 />
