@@ -67,6 +67,21 @@ abstract class BaseFilter
         }
     }
 
+    /**
+     * Applies a yes/no checkbox group; none or both ticked means no filter.
+     */
+    protected function whereCheckboxes(string $column): void
+    {
+        $values = array_values(array_filter(
+            (array) ($this->filters[$column] ?? []),
+            static fn (mixed $value): bool => in_array((string) $value, ['0', '1'], true),
+        ));
+
+        if (count($values) === 1) {
+            $this->builder->where($column, (bool) $values[0]);
+        }
+    }
+
     protected function hasFilter(string $field): bool
     {
         return in_array($field, array_keys($this->filters));

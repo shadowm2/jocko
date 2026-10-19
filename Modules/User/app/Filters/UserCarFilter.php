@@ -3,14 +3,13 @@
 namespace Modules\User\Filters;
 
 use App\Filters\BaseFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserCarFilter extends BaseFilter
 {
     /**
      * @param  array<string, mixed>  $filters
      */
-
-
     protected function filter(): void
     {
         $this->where(
@@ -18,17 +17,14 @@ class UserCarFilter extends BaseFilter
             $this->filters['user_id'] ?? null
         );
 
-        if (! empty($this->filters['search'])) {
-            $this->builder->whereHas(
-                'carCompany',
-                function ($query) {
-                    $query->where(
-                        'name',
-                        'like',
-                        '%'.$this->filters['search'].'%'
-                    );
-                }
-            );
+        $search = trim((string) ($this->filters['search'] ?? ''));
+        if ($search !== '') {
+            $this->builder->where(function (Builder $query) use ($search): void {
+                $query->whereHas('car', fn (Builder $car) => $car
+                    ->where('name', 'like', "%{$search}%")
+                    ->orWhereHas('company', fn (Builder $company) => $company->where('name', 'like', "%{$search}%")))
+                    ->orWhereHas('color', fn (Builder $color) => $color->where('name', 'like', "%{$search}%"));
+            });
         }
     }
 }

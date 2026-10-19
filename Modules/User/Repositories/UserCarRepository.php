@@ -4,8 +4,8 @@ namespace Modules\User\Repositories;
 
 use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
-use Modules\Car\Filters\CarFilter;
 use Modules\Car\Models\UserCar;
+use Modules\User\Filters\UserCarFilter;
 use Modules\User\Repositories\Contracts\UserCarRepositoryInterface;
 
 /**
@@ -44,7 +44,7 @@ class UserCarRepository extends BaseRepository implements UserCarRepositoryInter
      */
     public function filtered(array $filters): UserCarRepository
     {
-        (new CarFilter($filters))
+        (new UserCarFilter($filters))
             ->apply($this->query());
 
         return $this;

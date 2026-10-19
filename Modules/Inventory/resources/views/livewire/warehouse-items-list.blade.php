@@ -6,6 +6,16 @@
         :title="__('inventory::strings.Warehouse Items List')"
         row-component="inventory::components.warehouse-item-row"
     >
+        <x-slot name="toolbar">
+            <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">
+                <x-table.filters
+                    :filters="$filterDefinitions"
+                    clear-action="clearFilters"
+                    panel
+                />
+            </x-table.filter-drawer>
+        </x-slot>
+
         @if ($warehouse instanceof \Illuminate\Database\Eloquent\Model)
             <x-slot name="action">
                 <flux:button
