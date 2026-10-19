@@ -68,6 +68,28 @@ abstract class BaseFilter
     }
 
     /**
+     * Orders by the requested sort_by when it is one of the options, then by
+     * id so the pages stay stable. An option is a column, or a subquery that
+     * selects the value to order by.
+     *
+     * @param  array<string, string|Builder<*>>  $options
+     */
+    protected function sort(array $options): void
+    {
+        $sortBy = $this->filters['sort_by'] ?? null;
+
+        if (! is_string($sortBy) || ! isset($options[$sortBy])) {
+            return;
+        }
+
+        $direction = ($this->filters['sort_direction'] ?? '') === 'desc' ? 'desc' : 'asc';
+
+        $this->builder
+            ->orderBy($options[$sortBy], $direction)
+            ->orderBy($this->builder->qualifyColumn('id'));
+    }
+
+    /**
      * Applies a yes/no checkbox group; none or both ticked means no filter.
      */
     protected function whereCheckboxes(string $column): void

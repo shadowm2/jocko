@@ -14,5 +14,7 @@ class UnitGroupFilter extends BaseFilter
         if ($search !== '') {
             $this->builder->where('name', 'like', "%{$search}%");
         }
+
+        $this->sort(['name' => 'name', 'units_count' => 'units_count']);
     }
 }

@@ -34,6 +34,7 @@ return [
     'Item Brand Sale Price' => 'قیمت فروش',
     'Warehouse Name' => 'نام انبار',
     'Warehouse Description' => 'توضیحات انبار',
+    'Warehouse Items Count' => 'تعداد کالاهای انبار',
     'Warehouse Item Quantity' => 'تعداد',
     'Warehouse Item' => 'کالای انبار',
     'Purchase Status' => 'وضعیت',

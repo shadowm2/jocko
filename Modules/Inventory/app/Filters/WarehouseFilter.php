@@ -20,5 +20,7 @@ class WarehouseFilter extends BaseFilter
         }
 
         $this->whereCheckboxes('is_active');
+
+        $this->sort(['name' => 'name', 'warehouse_items_count' => 'warehouse_items_count']);
     }
 }
