@@ -5,8 +5,10 @@ namespace Modules\Inventory\Filters;
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Dashboard\Models\City;
+use Modules\Inventory\Models\Supplier;
 use Modules\User\Models\User;
 
+/** @extends BaseFilter<Supplier> */
 class SupplierFilter extends BaseFilter
 {
     protected function filter(): void

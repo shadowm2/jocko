@@ -19,6 +19,7 @@ use Morilog\Jalali\Jalalian;
  * @property string $slug
  * @property string $order_number
  * @property Warehouse $warehouse
+ * @property-read Supplier $supplier
  */
 #[Fillable(['slug', 'supplier_id', 'warehouse_id', 'order_number', 'status', 'ordered_at', 'received_at', 'expected_at', 'notes'])]
 class Purchase extends BaseModel
@@ -58,6 +59,7 @@ class Purchase extends BaseModel
         return $this->hasMany(PurchaseItem::class);
     }
 
+    /** @return Attribute<Jalalian|null, never> */
     public function orderedAtJalali(): Attribute
     {
 
@@ -69,6 +71,7 @@ class Purchase extends BaseModel
         );
     }
 
+    /** @return Attribute<Jalalian|null, never> */
     public function receivedAtJalali(): Attribute
     {
 
@@ -80,6 +83,7 @@ class Purchase extends BaseModel
         );
     }
 
+    /** @return Attribute<Jalalian|null, never> */
     public function expectedAtJalali(): Attribute
     {
 

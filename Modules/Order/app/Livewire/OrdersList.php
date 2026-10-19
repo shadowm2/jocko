@@ -23,7 +23,7 @@ class OrdersList extends Component
         'created_to' => '',
     ];
 
-    /** @var array{search:string,status:string,payment_status:string,created_from:string,created_to:string} */
+    /** @var array<string, mixed> */
     public array $filters = self::FILTERS;
 
     protected function defaultTableFilters(): array

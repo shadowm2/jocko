@@ -55,6 +55,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $data;
     }
 
+    /**
+     * @param  array<string>  $columns
+     * @return TModel|null
+     */
     public function find(
         int|string $id,
         array $columns = ['*']
@@ -63,6 +67,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
             ->find($id, $columns);
     }
 
+    /**
+     * @param  array<string>  $columns
+     * @return TModel
+     */
     public function findOrFail(
         int|string $id,
         array $columns = ['*']
@@ -71,11 +79,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
             ->findOrFail($id, $columns);
     }
 
+    /** @return TModel|null */
     public function findBy(int|string $val, string $col): ?Model
     {
         return $this->query()->where($col, $val)->first();
     }
 
+    /** @return TModel|null */
     public function findByKey(mixed $val): ?Model
     {
         $col = $this->model->getRouteKeyName();
@@ -83,11 +93,28 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->query()->where($col, $val)->first();
     }
 
-    public function create(array $data): Model
+    /** @return TModel */
+    public function findByKeyOrFail(mixed $val): Model
     {
-        return $this->model->create($data);
+        return $this->query()->where($this->model->getRouteKeyName(), $val)->firstOrFail();
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return TModel
+     */
+    public function create(array $data): Model
+    {
+        $model = $this->model->newInstance($data);
+        $model->save();
+
+        return $model;
+    }
+
+    /**
+     * @param  TModel  $model
+     * @param  array<string, mixed>  $data
+     */
     public function update(
         Model $model,
         array $data
@@ -95,9 +122,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $model->update($data);
     }
 
+    /** @param  TModel  $model */
     public function delete(Model $model): bool
     {
-        return $model->delete();
+        return (bool) $model->delete();
     }
 
     /**
@@ -118,6 +146,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
+     * @param  string|Builder<*>  $column
      * @return BaseRepository<TModel>
      */
     public function orderBy(string|Builder $column = 'id', SortDirection $direction = SortDirection::Ascending): BaseRepository
@@ -131,6 +160,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this;
     }
 
+    /**
+     * @param  int|array<int>  $ids
+     * @return BaseRepository<TModel>
+     */
     public function exclude(int|array $ids = []): BaseRepository
     {
         if (is_numeric($ids)) {
@@ -142,7 +175,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this;
     }
 
-    public function getModel()
+    /** @return TModel */
+    public function getModel(): Model
     {
         return $this->model;
     }

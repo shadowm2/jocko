@@ -3,7 +3,6 @@
 namespace Modules\Dashboard\Repositories;
 
 use App\Repositories\BaseRepository;
-use Modules\Dashboard\Filters\BrandFilter;
 use Modules\Dashboard\Models\Media;
 use Modules\Dashboard\Repositories\Contracts\MediaRepositoryInterface;
 
@@ -21,17 +20,6 @@ class MediaRepository extends BaseRepository implements MediaRepositoryInterface
     {
         $this->query()
             ->with([]);
-
-        return $this;
-    }
-
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function filtered(array $filters): MediaRepository
-    {
-        (new BrandFilter($filters))
-            ->apply($this->query());
 
         return $this;
     }

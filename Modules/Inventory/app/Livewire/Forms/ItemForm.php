@@ -26,7 +26,8 @@ class ItemForm extends ImageForm
 
     public string $description = '';
 
-    public function getRules()
+    /** @return array<string, mixed> */
+    public function getRules(): array
     {
         $rules = [
             'name' => 'required',
@@ -62,13 +63,14 @@ class ItemForm extends ImageForm
         $this->item = $item;
         $this->id = $item->id;
         $this->name = $item->name;
-        $this->description = $item->description;
+        $this->description = $item->description ?? '';
         $this->category = $item->category->slug;
         $this->unit_group = $item->unitGroup->slug;
         $this->is_active = $item->is_active;
         $this->setPreviousImages($item->images);
     }
 
+    /** @return array<string, string> */
     public function validationAttributes(): array
     {
         return [

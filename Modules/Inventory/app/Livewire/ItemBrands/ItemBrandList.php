@@ -43,8 +43,7 @@ class ItemBrandList extends Component
     {
         $itemBrandService = resolve(ItemBrandService::class);
 
-        /** @var Item $item */
-        $itemBrand = $itemBrandService->findByKey($itemBrandSlug);
+        $itemBrand = $itemBrandService->findByKeyOrFail($itemBrandSlug);
 
         $itemBrandService->update($itemBrand, [
             'is_active' => ! $itemBrand->is_active,

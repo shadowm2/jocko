@@ -10,6 +10,8 @@ use Illuminate\Validation\Rule;
 use Livewire\Form;
 use Modules\Inventory\Enums\PurchaseStatus;
 use Modules\Inventory\Models\Purchase;
+use Modules\Inventory\Models\Unit;
+use Modules\Inventory\Models\WarehouseItem;
 use Modules\Inventory\Services\PurchaseService;
 use Modules\Inventory\Services\WarehouseItemService;
 use Morilog\Jalali\Jalalian;
@@ -131,7 +133,7 @@ class PurchaseForm extends Form
      */
     public function currentStatus(): PurchaseStatus
     {
-        return $this->purchase?->status ?? PurchaseStatus::NEW;
+        return $this->purchase->status ?? PurchaseStatus::NEW;
     }
 
     public function isUnsaved(): bool
@@ -149,6 +151,7 @@ class PurchaseForm extends Form
         return $this->currentStatus()->color();
     }
 
+    /** @return array<string, mixed> */
     public function getRules(): array
     {
         return [
@@ -213,7 +216,8 @@ class PurchaseForm extends Form
     /** Save only the purchase lines from the list's item editor. */
     public function saveItems(): bool
     {
-        if (! $this->purchase) {
+        $purchase = $this->purchase;
+        if (! $purchase) {
             throw new Exception('A saved purchase is required to update its items.');
         }
 
@@ -231,7 +235,7 @@ class PurchaseForm extends Form
         ]);
 
         try {
-            resolve(PurchaseService::class)->update($this->purchase->id, [
+            resolve(PurchaseService::class)->update($purchase->id, [
                 'items' => $data['items'] ?? [],
             ]);
         } catch (\Throwable $e) {
@@ -240,7 +244,7 @@ class PurchaseForm extends Form
             return false;
         }
 
-        $this->purchase->refresh();
+        $purchase->refresh();
 
         return true;
     }
@@ -270,14 +274,14 @@ class PurchaseForm extends Form
 
         return resolve(WarehouseItemService::class)
             ->getWarehouseItems(['whereIn' => ['slug', $slugs]], paginate: false)
-            ->mapWithKeys(static fn ($warehouseItem) => [
+            ->mapWithKeys(static fn (WarehouseItem $warehouseItem) => [
                 $warehouseItem->slug => [
                     'name' => $warehouseItem->item->name,
                     'quantity' => (float) $warehouseItem->quantity,
                     'units' => $warehouseItem->item->unitGroup->units
                         ->where('is_active', true)
                         ->values()
-                        ->map(fn ($unit) => ['id' => $unit->id, 'name' => $unit->name, 'symbol' => $unit->symbol])
+                        ->map(fn (Unit $unit) => ['id' => $unit->id, 'name' => $unit->name, 'symbol' => $unit->symbol])
                         ->all(),
                 ],
             ])
@@ -293,11 +297,11 @@ class PurchaseForm extends Form
         $this->warehouse = $purchase->warehouse->slug;
         $this->supplier = $purchase->supplier->slug;
         $this->order_number = $purchase->order_number;
-        $this->ordered_at = Utils::pDigits($purchase->ordered_at_jalali?->format('Y/m/d') ?? '');
+        $this->ordered_at = Utils::pDigits($purchase->ordered_at_jalali?->format('Y/m/d') ?? '') ?? '';
         $this->ordered_at_gregorian = $purchase->ordered_at?->format('Y/m/d') ?? '';
-        $this->expected_at = Utils::pDigits($purchase->expected_at_jalali?->format('Y/m/d') ?? '');
+        $this->expected_at = Utils::pDigits($purchase->expected_at_jalali?->format('Y/m/d') ?? '') ?? '';
         $this->expected_at_gregorian = $purchase->expected_at?->format('Y/m/d') ?? '';
-        $this->received_at = Utils::pDigits($purchase->received_at_jalali?->format('Y/m/d') ?? '');
+        $this->received_at = Utils::pDigits($purchase->received_at_jalali?->format('Y/m/d') ?? '') ?? '';
         $this->received_at_gregorian = $purchase->received_at?->format('Y/m/d') ?? '';
         $this->notes = $purchase->notes;
 
@@ -373,6 +377,7 @@ class PurchaseForm extends Form
         return $lines;
     }
 
+    /** @return array<string, string> */
     public function validationAttributes(): array
     {
         return [

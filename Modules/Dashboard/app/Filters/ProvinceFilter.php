@@ -5,8 +5,10 @@ namespace Modules\Dashboard\Filters;
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Dashboard\Models\Country;
+use Modules\Dashboard\Models\Province;
 use Modules\Dashboard\Services\CountryService;
 
+/** @extends BaseFilter<Province> */
 class ProvinceFilter extends BaseFilter
 {
     protected function filter(): void

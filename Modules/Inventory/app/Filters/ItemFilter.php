@@ -5,8 +5,10 @@ namespace Modules\Inventory\Filters;
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Dashboard\Models\Category;
+use Modules\Inventory\Models\Item;
 use Modules\Inventory\Models\UnitGroup;
 
+/** @extends BaseFilter<Item> */
 class ItemFilter extends BaseFilter
 {
     protected function filter(): void

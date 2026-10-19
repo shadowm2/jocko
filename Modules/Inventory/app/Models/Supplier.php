@@ -22,6 +22,9 @@ use Modules\User\Models\User;
  * @property bool $is_active
  * @property string $phone
  * @property string $slug
+ * @property-read User $user
+ *
+ * @extends BaseModel<Supplier>
  */
 #[Fillable(['user_id', 'slug',  'notes', 'phone', 'city_id', 'address', 'postal_code', 'website', 'tax_number', 'is_active'])]
 class Supplier extends BaseModel
@@ -36,11 +39,13 @@ class Supplier extends BaseModel
         return SupplierFactory::new();
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<City, $this> */
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);

@@ -45,7 +45,7 @@ class PurchaseService extends BaseService
     public function create(array $data): Purchase
     {
         /** @var Supplier $supplier */
-        $supplier = resolve(SupplierService::class)->findByKey($data['supplier']);
+        $supplier = resolve(SupplierService::class)->findByKeyOrFail($data['supplier']);
         $data['supplier_id'] = $supplier->id;
         $slug = $data['warehouse'].' '.$supplier->user->fullName();
         $data['slug'] ??= Utils::generateUniqueSlug($slug, Purchase::class);
@@ -69,7 +69,7 @@ class PurchaseService extends BaseService
     public function update(int|Model $model, array $data): bool
     {
         if ($model instanceof Model === false) {
-            $model = $this->find($model);
+            $model = $this->findOrFail($model);
         }
 
         $items = $data['items'] ?? null;
@@ -220,10 +220,10 @@ class PurchaseService extends BaseService
         $supplierService = resolve(SupplierService::class);
 
         if (! empty($data['supplier']) && empty($data['supplier_id'])) {
-            $data['supplier_id'] = $supplierService->findByKey($data['supplier'])->id;
+            $data['supplier_id'] = $supplierService->findByKeyOrFail($data['supplier'])->id;
         }
         if (! empty($data['warehouse'])) {
-            $data['warehouse_id'] = $warehouseService->findByKey($data['warehouse'])->id;
+            $data['warehouse_id'] = $warehouseService->findByKeyOrFail($data['warehouse'])->id;
         }
 
         return parent::interpretData($data);

@@ -8,6 +8,7 @@ use Modules\Inventory\Models\Warehouse;
 use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Models\Order;
 
+/** @extends Factory<Order> */
 class OrderFactory extends Factory
 {
     /**

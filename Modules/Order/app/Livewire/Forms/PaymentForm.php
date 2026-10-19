@@ -52,7 +52,11 @@ class PaymentForm extends Form
             return;
         }
 
-        $paid = $order->payments()->when($this->payment, fn ($payments) => $payments->whereKeyNot($this->payment->id))->sum('amount');
+        $payments = $order->payments();
+        if ($this->payment) {
+            $payments->whereKeyNot($this->payment->id);
+        }
+        $paid = $payments->sum('amount');
         $balance = round((float) $order->items()->sum('total') - (float) $paid, 2);
 
         if (round((float) $value, 2) > $balance) {
@@ -75,8 +79,8 @@ class PaymentForm extends Form
         $this->order = $payment->order->slug;
         $this->amount = Utils::formatQuantity($payment->amount, 2, '');
         $this->method = $payment->method->value;
-        $this->paid_at = Utils::pDigits($payment->paid_at_jalali?->format('Y/m/d') ?? '') ?? '';
-        $this->paid_at_gregorian = $payment->paid_at?->format('Y/m/d') ?? '';
+        $this->paid_at = Utils::pDigits($payment->paid_at_jalali->format('Y/m/d')) ?? '';
+        $this->paid_at_gregorian = $payment->paid_at->format('Y/m/d');
         $this->description = $payment->description;
     }
 

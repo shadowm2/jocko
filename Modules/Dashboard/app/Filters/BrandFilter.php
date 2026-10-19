@@ -4,7 +4,9 @@ namespace Modules\Dashboard\Filters;
 
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Inventory\Models\Brand;
 
+/** @extends BaseFilter<Brand> */
 class BrandFilter extends BaseFilter
 {
     protected function filter(): void

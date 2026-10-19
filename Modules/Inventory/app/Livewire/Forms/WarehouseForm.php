@@ -19,6 +19,7 @@ class WarehouseForm extends Form
 
     public bool $is_active = true;
 
+    /** @return array<string, mixed> */
     public function getRules(): array
     {
         return [
@@ -55,6 +56,7 @@ class WarehouseForm extends Form
         $this->is_active = $warehouse->is_active;
     }
 
+    /** @return array<string, string> */
     public function validationAttributes(): array
     {
         return [

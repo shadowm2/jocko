@@ -24,10 +24,11 @@ class SupplierEdit extends Component
         $countryService = resolve(CountryService::class);
         $this->countries = $countryService->getCountries(['is_active' => true], paginate: false);
 
-        if ($this->supplier->city) {
-            $this->setCountry($this->supplier->city->province->country->code);
-            $this->setProvince($this->supplier->city->province->slug);
-            $this->setCity($this->supplier->city->slug);
+        $city = $this->supplier->city;
+        if ($city) {
+            $this->setCountry($city->province->country->code);
+            $this->setProvince($city->province->slug);
+            $this->setCity($city->slug);
         }
     }
 

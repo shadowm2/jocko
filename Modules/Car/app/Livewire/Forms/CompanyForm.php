@@ -14,7 +14,8 @@ class CompanyForm extends ImageForm
 
     public ?CarCompany $company = null;
 
-    public function rules()
+    /** @return array<string, mixed> */
+    public function rules(): array
     {
         return [
             'name' => 'required|unique:Modules\Car\Models\CarCompany,name'.

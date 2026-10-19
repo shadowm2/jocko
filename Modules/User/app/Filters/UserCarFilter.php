@@ -4,12 +4,11 @@ namespace Modules\User\Filters;
 
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Car\Models\UserCar;
 
+/** @extends BaseFilter<UserCar> */
 class UserCarFilter extends BaseFilter
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
     protected function filter(): void
     {
         $this->where(

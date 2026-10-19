@@ -47,6 +47,7 @@ class CountryForm extends Form
         $this->code3 = $country->code3;
     }
 
+    /** @return array<string, string> */
     protected function validationAttributes(): array
     {
         return [

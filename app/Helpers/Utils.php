@@ -13,7 +13,7 @@ class Utils
         $hex = ltrim($hex, '#');
 
         if (strlen($hex) === 3) {
-            $hex = preg_replace('/(.)/', '$1$1', $hex);
+            $hex = implode('', array_map(fn (string $char) => $char.$char, str_split($hex)));
         }
 
         $r = 255 - hexdec(substr($hex, 0, 2));
@@ -80,7 +80,7 @@ class Utils
      */
     public static function normalizeMobile(string $value): string
     {
-        $digits = preg_replace('/\D/', '', self::eDigits($value));
+        $digits = preg_replace('/\D/', '', self::eDigits($value)) ?? '';
 
         return preg_match('/^(?:0098|98|0)?(9\d{9})$/', $digits, $matches) ? '0'.$matches[1] : $digits;
     }
@@ -159,11 +159,10 @@ class Utils
 
     public static function getBaseSlug(string $slug): string
     {
-        return preg_replace('/-\d+/', '', $slug);
-
+        return preg_replace('/-\d+/', '', $slug) ?? $slug;
     }
 
-    public static function formatQuantity(float|int|string|null $value, int $decimals = 3, $thousandsSeparator = '/'): string
+    public static function formatQuantity(float|int|string|null $value, int $decimals = 3, string $thousandsSeparator = '/'): string
     {
         if (is_null($value)) {
             return '-';

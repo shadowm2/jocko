@@ -21,12 +21,13 @@ class ItemBrandForm extends Form
 
     public string $part_number = '';
 
-    public int $purchase_price;
+    public float $purchase_price;
 
-    public int $sale_price;
+    public float $sale_price;
 
     public bool $is_active = true;
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         $rules = [
@@ -69,14 +70,15 @@ class ItemBrandForm extends Form
     {
         $this->id = $itemBrand->id;
         $this->brand = $itemBrand->brand->slug;
-        $this->sku = $itemBrand->sku;
-        $this->barcode = $itemBrand->barcode;
-        $this->part_number = $itemBrand->part_number;
-        $this->purchase_price = $itemBrand->purchase_price;
-        $this->sale_price = $itemBrand->sale_price;
+        $this->sku = $itemBrand->sku ?? '';
+        $this->barcode = $itemBrand->barcode ?? '';
+        $this->part_number = $itemBrand->part_number ?? '';
+        $this->purchase_price = $itemBrand->purchase_price ?? 0;
+        $this->sale_price = $itemBrand->sale_price ?? 0;
         $this->is_active = $itemBrand->is_active;
     }
 
+    /** @return array<string, string> */
     public function validationAttributes(): array
     {
         return [

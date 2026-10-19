@@ -9,15 +9,17 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Dashboard\Services\CategoryService;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 use Modules\Inventory\Models\Item;
 use Modules\Inventory\Services\ItemService;
 
 class ItemList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
-    /** @var array{search:string,category_id:string,is_active:array<int,string>} */
+    /** @var array<string, mixed> */
     public array $filters = [
         'search' => '',
         'category_id' => '',

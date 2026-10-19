@@ -2,6 +2,7 @@
 
 namespace Modules\User\Livewire\Settings;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Modules\Auth\Concerns\PasswordValidationRules;
@@ -22,7 +23,7 @@ class DeleteUserForm extends Component
             'password' => $this->currentPasswordRules(),
         ]);
 
-        tap(Auth::user(), $logout(...))->delete();
+        tap(Auth::user() ?? throw new AuthenticationException, $logout(...))->delete();
 
         $this->redirect('/', navigate: true);
     }

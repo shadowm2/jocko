@@ -17,10 +17,15 @@ use Modules\Inventory\Database\Factories\WarehouseItemFactory;
  * @property ?float $min_quantity
  * @property ?float $max_quantity
  * @property float $quantity
+ * @property-read Item $item
+ * @property-read Warehouse $warehouse
+ *
+ * @extends BaseModel<WarehouseItem>
  */
 #[Fillable(['slug', 'item_id', 'warehouse_id', 'quantity', 'min_quantity', 'max_quantity'])]
 class WarehouseItem extends BaseModel
 {
+    /** @use HasFactory<WarehouseItemFactory> */
     use HasFactory;
 
     protected static function newFactory(): WarehouseItemFactory
@@ -28,13 +33,14 @@ class WarehouseItem extends BaseModel
         return WarehouseItemFactory::new();
     }
 
+    /** @return BelongsTo<Warehouse, $this> */
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
     }
 
     /**
-     * @return BelongsTo<Item>
+     * @return BelongsTo<Item, $this>
      */
     public function item(): BelongsTo
     {

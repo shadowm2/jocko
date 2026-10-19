@@ -4,9 +4,11 @@ namespace Modules\Order\Filters;
 
 use App\Filters\BaseFilter;
 use App\Helpers\Utils;
-use Illuminate\Database\Eloquent\Builder;
 use Modules\Order\Enums\PaymentMethod;
+use Modules\Order\Models\Order;
+use Modules\Order\Models\Payment;
 
+/** @extends BaseFilter<Payment> */
 class PaymentFilter extends BaseFilter
 {
     protected function filter(): void
@@ -18,7 +20,7 @@ class PaymentFilter extends BaseFilter
 
         $search = Utils::eDigits(trim((string) ($this->filters['search'] ?? '')));
         if ($search !== '') {
-            $this->builder->whereHas('order', fn (Builder $order) => $order->matching($search));
+            $this->builder->whereIn('order_id', Order::query()->matching($search)->select('id'));
         }
 
         if ($method = PaymentMethod::tryFrom((string) ($this->filters['method'] ?? ''))) {

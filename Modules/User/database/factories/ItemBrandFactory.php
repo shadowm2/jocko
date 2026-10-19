@@ -5,6 +5,7 @@ namespace Modules\User\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Inventory\Models\ItemBrand;
 
+/** @extends Factory<ItemBrand> */
 class ItemBrandFactory extends Factory
 {
     /**

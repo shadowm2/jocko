@@ -12,6 +12,9 @@ use Modules\Dashboard\Models\Media;
 // use Modules\Inventory\Database\Factories\BrandFactory;
 /**
  * @property string $name
+ * @property string $slug
+ *
+ * @extends BaseModel<Brand>
  */
 #[Fillable(['name', 'slug', 'is_active', 'description'])]
 class Brand extends BaseModel
@@ -33,6 +36,7 @@ class Brand extends BaseModel
         return BrandFactory::new();
     }
 
+    /** @return MorphOne<Media, $this> */
     public function logo(): MorphOne
     {
         return $this->morphOne(Media::class, 'model');

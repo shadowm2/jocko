@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Modules\User\Enums\UserType;
 use Modules\User\Models\User;
 
+/** @extends Factory<User> */
 class UserFactory extends Factory
 {
     /**

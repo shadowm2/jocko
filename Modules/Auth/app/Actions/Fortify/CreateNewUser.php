@@ -25,7 +25,6 @@ class CreateNewUser implements CreatesNewUsers
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
         ])->validate();
-        $input['type'] ??= UserType::Admin;
 
         $slug = Utils::generateUniqueSlug($input['first_name'].' '.$input['last_name'], User::class);
 
@@ -35,7 +34,7 @@ class CreateNewUser implements CreatesNewUsers
             'mobile' => $input['mobile'],
             'password' => $input['password'],
             'slug' => $slug,
-            'type' => $input['type'],
+            'type' => $input['type'] ?? UserType::Admin,
         ]);
     }
 }

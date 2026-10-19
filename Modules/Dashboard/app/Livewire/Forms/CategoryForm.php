@@ -42,12 +42,8 @@ class CategoryForm extends Form
         ];
 
         if ($this->parent && $this->id) {
-            /** @var Category $cat */
-            $cat = $categoryService->find($this->id);
-            $children = $cat->getChildrenRecursive()->pluck('slug');
-            if ($this->id) {
-                $rules['parent'][] = 'not_in:'.$children->join(',');
-            }
+            $children = $categoryService->findOrFail($this->id)->getChildrenRecursive()->pluck('slug');
+            $rules['parent'][] = 'not_in:'.$children->join(',');
         }
 
         return $rules;

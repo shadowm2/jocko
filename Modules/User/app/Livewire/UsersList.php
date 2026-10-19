@@ -7,14 +7,17 @@ use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 use Modules\User\Enums\UserType;
 use Modules\User\Services\UserService;
 
 class UsersList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
+    /** @var array<string, mixed> */
     public array $filters = ['search' => '', 'type' => ''];
 
     public string $sortBy = 'last_name';
@@ -26,6 +29,7 @@ class UsersList extends Component
         return ['search' => '', 'type' => ''];
     }
 
+    /** @return array<int, array<string, mixed>> */
     private function filterDefinitions(): array
     {
         $types = collect(UserType::cases())->mapWithKeys(fn ($type) => [$type->value => ucfirst($type->value)])->all();
@@ -36,12 +40,13 @@ class UsersList extends Component
         ];
     }
 
+    /** @return array<string, string> */
     private function sortOptions(): array
     {
         return ['first_name' => __('user::attributes.First Name'), 'last_name' => __('user::attributes.Last Name'), 'email' => __('user::attributes.Email'), 'type' => __('user::attributes.User Type')];
     }
 
-    public function onEditClick()
+    public function onEditClick(): void
     {
         Flux::toast(
             text: 'Color created successfully.',

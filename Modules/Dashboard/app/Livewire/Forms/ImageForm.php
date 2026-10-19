@@ -8,12 +8,19 @@ use Modules\Dashboard\Models\Media;
 
 class ImageForm extends Form
 {
+    /** @var array<int, mixed>|null */
     public ?array $images = [];
 
+    /** @var array<int, mixed>|null */
     public ?array $prev_images = [];
 
+    /** @var array<int, int|string> */
     public array $deleted_images = [];
 
+    /**
+     * @param  Collection<int, Media>|Media|null  $media
+     * @return array<string, mixed>
+     */
     public function getImageRules(Collection|Media|null $media = null): array
     {
         $rules = [
@@ -37,6 +44,8 @@ class ImageForm extends Form
     }
 
     /**
+     * @param  Collection<int, mixed>|Media|null  $images  checked to hold only Media below
+     *
      * @throws \InvalidArgumentException
      */
     public function setPreviousImages(Collection|Media|null $images): void

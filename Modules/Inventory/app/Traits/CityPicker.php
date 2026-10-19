@@ -3,27 +3,36 @@
 namespace Modules\Inventory\Traits;
 
 use Illuminate\Support\Collection;
+use Modules\Dashboard\Models\City;
+use Modules\Dashboard\Models\Country;
+use Modules\Dashboard\Models\Province;
 use Modules\Dashboard\Services\CityService;
 use Modules\Dashboard\Services\ProvinceService;
 
 trait CityPicker
 {
+    /** @var Collection<int, Country>|list<Country> */
     public Collection|array $countries = [];
 
+    /** @var Collection<int, Province>|list<Province> */
     public Collection|array $provinces = [];
 
+    /** @var Collection<int, City>|list<City> */
     public Collection|array $cities = [];
 
+    /** @param string|null $value */
     public function updatedFormCountry($value): void
     {
         $this->setCountry($value);
     }
 
+    /** @param string|null $value */
     public function updatedFormProvince($value): void
     {
         $this->setProvince($value);
     }
 
+    /** @param string|null $value */
     public function setCountry($value): void
     {
         if (empty($value)) {
@@ -39,6 +48,7 @@ trait CityPicker
         $this->setProvince($this->provinces->first()?->slug);
     }
 
+    /** @param string|null $value */
     public function setProvince($value): void
     {
         if (empty($value)) {
@@ -53,6 +63,7 @@ trait CityPicker
         );
     }
 
+    /** @param string|null $value */
     public function setCity($value): void
     {
         if (empty($value)) {

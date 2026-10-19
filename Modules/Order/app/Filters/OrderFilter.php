@@ -6,7 +6,9 @@ use App\Filters\BaseFilter;
 use App\Helpers\Utils;
 use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Enums\PaymentStatus;
+use Modules\Order\Models\Order;
 
+/** @extends BaseFilter<Order> */
 class OrderFilter extends BaseFilter
 {
     protected function filter(): void

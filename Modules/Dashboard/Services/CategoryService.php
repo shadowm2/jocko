@@ -84,7 +84,7 @@ class CategoryService extends BaseService
     {
         $categoryService = resolve(CategoryService::class);
         if (! empty($data['parent'])) {
-            $category = $categoryService->findByKey($data['parent']);
+            $category = $categoryService->findByKeyOrFail($data['parent']);
             $data['parent_id'] = $category->id;
         } else {
             $data['parent_id'] = null;
@@ -93,6 +93,7 @@ class CategoryService extends BaseService
         return parent::interpretData($data);
     }
 
+    /** @return LengthAwarePaginator<int, Category>|Collection<int, Category> */
     public function getItemCategories()
     {
         return $this->getCategories(

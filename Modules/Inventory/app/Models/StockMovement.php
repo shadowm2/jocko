@@ -13,6 +13,7 @@ use Modules\User\Models\User;
 
 // use Modules\Inventory\Database\Factories\StockMovementFactory;
 
+/** @extends BaseModel<StockMovement> */
 #[Fillable(['slug', 'item_id', 'warehouse_item_id', 'user_id', 'from_warehouse_id', 'to_warehouse_id', 'quantity', 'unit_cost', 'total_cost', 'balance_after', 'type', 'reference_type', 'reference_id', 'description'])]
 class StockMovement extends BaseModel
 {
@@ -34,7 +35,7 @@ class StockMovement extends BaseModel
 
     protected static function newFactory(): StockMovementFactory
     {
-        // return StockMovementFactory::new();
+        return StockMovementFactory::new();
     }
 
     /**

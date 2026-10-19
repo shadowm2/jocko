@@ -8,6 +8,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Inventory\Enums\PurchaseStatus;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 use Modules\Inventory\Livewire\Forms\PurchaseForm;
 use Modules\Inventory\Livewire\Purchases\Concerns\RemovesPurchaseItems;
 use Modules\Inventory\Livewire\Purchases\Concerns\UsesWarehouseItemPicker;
@@ -18,11 +19,12 @@ use Modules\Inventory\Services\SupplierService;
 class PurchaseList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use RemovesPurchaseItems;
     use UsesWarehouseItemPicker;
     use WithPagination;
 
-    /** @var array{search:string,statuses:array<int,string>,supplier_id:string,ordered_from:string,ordered_to:string} */
+    /** @var array<string, mixed> */
     public array $filters = [
         'search' => '',
         'statuses' => [],

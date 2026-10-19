@@ -15,7 +15,7 @@ class StockMovementList extends Component
     use InteractsWithTableFilters;
     use WithPagination;
 
-    /** @var array{search:string,type:string,warehouse_id:string} */
+    /** @var array<string, mixed> */
     public array $filters = [
         'search' => '',
         'type' => '',

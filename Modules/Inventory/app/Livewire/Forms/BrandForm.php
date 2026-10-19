@@ -23,6 +23,7 @@ class BrandForm extends ImageForm
 
     public bool $is_active = true;
 
+    /** @return array<string, mixed> */
     public function getRules(): array
     {
         return [
@@ -61,6 +62,7 @@ class BrandForm extends ImageForm
         $this->setPreviousImages($brand->logo);
     }
 
+    /** @return array<string, string> */
     public function validationAttributes(): array
     {
         return [

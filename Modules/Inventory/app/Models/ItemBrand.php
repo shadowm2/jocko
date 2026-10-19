@@ -11,6 +11,12 @@ use Modules\User\Database\Factories\ItemBrandFactory;
 
 // use Modules\Inventory\Database\Factories\ItemBrandFactory;
 
+/**
+ * @property-read Brand $brand
+ * @property-read Item $item
+ *
+ * @extends BaseModel<ItemBrand>
+ */
 #[Fillable('slug', 'item_id', 'brand_id', 'sku', 'barcode', 'part_number', 'purchase_price', 'sale_price', 'is_active')]
 class ItemBrand extends BaseModel
 {
@@ -33,11 +39,13 @@ class ItemBrand extends BaseModel
         return ItemBrandFactory::new();
     }
 
+    /** @return BelongsTo<Item, $this> */
     public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
     }
 
+    /** @return BelongsTo<Brand, $this> */
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);

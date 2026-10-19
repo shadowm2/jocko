@@ -3,6 +3,7 @@
 namespace Modules\Inventory\Livewire\Warehouses;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Modules\Inventory\Models\Warehouse;
@@ -10,18 +11,25 @@ use Modules\Inventory\Services\WarehouseService;
 
 class WarehousePicker extends Component
 {
+    /** @var Collection<int, Warehouse>|array<never, never> */
     public $warehouses = [];
 
     public ?string $selectedWarehouse = null;
 
+    /** @param string|null $warehouse */
     #[On('active-warehouse-changed')]
     public function warehouseChanged($warehouse): void
     {
         $this->selectedWarehouse = $warehouse;
     }
 
+    /** @param string|null $slug */
     public function updatedSelectedWarehouse($slug): void
     {
+        if (empty($slug)) {
+            return;
+        }
+
         $warehouseService = resolve(WarehouseService::class);
         $warehouseService->setActiveWarehouse($slug);
         $this->dispatch(

@@ -4,8 +4,10 @@ namespace Modules\Car\Filters;
 
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Car\Models\Car;
 use Modules\Car\Models\CarCompany;
 
+/** @extends BaseFilter<Car> */
 class CarFilter extends BaseFilter
 {
     protected function filter(): void

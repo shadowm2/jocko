@@ -44,6 +44,7 @@ class ProvinceForm extends Form
         $this->country = $province->country->code;
     }
 
+    /** @return array<string, string> */
     protected function validationAttributes(): array
     {
         return [

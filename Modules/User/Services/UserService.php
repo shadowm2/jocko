@@ -23,6 +23,7 @@ class UserService extends BaseService
     }
 
     /**
+     * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, User>|Collection<int, User>
      */
     public function getUsers(array|bool $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
@@ -52,9 +53,9 @@ class UserService extends BaseService
     public function update(int|Model $model, array $data): bool
     {
         if ($model instanceof User === false) {
-            $model = $this->repository->find($model);
+            $model = $this->findOrFail($model);
         }
-        if (Utils::getBaseSlug($model->slug) !== Utils::generateBaseSlug($data['first_name'].' '.$data['last_name'], User::class)) {
+        if (Utils::getBaseSlug($model->slug) !== Utils::generateBaseSlug($data['first_name'].' '.$data['last_name'])) {
             $data['slug'] = Utils::generateUniqueSlug($data['first_name'].' '.$data['last_name'], User::class);
         }
 

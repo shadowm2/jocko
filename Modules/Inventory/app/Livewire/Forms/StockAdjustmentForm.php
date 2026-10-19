@@ -47,7 +47,7 @@ class StockAdjustmentForm extends Form
     {
         $data = $this->validate();
         $type = StockMovementType::from($data['type']);
-        $warehouseItem = resolve(WarehouseItemService::class)->findByKey($data['warehouse_item']);
+        $warehouseItem = resolve(WarehouseItemService::class)->findByKeyOrFail($data['warehouse_item']);
         $quantity = (float) $data['quantity'];
 
         // ponytail: base unit only; add a unit picker when counting in cartons matters.

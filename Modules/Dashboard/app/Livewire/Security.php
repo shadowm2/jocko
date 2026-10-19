@@ -3,6 +3,7 @@
 namespace Modules\Dashboard\app\Livewire;
 
 use Flux\Flux;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -41,7 +42,7 @@ class Security extends Component
             throw $e;
         }
 
-        Auth::user()->update([
+        (Auth::user() ?? throw new AuthenticationException)->update([
             'password' => $validated['password'],
         ]);
 

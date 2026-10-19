@@ -18,10 +18,14 @@ use Modules\Inventory\Database\Factories\PurchaseItemFactory;
  * @property float $discount
  * @property float $tax
  * @property float $total
+ * @property-read Item $item
+ *
+ * @extends BaseModel<PurchaseItem>
  */
 #[Fillable(['slug', 'purchase_id', 'item_id', 'unit_id', 'quantity', 'received_quantity', 'unit_price', 'discount', 'tax', 'total'])]
 class PurchaseItem extends BaseModel
 {
+    /** @use HasFactory<PurchaseItemFactory> */
     use HasFactory;
 
     protected static function newFactory(): PurchaseItemFactory
@@ -29,6 +33,7 @@ class PurchaseItem extends BaseModel
         return PurchaseItemFactory::new();
     }
 
+    /** @return BelongsTo<Purchase, $this> */
     public function purchase(): BelongsTo
     {
         return $this->belongsTo(Purchase::class);
@@ -42,6 +47,7 @@ class PurchaseItem extends BaseModel
         return $this->belongsTo(Item::class);
     }
 
+    /** @return BelongsTo<Unit, $this> */
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);

@@ -23,7 +23,7 @@ class ProvinceService extends BaseService
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return LengthAwarePaginator<int, Province>|Collection<int, Province>
+     * @return ($paginate is true ? LengthAwarePaginator<int, Province> : Collection<int, Province>)
      */
     public function getProvinces(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {

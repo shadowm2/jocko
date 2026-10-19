@@ -4,8 +4,10 @@ namespace Modules\Dashboard\Filters;
 
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Dashboard\Models\City;
 use Modules\Dashboard\Models\Province;
 
+/** @extends BaseFilter<City> */
 class CityFilter extends BaseFilter
 {
     protected function filter(): void

@@ -16,10 +16,13 @@ use Modules\Dashboard\Models\Media;
  * @property int $id
  * @property string $slug
  * @property string $name
+ *
+ * @extends BaseModel<CarCompany>
  */
 #[Fillable('name', 'slug')]
 class CarCompany extends BaseModel
 {
+    /** @use HasFactory<CarCompanyFactory> */
     use HasFactory;
 
     protected static function newFactory(): CarCompanyFactory
@@ -27,11 +30,13 @@ class CarCompany extends BaseModel
         return CarCompanyFactory::new();
     }
 
+    /** @return MorphOne<Media, $this> */
     public function logo(): MorphOne
     {
         return $this->morphOne(Media::class, 'model');
     }
 
+    /** @return HasMany<Car, $this> */
     public function cars(): HasMany
     {
         return $this->hasMany(Car::class);

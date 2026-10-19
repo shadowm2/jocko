@@ -25,13 +25,12 @@ class UserCarService extends BaseService
      */
     public function getUserCars(?int $userId = null, array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
-        $query = $this->repository
-            ->orderBy('user_id')
-            ->filtered($filters);
+        $this->repository->orderBy('user_id');
+        $this->repository->filtered($filters);
         if ($userId) {
-            $query->forUser($userId);
+            $this->repository->forUser($userId);
         }
 
-        return $paginate ? $query->paginate() : $query->get();
+        return $paginate ? $this->repository->paginate() : $this->repository->all();
     }
 }

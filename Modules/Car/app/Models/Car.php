@@ -15,6 +15,7 @@ use Modules\Dashboard\Models\Media;
  * @property int $car_company_id
  * @property string $name
  * @property string $slug
+ * @property-read CarCompany $company
  *
  * @extends BaseModel<Car>
  */
@@ -32,11 +33,13 @@ class Car extends BaseModel
         return CarFactory::new();
     }
 
+    /** @return BelongsTo<CarCompany, $this> */
     public function company(): BelongsTo
     {
         return $this->belongsTo(CarCompany::class, 'car_company_id');
     }
 
+    /** @return MorphMany<Media, $this> */
     public function images(): MorphMany
     {
         return $this->morphMany(Media::class, 'model');

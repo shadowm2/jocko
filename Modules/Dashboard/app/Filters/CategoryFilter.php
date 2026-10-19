@@ -5,7 +5,9 @@ namespace Modules\Dashboard\Filters;
 use App\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Dashboard\Enums\CategoryType;
+use Modules\Dashboard\Models\Category;
 
+/** @extends BaseFilter<Category> */
 class CategoryFilter extends BaseFilter
 {
     protected function filter(): void

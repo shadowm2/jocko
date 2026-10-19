@@ -16,6 +16,7 @@ class CarForm extends ImageForm
 
     public string $car_company;
 
+    /** @var array<int, mixed> */
     public array $new_images = [];
 
     /** @return array<mixed, string> */

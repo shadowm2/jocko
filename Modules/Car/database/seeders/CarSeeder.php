@@ -786,7 +786,7 @@ class CarSeeder extends Seeder
                             'disk' => 'public',
                             'original_name' => $image,
                             'mime_type' => $mimeType,
-                            'size' => getimagesize($srcPath.'/'.$image)[0],
+                            'size' => filesize($srcPath.'/'.$image),
                         ]);
                     }
                 }
@@ -853,7 +853,7 @@ class CarSeeder extends Seeder
                                 }
                                 $mimeType = finfo_buffer($finfo, $imageContent);
                                 $extension = $this->mimeToExtension($mimeType);
-                                $path = 'cars/'.$car->slug.'/'.basename(parse_url($image, PHP_URL_PATH) ?? '').'.'.$extension;
+                                $path = 'cars/'.$car->slug.'/'.basename(parse_url($image, PHP_URL_PATH) ?: '').'.'.$extension;
 
                                 // Save to storage
                                 $imgDestPath = Storage::disk('public')->put("car/$path", $imageContent);
@@ -883,7 +883,8 @@ class CarSeeder extends Seeder
         }
     }
 
-    public function mimeToExtension($mimeType)
+    /** @param string|false $mimeType */
+    public function mimeToExtension($mimeType): string
     {
         $map = [
             'image/jpeg' => 'jpg',

@@ -12,3 +12,17 @@ parameters:
         - Modules/
 
     level: 8
+
+    # Eloquent throws from magic attribute access (e.g. DecryptException from an encrypted cast), which PHPStan cannot see.
+    exceptions:
+        uncheckedExceptionClasses:
+            - Illuminate\Contracts\Encryption\DecryptException
+        reportUncheckedExceptionDeadCatch: false
+
+    databaseMigrationsPath:
+        - Modules/Auth/database/migrations
+        - Modules/Car/database/migrations
+        - Modules/Dashboard/database/migrations
+        - Modules/Inventory/database/migrations
+        - Modules/Order/database/migrations
+        - Modules/User/database/migrations

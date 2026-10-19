@@ -37,21 +37,31 @@ abstract class BaseService
         return $this->repository->all();
     }
 
+    /** @return TModel|null */
     public function find(int|string $id): ?Model
     {
         return $this->repository->find($id);
     }
 
+    /** @return TModel|null */
     public function findBy(int|string $val, string $col): ?Model
     {
         return $this->repository->findBy($val, $col);
     }
 
+    /** @return TModel|null */
     public function findByKey(mixed $val): ?Model
     {
         return $this->repository->findByKey($val);
     }
 
+    /** @return TModel */
+    public function findByKeyOrFail(mixed $val): Model
+    {
+        return $this->repository->findByKeyOrFail($val);
+    }
+
+    /** @return TModel */
     public function findOrFail(int|string $id): Model
     {
         return $this->repository->findOrFail($id);
@@ -82,7 +92,7 @@ abstract class BaseService
         array $data
     ): bool {
         if ($model instanceof Model === false) {
-            $model = $this->find($model);
+            $model = $this->findOrFail($model);
         }
         $data = $this->interpretData($data);
         $this->handleMedia($model, $data);
@@ -90,6 +100,7 @@ abstract class BaseService
         return $this->repository->update($model, $data);
     }
 
+    /** @param  TModel  $model */
     public function delete(Model $model): bool
     {
         return $this->repository->delete($model);

@@ -14,10 +14,13 @@ use Modules\Dashboard\Database\Factories\CountryFactory;
  * @property string $code3
  * @property string $phone_code
  * @property bool $is_active
+ *
+ * @extends BaseModel<Country>
  */
 #[Fillable(['name', 'code', 'code3', 'phone_code', 'is_active'])]
 class Country extends BaseModel
 {
+    /** @use HasFactory<CountryFactory> */
     use HasFactory;
 
     /**

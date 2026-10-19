@@ -22,6 +22,7 @@ use Morilog\Jalali\Jalalian;
  * @property int $user_id
  * @property string $description
  * @property int $color_id
+ * @property-read Car $car
  */
 #[Fillable('description', 'manufactured_at', 'car_id')]
 class UserCar extends BaseModel
@@ -49,7 +50,7 @@ class UserCar extends BaseModel
 
     public function setManufacturedAtAttribute(?string $value): void
     {
-        $value = Utils::eDigits($value);
+        $value = Utils::eDigits((string) $value);
 
         if (blank($value)) {
             $this->attributes['manufactured_at'] = null;

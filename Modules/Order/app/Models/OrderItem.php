@@ -20,6 +20,7 @@ use Modules\Order\Database\Factories\OrderItemFactory;
  * @property float $quantity
  * @property float $unit_price
  * @property float $total
+ * @property-read Item $item
  */
 #[Fillable(['slug', 'order_id', 'item_id', 'unit_id', 'quantity', 'unit_price', 'total'])]
 class OrderItem extends BaseModel

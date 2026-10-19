@@ -9,18 +9,22 @@ use Livewire\WithPagination;
 use Modules\Car\Services\CarCompanyService;
 use Modules\Car\Services\CarService;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 
 class CarList extends BaseComponent
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
+    /** @var array<string, mixed> */
     public array $filters = ['search' => '', 'car_company_id' => ''];
 
     public string $sortBy = 'name';
 
     public string $sortDirection = 'asc';
 
+    /** @var array<int|string, string> */
     #[Locked]
     public array $companyOptions = [];
 
@@ -34,6 +38,7 @@ class CarList extends BaseComponent
         $this->companyOptions = $companyService->getCompanies([], false)->mapWithKeys(fn ($company) => [$company->id => $company->name])->all();
     }
 
+    /** @return array<int, array<string, mixed>> */
     private function filterDefinitions(): array
     {
         return [
@@ -42,6 +47,7 @@ class CarList extends BaseComponent
         ];
     }
 
+    /** @return array<string, string> */
     private function sortOptions(): array
     {
         return ['name' => __('car::strings.Car Name'), 'company' => __('car::strings.Car Company')];

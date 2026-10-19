@@ -78,6 +78,7 @@ class WarehouseItemForm extends Form
         $this->warehouse = $warehouse->slug;
     }
 
+    /** @return array<string, string> */
     public function validationAttributes(): array
     {
         return [

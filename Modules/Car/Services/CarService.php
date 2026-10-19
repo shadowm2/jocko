@@ -48,7 +48,7 @@ class CarService extends BaseService
     public function update(Model|int $model, array $data): bool
     {
         if ($model instanceof Car === false) {
-            $model = $this->find($model);
+            $model = $this->findOrFail($model);
         }
         $this->customDir = $model->slug;
 

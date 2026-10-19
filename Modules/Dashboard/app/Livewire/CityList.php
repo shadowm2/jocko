@@ -7,22 +7,25 @@ use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Dashboard\Models\Country;
 use Modules\Dashboard\Services\CityService;
 use Modules\Dashboard\Services\ProvinceService;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 
 class CityList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
+    /** @var array<string, mixed> */
     public array $filters = ['search' => '', 'province_id' => '', 'is_active' => []];
 
     public string $sortBy = 'name';
 
     public string $sortDirection = 'asc';
 
+    /** @var array<int|string, string> */
     #[Locked]
     public array $provinceOptions = [];
 
@@ -36,6 +39,7 @@ class CityList extends Component
         $this->provinceOptions = $service->getProvinces([], false)->mapWithKeys(fn ($p) => [$p->id => $p->name])->all();
     }
 
+    /** @return array<int, array<string, mixed>> */
     private function filterDefinitions(): array
     {
         return [
@@ -45,18 +49,19 @@ class CityList extends Component
         ];
     }
 
+    /** @return array<string, string> */
     private function sortOptions(): array
     {
         return ['name' => __('dashboard::attributes.City Name'), 'province' => __('dashboard::attributes.City Province'), 'is_active' => __('dashboard::attributes.Is Active')];
     }
 
+    /** @param string $citySlug */
     public function toggleIsActive($citySlug): void
     {
         $cityService = resolve(CityService::class);
-        /** @var Country $country */
-        $country = $cityService->findByKey($citySlug);
-        $cityService->update($country, [
-            'is_active' => ! $country->is_active,
+        $city = $cityService->findByKeyOrFail($citySlug);
+        $cityService->update($city, [
+            'is_active' => ! $city->is_active,
         ]);
         Flux::toast(__('dashboard::messages.City Updated Successfully'), variant: 'success');
         $this->resetPage();

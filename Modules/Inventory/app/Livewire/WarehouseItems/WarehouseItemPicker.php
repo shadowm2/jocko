@@ -21,6 +21,7 @@ class WarehouseItemPicker extends Component
 
     public ?string $warehouseName = null;
 
+    /** @var array<int, array<string, mixed>> */
     public array $warehouses = [];
 
     /**
@@ -35,6 +36,8 @@ class WarehouseItemPicker extends Component
 
     /**
      * Lightweight data specifically for Alpine.
+     *
+     * @var array<int, array<string, mixed>>
      */
     public array $items = [];
 
@@ -44,6 +47,7 @@ class WarehouseItemPicker extends Component
      */
     protected ?string $loadedWarehouse = null;
 
+    /** @param array<int, string> $items */
     public function updatedValue($items): void
     {
         $this->dispatch('warehouse-item-picker-updated');
@@ -143,7 +147,7 @@ class WarehouseItemPicker extends Component
                 if ($img) {
                     $img = [
                         'url' => $img->publicPath(),
-                        'name' => $img->name,
+                        'name' => $img->original_name,
                     ];
                 }
 

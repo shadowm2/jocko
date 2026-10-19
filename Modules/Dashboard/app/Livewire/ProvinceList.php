@@ -11,18 +11,22 @@ use Modules\Dashboard\Models\Province;
 use Modules\Dashboard\Services\CountryService;
 use Modules\Dashboard\Services\ProvinceService;
 use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableSorting;
 
 class ProvinceList extends Component
 {
     use InteractsWithTableFilters;
+    use InteractsWithTableSorting;
     use WithPagination;
 
+    /** @var array<string, mixed> */
     public array $filters = ['search' => '', 'country_id' => '', 'is_active' => []];
 
     public string $sortBy = 'name';
 
     public string $sortDirection = 'asc';
 
+    /** @var array<int|string, string> */
     #[Locked]
     public array $countryOptions = [];
 
@@ -36,6 +40,7 @@ class ProvinceList extends Component
         $this->countryOptions = $service->getCountries([], false)->mapWithKeys(fn ($c) => [$c->id => $c->name])->all();
     }
 
+    /** @return array<int, array<string, mixed>> */
     private function filterDefinitions(): array
     {
         return [
@@ -45,11 +50,13 @@ class ProvinceList extends Component
         ];
     }
 
+    /** @return array<string, string> */
     private function sortOptions(): array
     {
         return ['name' => __('dashboard::attributes.Province Name'), 'country' => __('dashboard::attributes.Province Country'), 'is_active' => __('dashboard::attributes.Is Active')];
     }
 
+    /** @param string $provinceSlug */
     public function toggleIsActive($provinceSlug): void
     {
         $provinceService = resolve(ProvinceService::class);

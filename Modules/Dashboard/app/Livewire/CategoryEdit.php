@@ -32,7 +32,7 @@ class CategoryEdit extends Component
     {
         $categoryService = resolve(CategoryService::class);
         $children = $this->category->getChildrenRecursive();
-        $children = $children->pluck('id')->merge($this->category->id)->toArray();
+        $children = $children->pluck('id')->push($this->category->id)->toArray();
         $categories = $categoryService->getCategories(filters: [
             'whereNotIn' => ['id', $children],
         ], paginate: false);

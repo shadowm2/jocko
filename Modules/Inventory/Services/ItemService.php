@@ -54,10 +54,10 @@ class ItemService extends BaseService
         $unitGroupService = resolve(UnitGroupService::class);
 
         if (! empty($data['category'])) {
-            $data['category_id'] = $categoryService->findByKey($data['category'])->id;
+            $data['category_id'] = $categoryService->findByKeyOrFail($data['category'])->id;
         }
         if (! empty($data['unit_group'])) {
-            $data['unit_group_id'] = $unitGroupService->findByKey($data['unit_group'])->id;
+            $data['unit_group_id'] = $unitGroupService->findByKeyOrFail($data['unit_group'])->id;
         }
 
         return parent::interpretData($data);
