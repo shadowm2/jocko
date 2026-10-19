@@ -18,10 +18,7 @@ class ProvinceFilter extends BaseFilter
                     ->orWhereHas('country', fn (Builder $country) => $country->where('name', 'like', "%{$search}%"));
             });
         }
-        $activeValues = array_values(array_filter((array) ($this->filters['is_active'] ?? []), static fn ($value) => in_array((string) $value, ['0', '1'], true)));
-        if (count($activeValues) === 1) {
-            $this->builder->where('is_active', (bool) $activeValues[0]);
-        }
+        $this->whereCheckboxes('is_active');
         if (is_numeric($this->filters['country_id'] ?? null) && (int) $this->filters['country_id'] > 0) {
             $this->builder->where('country_id', $this->filters['country_id']);
         }

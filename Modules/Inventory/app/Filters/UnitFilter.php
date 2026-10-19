@@ -23,30 +23,8 @@ class UnitFilter extends BaseFilter
             $this->builder->where('unit_group_id', (int) $unitGroupId);
         }
 
-        foreach (['is_active', 'is_base'] as $field) {
-            if (! array_key_exists($field, $this->filters)) {
-                continue;
-            }
-
-            $value = $this->filters[$field];
-
-            if (is_array($value)) {
-                $values = array_values(array_filter(
-                    $value,
-                    static fn (mixed $item): bool => in_array((string) $item, ['0', '1'], true),
-                ));
-
-                if (count($values) === 1) {
-                    $this->builder->where($field, (bool) $values[0]);
-                }
-
-                continue;
-            }
-
-            if ($value === true || $value === 1 || $value === '1') {
-                $this->builder->where($field, true);
-            }
-        }
+        $this->whereCheckboxes('is_active');
+        $this->whereCheckboxes('is_base');
 
         $sortColumns = [
             'unit_group_id' => 'unit_group_id',

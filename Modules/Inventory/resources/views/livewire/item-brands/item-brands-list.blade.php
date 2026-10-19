@@ -10,11 +10,13 @@
                 </span>
             </flux:link>
         </flux:heading>
-        <img
-            src="{{ $item->images->first()->publicPath() }}"
-            class="h-16 rounded-sm"
-            alt="{{ $item->name }}"
-        />
+        @if ($image = $item->images->first())
+            <img
+                src="{{ $image->publicPath() }}"
+                class="h-16 rounded-sm"
+                alt="{{ $item->name }}"
+            />
+        @endif
     </div>
     <flux:separator class="my-2" />
     <x-table.data-table

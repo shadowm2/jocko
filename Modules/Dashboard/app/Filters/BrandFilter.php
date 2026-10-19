@@ -17,16 +17,7 @@ class BrandFilter extends BaseFilter
             });
         }
 
-        if (array_key_exists('is_active', $this->filters)) {
-            $activeValues = array_values(array_filter(
-                (array) $this->filters['is_active'],
-                static fn (mixed $value): bool => in_array((string) $value, ['0', '1'], true),
-            ));
-
-            if (count($activeValues) === 1) {
-                $this->builder->where('is_active', (bool) $activeValues[0]);
-            }
-        }
+        $this->whereCheckboxes('is_active');
 
         $sortBy = $this->filters['sort_by'] ?? null;
         if (in_array($sortBy, ['name', 'is_active'], true)) {
