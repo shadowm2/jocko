@@ -16,7 +16,10 @@ class PurchaseCreate extends Component
 
     public function save(): void
     {
-        $this->form->save();
+        if (! $this->form->save()) {
+            return;
+        }
+
         Flux::toast(text: __('inventory::messages.Purchase Order Created Successfully'), variant: 'success');
         $this->redirectRoute('purchases.index', navigate: true);
     }

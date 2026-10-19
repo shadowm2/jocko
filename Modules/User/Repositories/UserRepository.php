@@ -3,6 +3,7 @@
 namespace Modules\User\Repositories;
 
 use App\Repositories\BaseRepository;
+use Modules\User\Filters\UserFilter;
 use Modules\User\Models\User;
 use Modules\User\Repositories\Contracts\UserRepositoryInterface;
 
@@ -20,6 +21,14 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         $this->query()
             ->with([]);
+
+        return $this;
+    }
+
+    /** @param array<string, mixed> $filters */
+    public function filtered(array $filters): UserRepository
+    {
+        (new UserFilter($filters))->apply($this->query());
 
         return $this;
     }

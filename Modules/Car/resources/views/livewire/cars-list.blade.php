@@ -4,6 +4,14 @@
         :$rows
         :title="__('car::strings.Cars List')"
     >
+        <x-slot name="toolbar">
+            <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">
+                <x-table.filters :filters="$filterDefinitions" :sort-options="$sortOptions" :sort-by="$sortBy" :sort-direction="$sortDirection" clear-action="clearFilters"
+                panel
+            />
+            </x-table.filter-drawer>
+        </x-slot>
+
         <x-slot name="action">
             <flux:button
                 icon:trailing="plus"

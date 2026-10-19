@@ -25,11 +25,18 @@ class UserService extends BaseService
     /**
      * @return LengthAwarePaginator<int, User>|Collection<int, User>
      */
-    public function getUsers(bool $paginate = true): LengthAwarePaginator|Collection
+    public function getUsers(array|bool $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
-        $query = $this->repository
-            ->withRelations()
-            ->orderBy('last_name');
+        if (is_bool($filters)) {
+            $paginate = $filters;
+            $filters = [];
+        }
+
+        $this->repository->filtered($filters);
+        if (! in_array($filters['sort_by'] ?? null, ['first_name', 'last_name', 'email', 'type'], true)) {
+            $this->repository->orderBy('last_name')->orderBy('users.id');
+        }
+        $query = $this->repository->withRelations();
 
         return $paginate ? $query->paginate() : $query->all();
     }

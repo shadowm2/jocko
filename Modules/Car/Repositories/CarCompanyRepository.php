@@ -3,6 +3,7 @@
 namespace Modules\Car\Repositories;
 
 use App\Repositories\BaseRepository;
+use Modules\Car\Filters\CarCompanyFilter;
 use Modules\Car\Models\CarCompany;
 use Modules\Car\Repositories\Contracts\CarCompanyRepositoryInterface;
 
@@ -20,6 +21,14 @@ class CarCompanyRepository extends BaseRepository implements CarCompanyRepositor
     {
         $this->query()
             ->with([]);
+
+        return $this;
+    }
+
+    /** @param array<string, mixed> $filters */
+    public function filtered(array $filters): CarCompanyRepository
+    {
+        (new CarCompanyFilter($filters))->apply($this->query());
 
         return $this;
     }

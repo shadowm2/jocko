@@ -26,22 +26,15 @@ class WarehouseItemList extends Component
         $columns = [
             [
                 'label' => __('inventory::attributes.Item Name'),
-                'key' => 'item.name',
             ],
             [
                 'label' => __('inventory::attributes.Warehouse Item Quantity'),
-                'key' => 'quantity',
-                'type' => 'float',
             ],
             [
                 'label' => __('inventory::attributes.Warehouse Item Min Quantity'),
-                'key' => 'min_quantity',
-                'type' => 'float',
             ],
             [
                 'label' => __('inventory::attributes.Warehouse Item Max Quantity'),
-                'key' => 'max_quantity',
-                'type' => 'float',
             ],
             [
                 'label' => __('inventory::attributes.Stock Status'),

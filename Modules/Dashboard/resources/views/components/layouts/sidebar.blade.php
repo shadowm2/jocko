@@ -98,33 +98,12 @@
                 <flux:sidebar.group
                     expandable
                     icon="circle-stack"
+                    :heading="__('dashboard::strings.Inventory & Supply')"
+                    class="grid first-level"
                     :heading="__('dashboard::strings.Inventory')"
-                    class="grid"
                     :expanded="request()->routeIs(['brands.*', 'items.*', 'suppliers.*', 'units.*','purchases.*', 'warehouses.*', 'stock-movements.*'])"
                 >
-                    <flux:sidebar.group
-                        expandable
-                        :heading="__('inventory::strings.Brands')"
-                        class="grid"
-                        icon="shopping-bag"
-                        :expanded="request()->routeIs(['brands.*', 'items.*', 'suppliers.*', 'units.*'])"
-                    >
-                        <flux:sidebar.item
-                            :href="route('brands.index')"
-                            :current="request()->routeIs('brands.index')"
-                            wire:navigate
-                        >
-                            {{ __('inventory::strings.Brands') }}
-                        </flux:sidebar.item>
-                        <flux:sidebar.item
-                            icon:trailing="plus"
-                            :href="route('brands.create')"
-                            :current="request()->routeIs('brands.create')"
-                            wire:navigate
-                        >
-                            {{ __('inventory::strings.Brand Add') }}
-                        </flux:sidebar.item>
-                    </flux:sidebar.group>
+
                     <flux:sidebar.group
                         expandable
                         icon="cube"
@@ -171,45 +150,7 @@
                             {{ __('inventory::strings.Supplier Add') }}
                         </flux:sidebar.item>
                     </flux:sidebar.group>
-                    <flux:sidebar.group
-                        expandable
-                        :heading="__('inventory::strings.Units')"
-                        class="grid"
-                        icon="ruler"
-                        :expanded="request()->routeIs('units.*')"
-                    >
-                        <flux:sidebar.item
-                            :href="route('units.groups.index')"
-                            :current="request()->routeIs('units.groups.index')"
-                            wire:navigate
-                        >
-                            {{ __('inventory::strings.Unit Groups List') }}
-                        </flux:sidebar.item>
-                        <flux:sidebar.item
-                            icon:trailing="plus"
-                            :href="route('units.groups.create')"
-                            :current="request()->routeIs('units.groups.create')"
-                            wire:navigate
-                        >
-                            {{ __('inventory::strings.Unit Group Add') }}
-                        </flux:sidebar.item>
 
-                        <flux:sidebar.item
-                            :href="route('units.index')"
-                            :current="request()->routeIs('units.index')"
-                            wire:navigate
-                        >
-                            {{ __('inventory::strings.Units List') }}
-                        </flux:sidebar.item>
-                        <flux:sidebar.item
-                            icon:trailing="plus"
-                            :href="route('units.create')"
-                            :current="request()->routeIs('units.create')"
-                            wire:navigate
-                        >
-                            {{ __('inventory::strings.Unit Add') }}
-                        </flux:sidebar.item>
-                    </flux:sidebar.group>
                     <flux:sidebar.group
                         expandable
                         :heading="__('inventory::strings.Purchases')"
@@ -310,12 +251,82 @@
                             {{ __('inventory::strings.Stock Transfer Add') }}
                         </flux:sidebar.item>
                     </flux:sidebar.group>
+                    <flux:sidebar.group
+                        expandable
+                        :heading="__('dashboard::strings.Other')"
+                        class="grid"
+                        icon="archive-box"
+                        :expanded="request()->routeIs(['brands.*', 'units.*'])"
+                    >
+                        <flux:sidebar.group
+                            expandable
+                            :heading="__('inventory::strings.Brands')"
+                            class="grid"
+                            icon="shopping-bag"
+                            :expanded="request()->routeIs(['brands.*',])"
+                        >
+                            <flux:sidebar.item
+                                :href="route('brands.index')"
+                                :current="request()->routeIs('brands.index')"
+                                wire:navigate
+                            >
+                                {{ __('inventory::strings.Brands') }}
+                            </flux:sidebar.item>
+                            <flux:sidebar.item
+                                icon:trailing="plus"
+                                :href="route('brands.create')"
+                                :current="request()->routeIs('brands.create')"
+                                wire:navigate
+                            >
+                                {{ __('inventory::strings.Brand Add') }}
+                            </flux:sidebar.item>
+                        </flux:sidebar.group>
+                        <flux:sidebar.group
+                            expandable
+                            :heading="__('inventory::strings.Units')"
+                            class="grid"
+                            icon="ruler"
+                            :expanded="request()->routeIs('units.*')"
+                        >
+                            <flux:sidebar.item
+                                :href="route('units.groups.index')"
+                                :current="request()->routeIs('units.groups.index')"
+                                wire:navigate
+                            >
+                                {{ __('inventory::strings.Unit Groups List') }}
+                            </flux:sidebar.item>
+                            <flux:sidebar.item
+                                icon:trailing="plus"
+                                :href="route('units.groups.create')"
+                                :current="request()->routeIs('units.groups.create')"
+                                wire:navigate
+                            >
+                                {{ __('inventory::strings.Unit Group Add') }}
+                            </flux:sidebar.item>
+
+                            <flux:sidebar.item
+                                :href="route('units.index')"
+                                :current="request()->routeIs('units.index')"
+                                wire:navigate
+                            >
+                                {{ __('inventory::strings.Units List') }}
+                            </flux:sidebar.item>
+                            <flux:sidebar.item
+                                icon:trailing="plus"
+                                :href="route('units.create')"
+                                :current="request()->routeIs('units.create')"
+                                wire:navigate
+                            >
+                                {{ __('inventory::strings.Unit Add') }}
+                            </flux:sidebar.item>
+                        </flux:sidebar.group>
+                    </flux:sidebar.group>
                 </flux:sidebar.group>
                 <flux:sidebar.group
                     expandable
                     icon="cog"
                     :heading="__('car::strings.Car')"
-                    class="grid"
+                    class="grid first-level"
                     :expanded="request()->routeIs(['cars.*', 'companies.*', 'colors.*'])"
                 >
                     <flux:sidebar.group
@@ -392,7 +403,7 @@
                     expandable
                     icon="user-group"
                     :heading="__('user::strings.User')"
-                    class="grid"
+                    class="grid first-level"
                     :expanded="request()->routeIs(['users.*'])"
                 >
                     <flux:sidebar.group
@@ -423,7 +434,7 @@
                     expandable
                     icon="shopping-bag"
                     :heading="__('order::strings.Orders')"
-                    class="grid"
+                    class="grid first-level"
                     :expanded="request()->routeIs(['orders.*', 'payments.*'])"
                 >
                     <flux:sidebar.group
@@ -469,7 +480,7 @@
                     expandable
                     icon="wrench"
                     :heading="__('dashboard::strings.General')"
-                    class="grid"
+                    class="grid first-level"
                     :expanded="request()->routeIs(['countries.*', 'provinces.*', 'cities.*', 'categories.*', 'system-settings.*'])"
                 >
                     <flux:sidebar.item

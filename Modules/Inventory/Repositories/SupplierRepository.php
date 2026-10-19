@@ -20,7 +20,7 @@ class SupplierRepository extends BaseRepository implements SupplierRepositoryInt
     public function withRelations(): SupplierRepository
     {
         $this->query()
-            ->with('user');
+            ->with(['user', 'city']);
 
         return $this;
     }

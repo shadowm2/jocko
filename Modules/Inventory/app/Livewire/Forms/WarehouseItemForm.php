@@ -69,6 +69,7 @@ class WarehouseItemForm extends Form
         $this->max_quantity = $warehouseItem->max_quantity;
         $this->min_quantity_unlimited = is_null($warehouseItem->min_quantity);
         $this->max_quantity_unlimited = is_null($warehouseItem->max_quantity);
+        $this->warehouse = $warehouseItem->warehouse->slug ?? $this->warehouse;
         //        $this->min_quantity_unlimited = false;
     }
 

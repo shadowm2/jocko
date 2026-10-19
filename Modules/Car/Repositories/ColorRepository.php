@@ -3,6 +3,7 @@
 namespace Modules\Car\Repositories;
 
 use App\Repositories\BaseRepository;
+use Modules\Car\Filters\ColorFilter;
 use Modules\Car\Models\Color;
 use Modules\Car\Repositories\Contracts\ColorRepositoryInterface;
 
@@ -20,6 +21,14 @@ class ColorRepository extends BaseRepository implements ColorRepositoryInterface
     {
         $this->query()
             ->with([]);
+
+        return $this;
+    }
+
+    /** @param array<string, mixed> $filters */
+    public function filtered(array $filters): ColorRepository
+    {
+        (new ColorFilter($filters))->apply($this->query());
 
         return $this;
     }

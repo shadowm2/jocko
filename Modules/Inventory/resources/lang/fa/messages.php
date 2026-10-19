@@ -19,6 +19,7 @@ return [
     'Warehouse Item Updated Successfully' => 'کالای انبار با موفقیت ویرایش شد',
     'Purchase Order Created Successfully' => 'سفارش خرید با موفقیت ایجاد شد',
     'Purchase Order Updated Successfully' => 'سفارش خرید با موفقیت ویرایش شد',
+    'Purchase item [:id] converts to a quantity below warehouse precision.' => 'آیتم خرید [:id] به مقداری کمتر از دقت انبار تبدیل می‌شود.',
     'Insufficient Stock' => 'موجودی انبار کافی نیست',
     'Stock Adjustment Recorded Successfully' => 'تعدیل موجودی با موفقیت ثبت شد',
     'No Stock Change' => 'موجودی تغییری نمی کند',

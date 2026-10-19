@@ -28,10 +28,11 @@ class CityService extends BaseService
      */
     public function getCities(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
-        $this->repository
-            ->filtered($filters)
-            ->orderBy('province_id')
-            ->withRelations();
+        $this->repository->filtered($filters);
+        if (! in_array($filters['sort_by'] ?? null, ['name', 'province', 'is_active'], true)) {
+            $this->repository->orderBy('province_id')->orderBy('name');
+        }
+        $this->repository->withRelations();
 
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }

@@ -28,10 +28,15 @@ class BrandService extends BaseService
      */
     public function getBrands(array $filters = [], bool $paginate = true): LengthAwarePaginator|Collection
     {
-        $this->repository
-            ->filtered($filters)
-            ->orderBy('name')
-            ->withRelations();
+        $this->repository->filtered($filters);
+
+        if (! in_array($filters['sort_by'] ?? null, ['name', 'is_active'], true)) {
+            $this->repository
+                ->orderBy('name')
+                ->orderBy('brands.id');
+        }
+
+        $this->repository->withRelations();
 
         return $paginate ? $this->repository->paginate() : $this->repository->all();
     }

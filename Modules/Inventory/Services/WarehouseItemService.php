@@ -66,7 +66,6 @@ class WarehouseItemService extends BaseService
     public function update(int|Model $model, array $data): bool
     {
         unset($data['item']);
-        unset($data['warehouse']);
         $data = $this->interpretData($data);
 
         // The form edits the quantity as a value; stock only changes through movements.

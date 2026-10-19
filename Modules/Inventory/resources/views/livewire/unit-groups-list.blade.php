@@ -3,7 +3,6 @@
         :$columns
         :$rows
         :title="__('inventory::strings.Unit Groups List')"
-        row-component="x-inventory::unit-group-row"
     >
         <x-slot name="action">
             <flux:button

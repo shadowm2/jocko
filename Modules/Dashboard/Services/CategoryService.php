@@ -34,10 +34,23 @@ class CategoryService extends BaseService
             ->withRelations()
             ->all();
 
+        // Keep matching descendants visible in the tree even when their ancestors do not match filters.
+        if (array_key_exists('sort_by', $filters)) {
+            $allCategories = $categories->keyBy('id');
+            $parentIds = $categories->pluck('parent_id')->filter()->diff($allCategories->keys());
+            while ($parentIds->isNotEmpty()) {
+                $parents = Category::query()->whereIn('id', $parentIds)->get();
+                $allCategories = $allCategories->union($parents->keyBy('id'));
+                $parentIds = $parents->pluck('parent_id')->filter()->diff($allCategories->keys());
+            }
+            $categories = $allCategories->values();
+        }
+
+        $sortDirection = ($filters['sort_direction'] ?? '') === 'desc' ? 'desc' : 'asc';
         $grouped = $categories->groupBy('parent_id')
-            ->map(fn ($children) => $children->sortBy(
-                fn ($category) => $category->depth === 0 ? $category->name : $category->getChildrenRecursive()->count()
-            ));
+            ->map(fn ($children) => ($filters['sort_by'] ?? 'hierarchy') === 'name'
+                ? $children->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE, $sortDirection === 'desc')
+                : $children->sortBy(fn ($category) => $category->depth === 0 ? $category->name : $category->getChildrenRecursive()->count()));
         $result = collect();
 
         $walk = function ($parentId) use (

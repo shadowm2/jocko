@@ -5,13 +5,29 @@ namespace Modules\Dashboard\Livewire;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\Attributes\Locked;
 use Livewire\WithPagination;
 use Modules\Dashboard\Models\Province;
 use Modules\Dashboard\Services\ProvinceService;
+use Modules\Dashboard\Services\CountryService;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
 
 class ProvinceList extends Component
 {
     use WithPagination;
+    use InteractsWithTableFilters;
+    public array $filters = ['search' => '', 'country_id' => '', 'is_active' => []];
+    public string $sortBy = 'name';
+    public string $sortDirection = 'asc';
+    #[Locked] public array $countryOptions = [];
+    protected function defaultTableFilters(): array { return ['search' => '', 'country_id' => '', 'is_active' => []]; }
+    public function mount(CountryService $service): void { $this->countryOptions = $service->getCountries([], false)->mapWithKeys(fn ($c) => [$c->id => $c->name])->all(); }
+    private function filterDefinitions(): array { return [
+        ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('dashboard::strings.Search Provinces')],
+        ['name' => 'country_id', 'type' => 'select', 'label' => __('dashboard::attributes.Province Country'), 'placeholder' => __('strings.All'), 'options' => $this->countryOptions],
+        ['name' => 'is_active', 'type' => 'checkboxes', 'label' => __('dashboard::attributes.Is Active'), 'options' => ['1' => __('strings.Yes'), '0' => __('strings.No')]],
+    ]; }
+    private function sortOptions(): array { return ['name' => __('dashboard::attributes.Province Name'), 'country' => __('dashboard::attributes.Province Country'), 'is_active' => __('dashboard::attributes.Is Active')]; }
 
     public function toggleIsActive($provinceSlug): void
     {
@@ -21,6 +37,7 @@ class ProvinceList extends Component
         $provinceService->update($province, [
             'is_active' => ! $province->is_active,
         ]);
+        $this->resetPage();
         Flux::toast(__('dashboard::messages.Province Updated Successfully'), variant: 'success');
     }
 
@@ -46,10 +63,11 @@ class ProvinceList extends Component
                 'component' => 'dashboard::province-action-cell',
             ],
         ];
-        $rows = $provinceService->getProvinces();
+        $rows = $provinceService->getProvinces([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);
 
         return view('dashboard::livewire.provinces-list', [
             ...compact('columns', 'rows'),
+            'filterDefinitions' => $this->filterDefinitions(), 'sortOptions' => $this->sortOptions(),
         ])
             ->layout('dashboard::layouts.app')
             ->layoutData([

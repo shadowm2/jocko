@@ -6,13 +6,16 @@
         row-component="inventory::components.purchase-row"
     >
         <x-slot name="toolbar">
-            <x-table.filters
+            <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">
+                <x-table.filters
                 :filters="$filterDefinitions"
                 :sort-options="$sortOptions"
                 :sort-by="$sortBy"
                 :sort-direction="$sortDirection"
                 clear-action="clearFilters"
+                panel
             />
+            </x-table.filter-drawer>
         </x-slot>
 
         <x-slot name="action">

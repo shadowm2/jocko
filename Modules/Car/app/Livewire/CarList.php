@@ -4,12 +4,39 @@ namespace Modules\Car\Livewire;
 
 use App\Livewire\BaseComponent;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Locked;
 use Livewire\WithPagination;
+use Modules\Inventory\Livewire\Concerns\InteractsWithTableFilters;
+use Modules\Car\Services\CarCompanyService;
 use Modules\Car\Services\CarService;
 
 class CarList extends BaseComponent
 {
     use WithPagination;
+    use InteractsWithTableFilters;
+
+    public array $filters = ['search' => '', 'car_company_id' => ''];
+    public string $sortBy = 'name';
+    public string $sortDirection = 'asc';
+    #[Locked]
+    public array $companyOptions = [];
+
+    protected function defaultTableFilters(): array { return ['search' => '', 'car_company_id' => '']; }
+
+    public function mount(CarCompanyService $companyService): void
+    {
+        $this->companyOptions = $companyService->getCompanies([], false)->mapWithKeys(fn ($company) => [$company->id => $company->name])->all();
+    }
+
+    private function filterDefinitions(): array
+    {
+        return [
+            ['name' => 'search', 'type' => 'search', 'label' => __('inventory::strings.Search'), 'placeholder' => __('car::strings.Search Cars')],
+            ['name' => 'car_company_id', 'type' => 'select', 'label' => __('car::strings.Car Company'), 'placeholder' => __('strings.All'), 'options' => $this->companyOptions],
+        ];
+    }
+
+    private function sortOptions(): array { return ['name' => __('car::strings.Car Name'), 'company' => __('car::strings.Car Company')]; }
 
     public function render(CarService $carService): View
     {
@@ -40,11 +67,13 @@ class CarList extends BaseComponent
                 'component' => 'car::car-action-cell',
             ],
         ];
-        $cars = $carService->getCars();
+        $cars = $carService->getCars([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);
 
         return view('car::livewire.cars-list', [
             ...compact('columns'),
             'rows' => $cars,
+            'filterDefinitions' => $this->filterDefinitions(),
+            'sortOptions' => $this->sortOptions(),
         ])
             ->layout('dashboard::layouts.app')
             ->layoutData([
