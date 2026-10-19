@@ -46,4 +46,6 @@ jobs:
         run: |
           timeout -s KILL 150 composer test:browser > browser.log 2>&1 < /dev/null || status=$?
           cat browser.log
+          ps -eo pid,etime,args | grep -E 'playwright|chrom|pest' | grep -v grep | cut -c1-200 || true
+          ls ~/.cache/ms-playwright
           exit "${status:-0}"
