@@ -168,12 +168,13 @@ class Utils
             return '-';
         }
 
-        /** @var string $formatted */
-        $formatted = number_format((float) $value, $decimals, '.', $thousandsSeparator)
-                |> (fn ($x) => rtrim($x, '0'))
-                |> (fn ($x) => rtrim($x, '.'))
-                |> self::pDigits(...);
+        $formatted = number_format((float) $value, $decimals, '.', $thousandsSeparator);
 
-        return $formatted;
+        // Only a fraction has zeros to trim; without one they belong to the number (2,000).
+        if ($decimals > 0) {
+            $formatted = rtrim(rtrim($formatted, '0'), '.');
+        }
+
+        return self::pDigits($formatted) ?? '';
     }
 }
