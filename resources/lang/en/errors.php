@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'Unauthorized' => 'Unauthorized',
+    'You need to sign in to access this page' => 'You need to sign in to access this page.',
+    'Access Denied' => 'Access denied',
+    'Please log in to access this page' => 'Please log in to access this page.',
+    '421' => 'Error 421',
+    'Go Home' => 'Go home',
+    'Go Back' => 'Go back',
+    'Sign In' => 'Sign in',
+    "You don't have permission to access this page" => "You don't have permission to access this page.",
+    'Home' => 'Home',
+    'Page Not Found' => 'Page not found',
+    "The page you're looking for doesn't exist or may have been moved" => "The page you're looking for doesn't exist or may have been moved.",
+    'Page Expired' => 'Page expired',
+    'Your session expired. Refresh the page and try again' => 'Your session expired. Refresh the page and try again.',
+    'Refresh' => 'Refresh',
+    'Too Many Requests' => 'Too many requests',
+    'You have made too many requests in a short period. Please wait a moment and try again' => 'You have made too many requests in a short period. Please wait a moment and try again.',
+    'Something Went Wrong' => 'Something went wrong',
+    'An unexpected error occurred. Please try again later' => 'An unexpected error occurred. Please try again later.',
+    'Service Unavailable' => 'Service unavailable',
+    'The service is temporarily unavailable. Please try again in a few minutes' => 'The service is temporarily unavailable. Please try again in a few minutes.',
+    'Error' => 'Error',
+];
