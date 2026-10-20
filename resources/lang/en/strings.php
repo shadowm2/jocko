@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'Log In' => 'Log in',
+    'Register' => 'Register',
+    'Edit' => 'Edit',
+    'Cancel' => 'Cancel',
+    'Actions' => 'Actions',
     'All' => 'All',
     'Sort By' => 'Sort by',
     'Ascending' => 'Ascending',
@@ -12,4 +17,5 @@ return [
     'Yes' => 'Yes',
     'No' => 'No',
     'Loading' => 'Loading',
+    'Select Date' => 'Select a date',
 ];
