@@ -12,7 +12,7 @@ class ProvinceForm extends Form
 
     public string $name;
 
-    public string $country;
+    public string $country = '';
 
     public ?bool $is_active = true;
 

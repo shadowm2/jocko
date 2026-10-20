@@ -17,9 +17,6 @@
         :placeholder="__('dashboard::strings.Select Province Country')"
         wire:model="form.country"
     >
-        <flux:select.option value="">
-            {{ __('dashboard::strings.Select Province Country') }}
-        </flux:select.option>
         @foreach ($countries as $country)
             <flux:select.option :value="$country->code">
                 {{ __('dashboard::countries.' . $country->code) }}

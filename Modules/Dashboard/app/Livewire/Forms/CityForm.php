@@ -15,9 +15,9 @@ class CityForm extends Form
 
     public ?string $name;
 
-    public ?string $country;
+    public ?string $country = '';
 
-    public ?string $province;
+    public ?string $province = '';
 
     public ?bool $is_active = true;
 
