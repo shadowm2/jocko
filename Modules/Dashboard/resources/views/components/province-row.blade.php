@@ -12,6 +12,11 @@
         />
     </x-table.cell>
     <x-table.cell>
-        <x-dashboard::province-action-cell :$row />
+        <flux:button
+            :tooltip="__('dashboard::strings.Edit Province')"
+            :href="route('provinces.edit', ['province' => $row->slug])"
+            icon="pencil-square"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>

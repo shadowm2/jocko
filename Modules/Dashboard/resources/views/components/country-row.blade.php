@@ -1,6 +1,8 @@
 <x-table.row>
     <x-table.cell>
-        <x-dashboard::country-name-cell :$row />
+        {{ \Illuminate\Support\Facades\Lang::has('dashboard::countries.' . $row->code)
+            ? __('dashboard::countries.' . $row->code)
+            : $row->name }}
     </x-table.cell>
     <x-table.cell>
         {{ \App\Helpers\Utils::pDigits($row->code) }}
@@ -15,6 +17,11 @@
         />
     </x-table.cell>
     <x-table.cell>
-        <x-dashboard::country-action-cell :$row />
+        <flux:button
+            :tooltip="__('dashboard::strings.Edit Country')"
+            :href="route('countries.edit', ['country' => $row->code])"
+            icon="pencil-square"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>

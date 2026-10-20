@@ -14,6 +14,11 @@
         />
     </x-table.cell>
     <x-table.cell>
-        <x-car::company-action-cell :$row />
+        <flux:button
+            :tooltip="__('car::strings.Edit Car Company')"
+            :href="route('companies.edit', ['company' => $row->slug])"
+            icon="pencil-square"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>

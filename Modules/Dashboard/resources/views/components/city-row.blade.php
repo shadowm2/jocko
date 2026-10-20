@@ -1,6 +1,6 @@
 <x-table.row>
     <x-table.cell>
-        <x-dashboard::country-name-cell :$row />
+        {{ $row->name }}
     </x-table.cell>
     <x-table.cell>
         {{ \App\Helpers\Utils::pDigits($row->province?->name) }}
@@ -15,6 +15,11 @@
         />
     </x-table.cell>
     <x-table.cell>
-        <x-dashboard::city-action-cell :$row />
+        <flux:button
+            :tooltip="__('dashboard::strings.Edit City')"
+            :href="route('cities.edit', ['city' => $row->slug])"
+            icon="pencil-square"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>

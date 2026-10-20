@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Modules\Inventory\Livewire\WarehouseItems\LowStockList;
+use Modules\Inventory\Livewire\WarehouseItems\WarehouseItemList;
 use Modules\Inventory\Models\Item;
 use Modules\Inventory\Models\UnitGroup;
 use Modules\Inventory\Models\Warehouse;
@@ -61,10 +62,12 @@ it('shows the low stock page to a signed in user', function () {
 });
 
 it('badges only the low rows of the warehouse items list', function () {
-    $badge = fn (string $slug) => $this->blade('<x-inventory::warehouse-item-stock-status-cell :row="$row" />', ['row' => WarehouseItem::where('slug', $slug)->first()]);
+    $this->actingAs(User::factory()->create());
 
-    $badge('main-oil')->assertSee(__('inventory::strings.Low Stock'));
-    $badge('main-wiper')->assertDontSee(__('inventory::strings.Low Stock'));
+    // Main holds the most items, so it is the one listed: oil and filter are low, wiper and brake are not.
+    $html = Livewire::test(WarehouseItemList::class)->assertOk()->html();
+
+    expect(substr_count($html, __('inventory::strings.Low Stock')))->toBe(2);
 });
 
 it('links the dashboard low stock card to the low stock page', function () {

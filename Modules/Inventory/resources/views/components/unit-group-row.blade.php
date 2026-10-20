@@ -6,6 +6,11 @@
         {{ \App\Helpers\Utils::pDigits($row->units_count) }}
     </x-table.cell>
     <x-table.cell>
-        <x-inventory::unit-group-action-cell :$row />
+        <flux:button
+            :tooltip="__('inventory::strings.Edit Unit Group')"
+            :href="route('units.groups.edit', ['unitGroup' => $row->slug])"
+            icon="pencil-square"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>

@@ -31,6 +31,15 @@
         {{ \App\Helpers\Utils::pDigits(\App\Helpers\Utils::formatQuantity($row->max_quantity, 3)) }}
     </x-table.cell>
     <x-table.cell>
+        @if ($row->isLowStock())
+            <flux:badge
+                color="red"
+                icon="exclamation-triangle"
+                size="sm"
+            >{{ __('inventory::strings.Low Stock') }}</flux:badge>
+        @endif
+    </x-table.cell>
+    <x-table.cell>
         <flux:button
             :tooltip="__('inventory::strings.Edit Warehouse Item')"
             :href="route('warehouses.items.edit', ['warehouse' => $row->warehouse, 'warehouseItem' => $row])"

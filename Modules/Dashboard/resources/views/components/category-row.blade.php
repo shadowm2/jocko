@@ -1,6 +1,18 @@
 <x-table.row>
     <x-table.cell>
-        <x-dashboard::category-name-cell :$row />
+        <div
+            class="flex flex-row items-center gap-2"
+            style="padding-inline-start: {{ $row->depth * 1.15 }}rem"
+        >
+            <flux:badge size="sm">
+                {{ \App\Helpers\Utils::pDigits($row->depth + 1) }}
+            </flux:badge>
+            <flux:icon
+                name="folder"
+                class="size-{{ max(4, 6 - $row->depth) }}"
+            />
+            {!! $row->name !!}
+        </div>
     </x-table.cell>
     <x-table.cell>
         {{ __('dashboard::strings.category_types.' . $row->type->name) }}
@@ -9,7 +21,7 @@
         {{ \App\Helpers\Utils::pDigits($row->parent?->name) }}
     </x-table.cell>
     <x-table.cell>
-        <x-dashboard::category-icon-cell :$row />
+        <flux:icon name="{{ $row->icon }}" />
     </x-table.cell>
     <x-table.cell>
         <flux:switch
@@ -18,6 +30,11 @@
         />
     </x-table.cell>
     <x-table.cell>
-        <x-dashboard::category-action-cell :$row />
+        <flux:button
+            :tooltip="__('dashboard::strings.Edit Category')"
+            :href="route('categories.edit', ['category' => $row->slug])"
+            icon="pencil-square"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>
