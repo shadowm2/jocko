@@ -18,7 +18,15 @@
         {{ __('dashboard::strings.category_types.' . $row->type->name) }}
     </x-table.cell>
     <x-table.cell>
-        {{ \App\Helpers\Utils::pDigits($row->parent?->name) }}
+        @if($row->parent)
+            <flux:link :href="route('categories.edit', ['category' => $row->parent])">
+                {{ \App\Helpers\Utils::pDigits($row->parent?->name) }}
+            </flux:link>
+        @else
+            {{ \App\Helpers\Utils::pDigits($row->parent?->name) }}
+        @endif
+
+
     </x-table.cell>
     <x-table.cell>
         <flux:icon name="{{ $row->icon }}" />

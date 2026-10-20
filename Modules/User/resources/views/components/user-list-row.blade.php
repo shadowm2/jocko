@@ -7,7 +7,13 @@
         {{ $row->last_name }}
     </x-table.cell>
     <x-table.cell>
-        {{ $row->email }}
+        @if(filter_var($row->email, FILTER_VALIDATE_EMAIL))
+            <flux:link :href="'mailto:'.$row->email">
+                {{ $row->email }}
+            </flux:link>
+        @else
+            {{ $row->email }}
+        @endif
     </x-table.cell>
     <x-table.cell>
         <flux:button
