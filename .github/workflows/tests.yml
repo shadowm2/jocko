@@ -36,3 +36,15 @@ jobs:
 
       - name: Run CI Checks
         run: composer ci:check
+
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser tests
+        timeout-minutes: 5
+        # Playwright's server outlives pest and holds its output pipe open, which keeps the step running; a file does not.
+        # The timeout makes a hung test fail with its log instead of cancelling the step with none.
+        run: |
+          timeout -s KILL 200 vendor/bin/pest tests/Browser --stop-on-failure > browser.log 2>&1 < /dev/null || status=$?
+          cat browser.log
+          exit "${status:-0}"
