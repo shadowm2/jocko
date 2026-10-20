@@ -3,6 +3,7 @@
         :$columns
         :$rows
         :title="__('dashboard::strings.Categories List')"
+        row-component="dashboard::components.category-row"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">

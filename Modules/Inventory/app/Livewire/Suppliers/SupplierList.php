@@ -92,34 +92,24 @@ class SupplierList extends Component
         $columns = [
             [
                 'label' => __('inventory::attributes.Supplier Name'),
-                'key' => 'user.first_name,user.last_name',
             ],
             [
                 'label' => __('dashboard::attributes.City'),
-                'key' => 'city.name',
             ],
             [
                 'label' => __('inventory::attributes.Supplier Phone'),
-                'key' => 'phone',
             ],
             [
                 'label' => __('inventory::attributes.Supplier Address'),
-                'key' => 'address',
-                'maxlength' => 45,
             ],
             [
                 'label' => __('inventory::attributes.Supplier Website'),
-                'key' => 'website',
             ],
             [
                 'label' => __('inventory::attributes.Is Active'),
-                'key' => 'is_active',
-                'type' => 'switch',
-                'action' => 'toggleIsActive',
             ],
             [
                 'label' => __('strings.Actions'),
-                'component' => 'inventory::supplier-action-cell',
             ],
         ];
         $supplierService = resolve(SupplierService::class);

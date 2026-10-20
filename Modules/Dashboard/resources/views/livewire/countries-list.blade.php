@@ -3,6 +3,7 @@
         :$columns
         :$rows
         :title="__('dashboard::strings.Countries List')"
+        row-component="dashboard::components.country-row"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">

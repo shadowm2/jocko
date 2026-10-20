@@ -50,15 +50,12 @@ class UnitGroupList extends Component
         $columns = [
             [
                 'label' => __('inventory::strings.Unit Group Name'),
-                'key' => 'name',
             ],
             [
                 'label' => __('inventory::strings.Unit Group Items Count'),
-                'key' => 'units_count',
             ],
             [
                 'label' => '',
-                'component' => 'inventory::unit-group-action-cell',
             ],
         ];
         $rows = $unitGroupService->getUnitGroups([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);

@@ -3,6 +3,7 @@
         :$columns
         :$rows
         :title="__('inventory::strings.Unit Groups List')"
+        row-component="inventory::components.unit-group-row"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">

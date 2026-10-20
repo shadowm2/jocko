@@ -103,37 +103,24 @@ class UnitList extends Component
         $columns = [
             [
                 'label' => __('inventory::attributes.Unit Name'),
-                'key' => 'name',
             ],
             [
                 'label' => __('inventory::attributes.Unit Symbol'),
-                'key' => 'symbol',
             ],
             [
                 'label' => __('inventory::attributes.Unit Group Name'),
-                'component' => 'inventory::unit-unit-group-cell',
             ],
             [
                 'label' => __('inventory::attributes.Conversion Factor'),
-                'key' => 'conversion_factor',
-                'type' => 'float',
-                'decimals' => 3,
             ],
             [
                 'label' => __('inventory::attributes.Is Active'),
-                'key' => 'is_active',
-                'type' => 'switch',
-                'action' => 'toggleIsActive',
             ],
             [
                 'label' => __('inventory::attributes.Is Base'),
-                'key' => 'is_base',
-                'type' => 'switch',
-                'action' => 'toggleIsBase',
             ],
             [
                 'label' => '',
-                'component' => 'inventory::unit-action-cell',
             ],
         ];
         $rows = $unitService->getUnits([

@@ -3,6 +3,7 @@
         :$columns
         :$rows
         :title="__('dashboard::strings.Cities List')"
+        row-component="dashboard::components.city-row"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">

@@ -80,29 +80,18 @@ class WarehouseList extends Component
         $columns = [
             [
                 'label' => __('inventory::attributes.Warehouse Name'),
-                'component' => 'inventory::warehouse-name-cell',
-                'attrs' => fn ($row) => [
-                    'activeWarehouse' => $activeWarehouse,
-                ],
             ],
             [
                 'label' => __('inventory::attributes.Warehouse Description'),
-                'key' => 'description',
-                'maxlength' => 15,
             ],
             [
                 'label' => __('inventory::attributes.Warehouse Items Count'),
-                'key' => 'warehouse_items_count',
             ],
             [
                 'label' => __('inventory::attributes.Is Active'),
-                'key' => 'is_active',
-                'type' => 'switch',
-                'action' => 'toggleIsActive',
             ],
             [
                 'label' => '',
-                'component' => 'inventory::warehouse-action-cell',
             ],
         ];
         $rows = $warehouseService->getWarehouses([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);

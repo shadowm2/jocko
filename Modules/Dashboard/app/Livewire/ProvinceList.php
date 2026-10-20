@@ -74,21 +74,15 @@ class ProvinceList extends Component
         $columns = [
             [
                 'label' => __('dashboard::attributes.Province Name'),
-                'key' => 'name',
             ],
             [
                 'label' => __('dashboard::attributes.Province Country'),
-                'key' => 'country.name',
             ],
             [
                 'label' => __('dashboard::attributes.Is Active'),
-                'key' => 'is_active',
-                'type' => 'switch',
-                'action' => 'toggleIsActive',
             ],
             [
                 'label' => '',
-                'component' => 'dashboard::province-action-cell',
             ],
         ];
         $rows = $provinceService->getProvinces([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);

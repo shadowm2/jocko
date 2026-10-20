@@ -45,27 +45,15 @@ class CompanyList extends BaseComponent
         $columns = [
             [
                 'label' => __('car::strings.Car Company Name'),
-                'key' => 'name',
             ],
             [
                 'label' => __('car::strings.Car Company Name'),
-                'key' => 'slug',
             ],
             [
                 'label' => __('car::strings.Car Company Name'),
-                'attrs' => function ($row) {
-                    return [
-                        'image' => $row->logo,
-                        'alt' => $row->name,
-                        'initial' => mb_substr($row->name, 0, 1),
-                        'name' => $row->name,
-                    ];
-                },
-                'component' => 'dashboard::popup-image',
             ],
             [
                 'label' => '',
-                'component' => 'car::company-action-cell',
             ],
         ];
         $companies = $companyService->getCompanies([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);

@@ -60,15 +60,12 @@ class UsersList extends Component
         $columns = [
             [
                 'label' => __('user::attributes.First Name'),
-                'key' => 'first_name',
             ],
             [
                 'label' => __('user::attributes.Last Name'),
-                'key' => 'last_name',
             ],
             [
                 'label' => __('user::attributes.Email'),
-                'key' => 'email',
             ],
             [
                 'label' => '',

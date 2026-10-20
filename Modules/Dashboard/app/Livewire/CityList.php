@@ -72,25 +72,18 @@ class CityList extends Component
         $columns = [
             [
                 'label' => __('dashboard::attributes.City Name'),
-                'component' => 'dashboard::country-name-cell',
             ],
             [
                 'label' => __('dashboard::attributes.City Province'),
-                'key' => 'province.name',
             ],
             [
                 'label' => __('dashboard::attributes.Province Country'),
-                'key' => 'province.country.name',
             ],
             [
                 'label' => __('dashboard::attributes.Is Active'),
-                'key' => 'is_active',
-                'type' => 'switch',
-                'action' => 'toggleIsActive',
             ],
             [
                 'label' => '',
-                'component' => 'dashboard::city-action-cell',
             ],
         ];
         $cityService = resolve(CityService::class);

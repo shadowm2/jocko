@@ -54,19 +54,15 @@ class UserCarsList extends Component
         $columns = [
             [
                 'label' => __('car::strings.Car Company'),
-                'key' => 'car.company.name',
             ],
             [
                 'label' => __('car::strings.Car Name'),
-                'key' => 'car.name',
             ],
             [
                 'label' => __('car::strings.Car Color'),
-                'key' => 'color.name',
             ],
             [
                 'label' => '',
-                'component' => 'user::user-car-actions-cell',
             ],
         ];
         $userCars = $userCarService->getUserCars($this->user->id, [...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);

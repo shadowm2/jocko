@@ -3,6 +3,7 @@
         :$columns
         :$rows
         :title="__('inventory::strings.Suppliers List')"
+        row-component="inventory::components.supplier-row"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer
