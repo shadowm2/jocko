@@ -3,7 +3,9 @@
         {{ \App\Helpers\Utils::pDigits($row->name) }}
     </x-table.cell>
     <x-table.cell>
-        {{ \App\Helpers\Utils::pDigits($row->country?->name) }}
+        <flux:link :href="route('countries.edit', ['country' => $row->country])">
+            {{ \App\Helpers\Utils::pDigits($row->country?->name) }}
+        </flux:link>
     </x-table.cell>
     <x-table.cell>
         <flux:switch

@@ -9,7 +9,9 @@
         {{ Utils::pDigits(Jalalian::fromDateTime($row->created_at)->format('Y/m/d H:i')) }}
     </x-table.cell>
     <x-table.cell>
-        {{ $row->item?->name }}
+        <flux:link :href="route('items.edit', ['item' => $row->item])">
+            {{ $row->item?->name }}
+        </flux:link>
     </x-table.cell>
     <x-table.cell>
         <div class="flex flex-col items-start gap-1">
