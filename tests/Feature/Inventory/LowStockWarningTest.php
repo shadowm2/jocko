@@ -1,12 +1,17 @@
 <?php
 
+use Illuminate\Events\CallQueuedListener;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Livewire\Livewire;
 use Modules\Dashboard\Exceptions\SmsException;
 use Modules\Dashboard\Facades\Sms;
+use Modules\Dashboard\Models\Setting;
+use Modules\Dashboard\Services\SettingService;
 use Modules\Inventory\Enums\StockMovementType;
 use Modules\Inventory\Events\StockRunningLow;
+use Modules\Inventory\Listeners\TextLowStock;
 use Modules\Inventory\Livewire\StockMovements\StockAdjustmentCreate;
 use Modules\Inventory\Models\Item;
 use Modules\Inventory\Models\Unit;
@@ -133,6 +138,25 @@ describe('text message', function () {
         Sms::shouldReceive('send')->never();
 
         ($this->adjust)(-25);
+    });
+
+    it('texts the number saved since the worker booted', function () {
+        resolve(SettingService::class)->all();
+        Setting::create(['key' => 'shop.alert_mobile', 'value' => '09129999999']);
+        Sms::shouldReceive('send')->once()->with('09129999999', Mockery::type('string'));
+
+        (new TextLowStock)->handle(new StockRunningLow($this->stock, 30.0));
+    });
+
+    it('queues the text instead of sending it in the request', function () {
+        Queue::fake();
+        Sms::shouldReceive('send')->never();
+
+        ($this->adjust)(-15);
+        ($this->adjust)(-10);
+
+        Queue::assertPushed(CallQueuedListener::class, 1);
+        Queue::assertPushed(CallQueuedListener::class, fn (CallQueuedListener $job) => $job->class === TextLowStock::class);
     });
 
     it('still saves the change when the text fails', function () {
