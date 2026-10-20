@@ -9,3 +9,81 @@
     @apply ms-1 inline-flex leading-none text-red-500;
     font-size: 0.5rem;
 }
+
+/* Styles are scoped to the opt-in searchable-select component. */
+.flux-searchable-select {
+    @apply w-full text-sm text-zinc-700 dark:text-zinc-300;
+    font-family: inherit;
+}
+
+.flux-searchable-select .ts-control {
+    @apply min-h-10 w-full rounded-lg border border-zinc-200 border-b-zinc-300/80 bg-white px-3 py-2 text-base leading-[1.375rem] text-zinc-700 shadow-xs dark:border-white/10 dark:bg-white/10 dark:text-zinc-300 sm:text-sm;
+    font-family: inherit;
+}
+
+.flux-searchable-select.full .ts-control {
+    background-color: white;
+}
+
+.dark .flux-searchable-select.full .ts-control {
+    background-color: rgb(255 255 255 / 10%);
+}
+
+.dark .flux-searchable-select.single.input-active .ts-control,
+.dark .flux-searchable-select.plugin-dropdown_input.focus.dropdown-active .ts-control {
+    background-color: rgb(255 255 255 / 10%) !important;
+}
+
+.flux-searchable-select.focus .ts-control {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
+
+[data-searchable-select-container][data-invalid] .flux-searchable-select .ts-control {
+    @apply border-red-500 shadow-none dark:border-red-500;
+}
+
+.flux-searchable-select .ts-control > input,
+.flux-searchable-select .ts-control > input::placeholder,
+.flux-searchable-select .dropdown-input,
+.flux-searchable-select .dropdown-input::placeholder,
+.flux-searchable-select .items-placeholder {
+    @apply text-zinc-400 dark:text-zinc-400;
+    font-family: inherit;
+}
+
+.flux-searchable-select .ts-dropdown {
+    @apply z-50 mt-1 overflow-hidden rounded-lg border border-zinc-200 bg-white text-sm text-zinc-700 shadow-lg dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-200;
+}
+
+.flux-searchable-select .ts-dropdown .dropdown-input-wrap {
+    @apply border-b border-zinc-200 dark:border-white/10;
+}
+
+.flux-searchable-select .ts-dropdown .dropdown-input {
+    @apply border-0 px-3 py-2.5 outline-none ring-0;
+    box-shadow: none;
+}
+
+.flux-searchable-select .ts-dropdown .option,
+.flux-searchable-select .ts-dropdown .no-results {
+    @apply px-3 py-2;
+}
+
+.flux-searchable-select .ts-dropdown .active {
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    color: var(--color-zinc-800);
+}
+
+.dark .flux-searchable-select .ts-dropdown .active {
+    background: color-mix(in srgb, white 10%, transparent);
+    color: var(--color-zinc-100);
+}
+
+.flux-searchable-select.multi .ts-control > .item {
+    @apply rounded-md bg-zinc-100 px-2 py-0.5 text-sm text-zinc-700 dark:bg-white/10 dark:text-zinc-200;
+}
+
+.flux-searchable-select.plugin-remove_button .ts-control > .item .remove {
+    @apply ms-1 rounded-sm text-zinc-500 hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-white/10;
+}

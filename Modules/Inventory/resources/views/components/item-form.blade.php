@@ -5,6 +5,7 @@
 >
     <flux:card class="space-y-4">
         <x-inventory::item-fields
+            :$form
             :$categories
             :$unitGroups
         />
