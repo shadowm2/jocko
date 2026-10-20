@@ -3,6 +3,7 @@
         :$columns
         :$rows
         :title="__('inventory::strings.Units List')"
+        row-component="inventory::components.unit-row"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">

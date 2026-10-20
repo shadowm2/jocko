@@ -66,29 +66,21 @@ class CategoryList extends Component
         $columns = [
             [
                 'label' => __('dashboard::attributes.Category Name'),
-                'component' => 'dashboard::category-name-cell',
             ],
             [
                 'label' => __('dashboard::attributes.Category Type'),
-                'render' => fn ($row) => __('dashboard::strings.category_types.'.$row->type->name),
             ],
             [
                 'label' => __('dashboard::attributes.Category Parent'),
-                'key' => 'parent.name',
             ],
             [
                 'label' => __('dashboard::attributes.Category Icon'),
-                'component' => 'dashboard::category-icon-cell',
             ],
             [
                 'label' => __('dashboard::attributes.Is Active'),
-                'key' => 'is_active',
-                'type' => 'switch',
-                'action' => 'toggleIsActive',
             ],
             [
                 'label' => '',
-                'component' => 'dashboard::category-action-cell',
             ],
         ];
         $categoryService = resolve(CategoryService::class);

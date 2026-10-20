@@ -44,15 +44,12 @@ class ColorList extends Component
         $columns = [
             [
                 'label' => __('car::strings.Color Name'),
-                'key' => 'name',
             ],
             [
                 'label' => __('car::strings.Color Code'),
-                'component' => 'car::color-circle',
             ],
             [
                 'label' => '',
-                'component' => 'car::color-action-cell',
             ],
         ];
         $colors = $colorService->getColors([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);

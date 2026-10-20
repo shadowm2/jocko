@@ -3,6 +3,7 @@
         :$columns
         :$rows
         :title="__('car::strings.Cars List')"
+        row-component="car::components.car-row"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">

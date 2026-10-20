@@ -3,6 +3,8 @@
         :$columns
         :$rows
         :title="__('inventory::strings.Warehouses List')"
+        row-component="inventory::components.warehouse-row"
+        :row-props="compact('activeWarehouse')"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">

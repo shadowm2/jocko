@@ -3,6 +3,7 @@
         :$columns
         :$rows
         :title="__('car::strings.Colors List')"
+        row-component="car::components.color-row"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">

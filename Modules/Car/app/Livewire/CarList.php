@@ -59,27 +59,15 @@ class CarList extends BaseComponent
         $columns = [
             [
                 'label' => __('car::strings.Car Name'),
-                'key' => 'name',
             ],
             [
                 'label' => __('car::strings.Brand'),
-                'key' => 'company.name',
             ],
             [
                 'label' => __('car::attributes.Car Images'),
-                'attrs' => function ($row) {
-                    return [
-                        'image' => $row->images()->first(),
-                        'alt' => $row->name,
-                        'initial' => mb_substr($row->name, 0, 1),
-                        'name' => $row->name,
-                    ];
-                },
-                'component' => 'dashboard::popup-image',
             ],
             [
                 'label' => '',
-                'component' => 'car::car-action-cell',
             ],
         ];
         $cars = $carService->getCars([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);

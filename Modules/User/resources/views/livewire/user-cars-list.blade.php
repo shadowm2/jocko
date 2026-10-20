@@ -5,6 +5,7 @@
         :title="__('user::strings.User :name Cars', [
             'name' => $this->user->first_name . ' ' . $this->user->last_name,
         ])"
+        row-component="user::components.user-car-row"
     >
         <x-slot name="toolbar">
             <x-table.filter-drawer :values="$filters" :filters="$filterDefinitions">

@@ -62,25 +62,18 @@ class CountryList extends Component
         $columns = [
             [
                 'label' => __('dashboard::attributes.Country Name'),
-                'component' => 'dashboard::country-name-cell',
             ],
             [
                 'label' => __('dashboard::attributes.Country Code'),
-                'key' => 'code',
             ],
             [
                 'label' => __('dashboard::attributes.Country Code3'),
-                'key' => 'code3',
             ],
             [
                 'label' => __('dashboard::attributes.Is Active'),
-                'key' => 'is_active',
-                'type' => 'switch',
-                'action' => 'toggleIsActive',
             ],
             [
                 'label' => '',
-                'component' => 'dashboard::country-action-cell',
             ],
         ];
         $rows = $countryService->getCountries([...$this->filters, 'sort_by' => $this->sortBy, 'sort_direction' => $this->sortDirection]);
