@@ -9,6 +9,11 @@
         {{ \App\Helpers\Utils::pDigits($row->color?->name) }}
     </x-table.cell>
     <x-table.cell>
-        <x-user::user-car-actions-cell :$row />
+        <flux:button
+            :tooltip="__('car::strings.Edit Car :car', ['car' => $row->car->name])"
+            :href="route('users.cars.edit', ['user' => $this->user, 'userCar' => $row])"
+            icon="pencil-square"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>

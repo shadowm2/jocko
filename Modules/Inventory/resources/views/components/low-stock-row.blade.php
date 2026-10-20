@@ -18,6 +18,11 @@
         {{ Utils::pDigits(Utils::formatQuantity($row->min_quantity - $row->quantity, 3, ',')) }}
     </x-table.cell>
     <x-table.cell>
-        <x-inventory::warehouse-item-action-cell :$row />
+        <flux:button
+            :tooltip="__('inventory::strings.Edit Warehouse Item')"
+            :href="route('warehouses.items.edit', ['warehouse' => $row->warehouse, 'warehouseItem' => $row])"
+            icon="pencil-square"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>

@@ -3,7 +3,9 @@
         {{ \App\Helpers\Utils::pDigits($row->name) }}
     </x-table.cell>
     <x-table.cell>
-        {{ \App\Helpers\Utils::pDigits($row->company?->name) }}
+        <flux:link :href="route('companies.edit', ['company' => $row->company])">
+            {{ \App\Helpers\Utils::pDigits($row->company?->name) }}
+        </flux:link>
     </x-table.cell>
     <x-table.cell>
         <x-dashboard::popup-image
@@ -14,6 +16,11 @@
         />
     </x-table.cell>
     <x-table.cell>
-        <x-car::car-action-cell :$row />
+        <flux:button
+            :tooltip="__('car::strings.Edit Car')"
+            :href="route('cars.edit', ['car' => $row->slug])"
+            icon="pencil-square"
+            variant="ghost"
+        />
     </x-table.cell>
 </x-table.row>
