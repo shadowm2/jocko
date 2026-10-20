@@ -23,7 +23,11 @@ php artisan module:seed Dashboard Car User Inventory Order   # optional demo dat
 composer dev          # server, Vite, log tail and Horizon
 ```
 
-`composer dev` also starts Horizon, which needs the PHP Redis extension. The default queue is `database`, so without Redis run `php artisan serve` and `npm run dev` instead.
+`composer dev` also starts Horizon, which needs the PHP Redis extension. The default queue is `database`, so without Redis run `php artisan serve`, `npm run dev` and `php artisan queue:work` instead.
+
+## Queue
+
+The low-stock text (sent when an item first drops to its minimum) goes through the queue, so a worker must be running or it is never sent: `php artisan queue:work`, kept alive by a process manager in production. The login code is not queued, because the user is waiting for it.
 
 ## Signing in
 

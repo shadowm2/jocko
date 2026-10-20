@@ -25,8 +25,9 @@ use Modules\Dashboard\Exceptions\SmsException;
  * Both methods throw
  * SmsException on failure; catch it where a failed SMS must not break the flow.
  *
- * ponytail: sends are synchronous (the SDK waits up to 30s). Dispatch a queued
- * job that calls this where a request must not wait for Kavenegar.
+ * ponytail: sends are synchronous (the SDK waits up to 30s). The login code
+ * stays that way because the user needs the error; the low-stock text is sent
+ * from a queued listener (TextLowStock). Queue any other send the same way.
  */
 #[Singleton]
 class SmsService

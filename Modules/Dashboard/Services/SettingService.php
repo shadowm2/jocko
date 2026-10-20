@@ -68,9 +68,12 @@ class SettingService
     /**
      * Let stored values override the matching config() entries so packages
      * keep reading config as usual. Unset fields keep their .env value.
+     * Reads the table afresh, so a queue worker can call it again per job.
      */
     public function applyToConfig(): void
     {
+        $this->values = null;
+
         foreach ($this->fields() as $key => $field) {
             if (isset($field['config'], $this->all()[$key])) {
                 config([$field['config'] => $this->all()[$key]]);
