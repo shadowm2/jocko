@@ -15,7 +15,7 @@ Laravel 13, Livewire 4, Flux, split into [nwidart modules](https://laravelmodule
 
 ## Setup
 
-Needs PHP 8.3+ (with `curl` and `fileinfo`), Composer and Node 22. The database is SQLite by default.
+Needs PHP 8.3+ (with `curl` and `fileinfo`), Composer, Node 22 and a Redis server (for the queue). The database is SQLite by default.
 
 ```bash
 composer setup        # install, copy .env, key:generate, migrate, npm install, build
@@ -23,11 +23,15 @@ php artisan module:seed Dashboard Car User Inventory Order   # optional demo dat
 composer dev          # server, Vite, log tail and Horizon
 ```
 
-`composer dev` also starts Horizon, which needs the PHP Redis extension. The default queue is `database`, so without Redis run `php artisan serve`, `npm run dev` and `php artisan queue:work` instead.
+`composer dev` starts Horizon, which runs the queue on Redis. `.env.example` uses the `predis` client, so no PHP Redis extension is needed; set `REDIS_HOST` and `REDIS_PORT` if your server is not on `127.0.0.1:6379`.
 
 ## Queue
 
-The low-stock text (sent when an item first drops to its minimum) goes through the queue, so a worker must be running or it is never sent: `php artisan queue:work`, kept alive by a process manager in production. The login code is not queued, because the user is waiting for it.
+The low-stock text (sent when an item first drops to its minimum) goes through the queue, so Horizon must be running or it is never sent. `composer dev` starts it; in production run `php artisan horizon` under a process manager and `php artisan horizon:terminate` on every deploy so it restarts with the new code. The login code is not queued, because the user is waiting for it.
+
+The Horizon dashboard is at `/horizon`. It is open when `APP_ENV=local`; elsewhere the `viewHorizon` gate in `app/Providers/HorizonServiceProvider.php` decides who sees it.
+
+To run without Redis, set `QUEUE_CONNECTION=database` and use `php artisan queue:work` instead of Horizon.
 
 ## Signing in
 
