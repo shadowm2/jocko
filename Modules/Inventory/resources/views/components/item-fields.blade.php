@@ -21,17 +21,14 @@
     <flux:label>
         {{ __('inventory::attributes.Item Unit Group') }}
     </flux:label>
-    <flux:select
+    <x-inventory::searchable-select
         required
+        model="form.unit_group"
+        :value="$form->unit_group"
         :placeholder="__('inventory::strings.Select Item Unit Group')"
-        wire:model="form.unit_group"
+        :options="$unitGroups->mapWithKeys(fn($unitGroup) => [$unitGroup->slug => $unitGroup->name])"
     >
-        @foreach ($unitGroups as $unitGroup)
-            <flux:select.option :value="$unitGroup->slug">
-                {{ $unitGroup->name }}
-            </flux:select.option>
-        @endforeach
-    </flux:select>
+    </x-inventory::searchable-select>
     <flux:error name="form.unit_group" />
 </flux:field>
 

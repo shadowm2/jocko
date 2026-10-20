@@ -45,9 +45,10 @@ class WarehouseService extends BaseService
 
     public function getActiveWarehouse(): ?Warehouse
     {
-        $cacheKey = 'active_warehouses';
+        $cacheKey = 'active_warehouse';
         $activeWarehouseId = Cache::get($cacheKey);
-        if (is_int($activeWarehouseId)) {
+        if (is_numeric($activeWarehouseId) && (int) $activeWarehouseId == $activeWarehouseId) {
+
             return Warehouse::find($activeWarehouseId);
         }
 
@@ -56,7 +57,7 @@ class WarehouseService extends BaseService
             ->orderBy('created_at')
             ->first();
         if ($activeWarehouse) {
-            Cache::set($cacheKey, $activeWarehouse->id, 3600);
+            Cache::forever($cacheKey, $activeWarehouse->id);
         }
 
         return $activeWarehouse;
@@ -64,12 +65,12 @@ class WarehouseService extends BaseService
 
     public function setActiveWarehouse(Warehouse|string $warehouse): bool
     {
+        $cacheKey = 'active_warehouse';
         if (is_string($warehouse)) {
             $warehouse = $this->findByKeyOrFail($warehouse);
         }
-        $cacheKey = 'active_warehouses';
+        $activeWarehouseId = $warehouse->id;
 
         return Cache::forever($cacheKey, $warehouse->id);
-
     }
 }

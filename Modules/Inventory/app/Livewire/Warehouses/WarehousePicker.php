@@ -16,9 +16,8 @@ class WarehousePicker extends Component
 
     public ?string $selectedWarehouse = null;
 
-    /** @param string|null $warehouse */
     #[On('active-warehouse-changed')]
-    public function warehouseChanged($warehouse): void
+    public function warehouseChanged(?string $warehouse): void
     {
         $this->selectedWarehouse = $warehouse;
     }
