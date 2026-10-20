@@ -43,20 +43,28 @@ class Reports extends Component
         $revenue = (float) OrderItem::query()->whereHas('order', $sale)->sum('total');
 
         // Whatever is still owed, whenever it was ordered; an overpaid order does not offset another.
-        // ponytail: sums every open order in PHP, move to SQL when the order count gets large.
-        $outstanding = Order::query()
-            ->where('status', '!=', OrderStatus::CANCELLED->value)
+        // The sums are columns of a derived table so the balance can be filtered and sorted in SQL.
+        $balance = 'round(coalesce(items_sum_total, 0) - coalesce(payments_sum_amount, 0), 2)';
+        $owing = Order::query()
+            ->fromSub(
+                Order::query()
+                    ->where('status', '!=', OrderStatus::CANCELLED->value)
+                    ->withSum('items', 'total')
+                    ->withSum('payments', 'amount'),
+                'orders',
+            )
+            ->whereRaw("{$balance} > 0");
+        $owed = (clone $owing)->toBase()->selectRaw("count(*) as orders, coalesce(sum({$balance}), 0) as total")->first();
+        $outstanding = $owing
             ->with('user')
-            ->withSum('items', 'total')
-            ->withSum('payments', 'amount')
+            ->orderByRaw("{$balance} desc")
+            ->orderBy('id')
+            ->limit(self::LIST_SIZE)
             ->get()
             ->map(fn (Order $order): array => [
                 'order' => $order,
                 'balance' => round((float) $order->items_sum_total - (float) $order->payments_sum_amount, 2),
-            ])
-            ->filter(fn (array $row): bool => $row['balance'] > 0)
-            ->sortByDesc('balance')
-            ->values();
+            ]);
 
         // Money committed to suppliers: drafts and cancelled purchases are not spending.
         // Dated by the day it was ordered, or created when no order date was set.
@@ -97,9 +105,9 @@ class Reports extends Component
             'bySupplier' => $bySupplier->each(function (\stdClass $row) use ($suppliers): void {
                 $row->supplier = $suppliers->get($row->supplier_id);
             }),
-            'outstandingTotal' => $outstanding->sum('balance'),
-            'outstandingCount' => $outstanding->count(),
-            'outstanding' => $outstanding->take(self::LIST_SIZE),
+            'outstandingTotal' => (float) $owed?->total,
+            'outstandingCount' => (int) $owed?->orders,
+            'outstanding' => $outstanding,
             'filterDefinitions' => [
                 ['name' => 'from', 'type' => 'date', 'label' => __('dashboard::strings.From Date'), 'placeholder' => __('strings.Select Date')],
                 ['name' => 'to', 'type' => 'date', 'label' => __('dashboard::strings.To Date'), 'placeholder' => __('strings.Select Date')],

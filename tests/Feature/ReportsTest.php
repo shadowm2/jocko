@@ -59,6 +59,22 @@ it('adds up sales, collections and what is still owed, leaving cancelled orders 
         ->assertViewHas('topItems', fn ($items) => $items->map(fn ($line) => [$line->item->name, (float) $line->revenue, (int) $line->orders])->all() === [['Oil', 3000.0, 2], ['Filter', 1200.0, 2]]);
 });
 
+it('totals every order that is owed but lists only the largest ten', function () {
+    $customer = User::first();
+    foreach (range(1, 12) as $n) {
+        $order = Order::forceCreate([
+            'slug' => "X{$n}", 'user_id' => $customer->id, 'user_car_id' => 1, 'warehouse_id' => 1,
+            'order_number' => "X{$n}", 'status' => OrderStatus::PENDING,
+        ]);
+        OrderItem::forceCreate(['slug' => "X{$n}-line", 'order_id' => $order->id, 'item_id' => 1, 'quantity' => 1, 'unit_price' => 100, 'total' => 100]);
+    }
+
+    ($this->range)()
+        ->assertViewHas('outstandingTotal', 2500.0)
+        ->assertViewHas('outstandingCount', 14)
+        ->assertViewHas('outstanding', fn ($rows) => $rows->count() === 10 && $rows->take(2)->pluck('order.order_number')->all() === ['D', 'A']);
+});
+
 it('limits sales to the date range but not what is owed', function () {
     // The range is typed in Persian digits, as the date picker fills it.
     ($this->range)(Utils::pDigits($this->week))
